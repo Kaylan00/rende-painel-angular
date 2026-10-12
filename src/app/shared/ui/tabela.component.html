@@ -1,0 +1,29 @@
+<div class="rolagem" tabindex="0" role="region" [attr.aria-label]="legenda()">
+  <table>
+    <caption class="sr-only">{{ legenda() }}</caption>
+    <thead>
+      <tr>
+        @for (coluna of colunas(); track coluna.chave) {
+          <th scope="col" [class.direita]="coluna.alinhar === 'direita'">{{ coluna.titulo }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (linha of linhas(); track $index) {
+        <tr>
+          @for (coluna of colunas(); track coluna.chave) {
+            <td [class.direita]="coluna.alinhar === 'direita'">
+              @if (celula(); as modelo) {
+                <ng-container
+                  *ngTemplateOutlet="modelo; context: { $implicit: linha, coluna: coluna }"
+                />
+              } @else {
+                {{ linha[coluna.chave] }}
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
