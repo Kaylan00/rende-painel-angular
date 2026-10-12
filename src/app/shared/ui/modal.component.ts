@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, effect, ElementRef, input, output, 
   selector: 'app-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <dialog #dialogo class="modal" [attr.aria-labelledby]="idTitulo" (cancel)="aoCancelar($event)" (click)="aoClicarFundo($event)">
+    <dialog #dialogo class="modal" [attr.aria-labelledby]="idTitulo" (cancel)="aoCancelar($event)">
       <div class="modal__conteudo">
         <h2 [id]="idTitulo">{{ titulo() }}</h2>
         <ng-content />
@@ -51,10 +51,17 @@ export class ModalComponent {
     effect(() => {
       const el = this.dialogo().nativeElement;
       if (this.aberto() && !el.open) {
-        // jsdom (testes) não implementa showModal
-        typeof el.showModal === 'function' ? el.showModal() : el.setAttribute('open', '');
+        if (typeof el.showModal === 'function') {
+          el.showModal();
+        } else {
+          el.setAttribute('open', ''); // jsdom (testes) não implementa showModal
+        }
       } else if (!this.aberto() && el.open) {
-        typeof el.close === 'function' ? el.close() : el.removeAttribute('open');
+        if (typeof el.close === 'function') {
+          el.close();
+        } else {
+          el.removeAttribute('open');
+        }
       }
     });
   }
@@ -63,11 +70,5 @@ export class ModalComponent {
   protected aoCancelar(evento: Event) {
     evento.preventDefault();
     this.fechar.emit();
-  }
-
-  protected aoClicarFundo(evento: MouseEvent) {
-    if (evento.target === this.dialogo().nativeElement) {
-      this.fechar.emit();
-    }
   }
 }

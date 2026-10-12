@@ -6,7 +6,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
  *   <button appBotao variante="perigo">Cancelar</button>
  */
 @Component({
-  selector: 'button[appBotao], a[appBotao]',
+  // seletor de atributo de propósito: continua sendo um <button>/<a> nativo
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: '[appBotao]',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'botao',

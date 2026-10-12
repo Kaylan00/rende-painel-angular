@@ -83,7 +83,8 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 function listarPedidos(req: HttpRequest<unknown>) {
-  const p = req.params;
+  // lê da URL completa: funciona tanto com HttpParams quanto com query string na URL
+  const p = new URL(req.urlWithParams, "http://mock").searchParams;
   const status = p.get('status');
   const forma = p.get('forma') as FormaPagamento | null;
   const de = p.get('de');
