@@ -1,0 +1,64 @@
+<div class="pagina">
+  <div class="pagina__titulo">
+    <h1>Dashboard</h1>
+    <p>Resumo do dia do seu restaurante</p>
+  </div>
+
+  @if (estado$ | async; as estado) {
+    @switch (estado.status) {
+      @case ('carregando') {
+        <app-estado tipo="carregando" mensagem="Carregando seus números..." />
+      }
+      @case ('erro') {
+        <app-estado tipo="erro" [mensagem]="estado.mensagem" (tentarNovamente)="recarregar()" />
+      }
+      @case ('ok') {
+        <section class="metricas" aria-label="Métricas do dia">
+          <app-metric-card titulo="Vendas do dia" [valor]="estado.dados.vendasHojeCentavos | moeda"
+            [legenda]="estado.dados.pedidosHoje + ' pedidos pagos hoje'" />
+          <app-metric-card titulo="Ticket médio" [valor]="estado.dados.ticketMedioCentavos | moeda" legenda="Valor médio por pedido hoje" />
+          <app-metric-card titulo="A receber" [valor]="estado.dados.aReceberCentavos | moeda" legenda="Já descontadas as taxas, crédito e débito" />
+        </section>
+
+        <section class="painel" aria-labelledby="titulo-liquido">
+          <div class="cabecalho">
+            <h2 id="titulo-liquido">Receita líquida por forma de pagamento</h2>
+            <p class="texto-suave">Últimos 7 dias. Total líquido: <strong class="numero">{{ totalLiquido(estado.dados) | moeda }}</strong></p>
+          </div>
+          <div class="formas">
+            @for (forma of estado.dados.porFormaPagamento; track forma.forma) {
+              <app-metric-card [titulo]="rotuloForma[forma.forma]" [valor]="forma.liquidoCentavos | moeda"
+                [legenda]="legendaForma(forma)" />
+            }
+          </div>
+          <p class="nota texto-suave">A taxa de cada canal é cobrada pela operadora de pagamento. O Rende não cobra comissão sobre as vendas.</p>
+        </section>
+
+        <div class="duas-colunas">
+          <section class="painel" aria-labelledby="titulo-grafico">
+            <h2 id="titulo-grafico">Vendas nos últimos 7 dias</h2>
+            <app-grafico-barras [pontos]="pontosGrafico(estado.dados)" />
+          </section>
+
+          <section class="painel" aria-labelledby="titulo-ultimos">
+            <h2 id="titulo-ultimos">Últimos pedidos</h2>
+            <ul class="ultimos">
+              @for (pedido of estado.dados.ultimosPedidos; track pedido.id) {
+                <li>
+                  <div>
+                    <strong>#{{ pedido.numero }} · {{ pedido.cliente }}</strong>
+                    <span class="texto-suave">{{ pedido.criadoEm | date: 'dd/MM HH:mm' }}</span>
+                  </div>
+                  <div class="direita">
+                    <span class="numero">{{ pedido.totalCentavos | moeda }}</span>
+                    <app-badge-status [status]="pedido.status" />
+                  </div>
+                </li>
+              }
+            </ul>
+          </section>
+        </div>
+      }
+    }
+  }
+</div>

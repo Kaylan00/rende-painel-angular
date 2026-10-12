@@ -1,0 +1,41 @@
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--espaco-4);
+}
+
+.caixa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+  width: min(26rem, 100%);
+  padding: var(--espaco-5);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+
+  p {
+    margin: 0;
+  }
+}
+
+.marca {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--cor-primaria);
+}
+
+.erro {
+  padding: var(--espaco-3);
+  font-weight: 600;
+  color: var(--cor-perigo);
+  background: var(--cor-perigo-fundo);
+  border-radius: var(--raio-pequeno);
+}
+
+.demo {
+  font-size: 0.8125rem;
+  color: var(--cor-texto-suave);
+}

@@ -1,0 +1,31 @@
+.filtros {
+  display: grid;
+  gap: var(--espaco-3);
+  align-items: end;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.filtro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}
+
+.rodape {
+  margin-top: var(--espaco-4);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+}
+
+.pequeno {
+  font-size: 0.8125rem;
+}

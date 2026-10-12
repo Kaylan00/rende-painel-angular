@@ -1,0 +1,22 @@
+<a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="layout">
+  <header class="topo">
+    <a class="marca" routerLink="/dashboard" aria-label="Rende, ir para o dashboard">Rende</a>
+    <span class="loja">{{ auth.lojista() }}</span>
+    <button appBotao variante="secundario" tamanho="pequeno" type="button" (click)="sair()">Sair</button>
+  </header>
+
+  <nav class="menu" aria-label="Principal">
+    @for (item of menu; track item.rota) {
+      <a [routerLink]="item.rota" routerLinkActive="ativo" ariaCurrentWhenActive="page">
+        <span class="icone" aria-hidden="true">{{ item.icone }}</span>
+        {{ item.rotulo }}
+      </a>
+    }
+  </nav>
+
+  <main id="conteudo" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

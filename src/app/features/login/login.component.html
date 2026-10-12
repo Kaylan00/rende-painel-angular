@@ -1,0 +1,26 @@
+<main class="login">
+  <form class="caixa" [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+    <p class="marca">Rende</p>
+    <h1>Painel do lojista</h1>
+    <p class="texto-suave">Acompanhe pedidos, recebíveis e cobranças do seu restaurante.</p>
+
+    <app-campo id="email" rotulo="E-mail" [obrigatorio]="true" [controle]="form.controls.email">
+      <input id="email" class="controle" type="email" autocomplete="username" formControlName="email"
+        [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched" />
+    </app-campo>
+
+    <app-campo id="senha" rotulo="Senha" [obrigatorio]="true" dica="Mínimo de 6 caracteres" [controle]="form.controls.senha">
+      <input id="senha" class="controle" type="password" autocomplete="current-password" formControlName="senha"
+        [attr.aria-invalid]="form.controls.senha.invalid && form.controls.senha.touched" />
+    </app-campo>
+
+    @if (erro()) {
+      <p class="erro" role="alert">{{ erro() }}</p>
+    }
+
+    <button appBotao type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Entrando...' : 'Entrar' }}
+    </button>
+    <p class="demo">Demonstração: qualquer e-mail válido e senha com 6 ou mais caracteres.</p>
+  </form>
+</main>

@@ -1,0 +1,97 @@
+<div class="pagina">
+  <div class="pagina__titulo">
+    <h1>Pedidos</h1>
+    <p>Acompanhe e avance o status de cada pedido</p>
+  </div>
+
+  <form class="filtros painel" [formGroup]="filtro" aria-label="Filtros de pedidos" (submit)="$event.preventDefault()">
+    <div class="filtro">
+      <label for="f-status">Status</label>
+      <select id="f-status" class="controle" formControlName="status">
+        <option value="">Todos</option>
+        @for (s of listaStatus; track s) {
+          <option [value]="s">{{ rotuloStatus[s] }}</option>
+        }
+      </select>
+    </div>
+    <div class="filtro">
+      <label for="f-forma">Forma de pagamento</label>
+      <select id="f-forma" class="controle" formControlName="formaPagamento">
+        <option value="">Todas</option>
+        @for (f of formas; track f) {
+          <option [value]="f">{{ rotuloForma[f] }}</option>
+        }
+      </select>
+    </div>
+    <div class="filtro">
+      <label for="f-de">De</label>
+      <input id="f-de" class="controle" type="date" formControlName="de" />
+    </div>
+    <div class="filtro">
+      <label for="f-ate">Até</label>
+      <input id="f-ate" class="controle" type="date" formControlName="ate" />
+    </div>
+    <button appBotao variante="secundario" type="button" (click)="limparFiltros()">Limpar filtros</button>
+  </form>
+
+  <div aria-live="polite">
+    @switch (estado().status) {
+      @case ('carregando') {
+        <app-estado tipo="carregando" mensagem="Buscando pedidos..." />
+      }
+      @case ('erro') {
+        <app-estado tipo="erro" mensagem="Não foi possível carregar os pedidos." (tentarNovamente)="recarregar()" />
+      }
+    }
+    @if (estado(); as e) {
+      @if (e.status === 'ok') {
+        @if (e.dados.itens.length === 0) {
+          <app-estado tipo="vazio" mensagem="Nenhum pedido encontrado com esses filtros." />
+        } @else {
+          <app-tabela legenda="Lista de pedidos" [colunas]="colunas" [linhas]="e.dados.itens" [celula]="celulaPedido" />
+          <div class="rodape">
+            <app-paginacao [pagina]="e.dados.pagina" [porPagina]="porPagina" [total]="e.dados.total" (mudar)="mudarPagina($event)" />
+          </div>
+        }
+      }
+    }
+  </div>
+</div>
+
+<!-- Como cada célula é desenhada. `let-p` é a linha, `let-coluna="coluna"` a coluna. -->
+<ng-template #celulaPedido let-p let-coluna="coluna">
+  @switch (coluna.chave) {
+    @case ('numero') {
+      <strong>#{{ p.numero }}</strong>
+      <div class="texto-suave pequeno">{{ p.criadoEm | date: 'dd/MM HH:mm' }}</div>
+    }
+    @case ('cliente') {
+      {{ p.cliente }}
+      <div class="texto-suave pequeno">{{ p.itens }}</div>
+    }
+    @case ('formaPagamento') {
+      {{ nomeForma(p.formaPagamento) }}
+    }
+    @case ('totalCentavos') {
+      <span class="numero">{{ p.totalCentavos | moeda }}</span>
+    }
+    @case ('status') {
+      <app-badge-status [status]="p.status" />
+    }
+    @case ('id') {
+      <div class="acoes">
+        @for (proximo of proximosStatus(p.status); track proximo) {
+          <button appBotao tamanho="pequeno" type="button"
+            [variante]="proximo === 'cancelado' ? 'perigo' : 'primario'"
+            [disabled]="atualizando() === p.id"
+            [attr.aria-label]="rotuloAcao(proximo) + ' pedido ' + p.numero"
+            (click)="avancar(p, proximo)">
+            {{ rotuloAcao(proximo) }}
+          </button>
+        } @empty {
+          <span class="texto-suave pequeno">Finalizado</span>
+        }
+      </div>
+    }
+  }
+</ng-template>

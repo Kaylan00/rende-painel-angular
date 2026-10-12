@@ -1,0 +1,48 @@
+<div class="pagina">
+  <div class="pagina__titulo">
+    <h1>Recebíveis</h1>
+    <p>Valores de crédito e débito que ainda vão cair na sua conta</p>
+  </div>
+
+  @switch (estado().status) {
+    @case ('carregando') {
+      <app-estado tipo="carregando" mensagem="Carregando recebíveis..." />
+    }
+    @case ('erro') {
+      <app-estado tipo="erro" mensagem="Não foi possível carregar os recebíveis." (tentarNovamente)="recarregar()" />
+    }
+    @case ('ok') {
+      @if (grupos().length === 0) {
+        <app-estado tipo="vazio" mensagem="Você não tem valores a receber no momento." />
+      } @else {
+        <section class="totais" aria-label="Totais a receber">
+          <app-metric-card titulo="Total a receber (líquido)" [valor]="totalLiquido() | moeda"
+            [legenda]="'Bruto ' + (totalBruto() | moeda) + ' · taxas ' + (totalTaxas() | moeda)" />
+          @if (proximoDia(); as proximo) {
+            <app-metric-card titulo="Próximo recebimento" [valor]="proximo.liquidoCentavos | moeda"
+              [legenda]="'em ' + formatarData(proximo.data)" />
+          }
+        </section>
+
+        <div class="datas">
+          @for (grupo of grupos(); track grupo.data) {
+            <section class="painel" [attr.aria-labelledby]="'data-' + grupo.data">
+              <header>
+                <h2 [id]="'data-' + grupo.data">{{ formatarData(grupo.data) }}</h2>
+                <strong class="numero">{{ grupo.liquidoCentavos | moeda }}</strong>
+              </header>
+              <ul>
+                @for (item of grupo.itens; track item.id) {
+                  <li>
+                    <span>{{ rotuloForma[item.formaPagamento] }} · {{ item.pedidos }} {{ item.pedidos === 1 ? 'pedido' : 'pedidos' }}</span>
+                    <span class="numero">{{ item.liquidoCentavos | moeda }}</span>
+                  </li>
+                }
+              </ul>
+            </section>
+          }
+        </div>
+      }
+    }
+  }
+</div>

@@ -1,0 +1,85 @@
+<div class="pagina">
+  <div class="pagina__titulo">
+    <h1>Nova cobrança</h1>
+    <p>Gere uma cobrança Pix ou um link de pagamento</p>
+  </div>
+
+  <div class="conteudo">
+    <form class="painel formulario" [formGroup]="form" (ngSubmit)="pedirConfirmacao()" novalidate>
+      <fieldset class="tipos">
+        <legend>Tipo de cobrança</legend>
+        <label><input type="radio" value="pix" formControlName="tipo" /> Pix</label>
+        <label><input type="radio" value="link" formControlName="tipo" /> Link de pagamento</label>
+      </fieldset>
+
+      <app-campo id="descricao" rotulo="Descrição" [obrigatorio]="true" dica="Ex.: Combo festa, 10 hambúrgueres" [controle]="form.controls.descricao">
+        <input id="descricao" class="controle" type="text" maxlength="80" formControlName="descricao" />
+      </app-campo>
+
+      <app-campo id="valor" rotulo="Valor" [obrigatorio]="true" dica="De R$ 1,00 a R$ 5.000,00" [controle]="form.controls.valorCentavos">
+        <input id="valor" class="controle" type="text" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"
+          appMascaraMoeda formControlName="valorCentavos" />
+      </app-campo>
+
+      <app-campo id="cliente" rotulo="Nome do cliente" [obrigatorio]="true" [controle]="form.controls.clienteNome">
+        <input id="cliente" class="controle" type="text" autocomplete="off" formControlName="clienteNome" />
+      </app-campo>
+
+      <app-campo id="documento" rotulo="CPF ou CNPJ do cliente" dica="Opcional" [controle]="form.controls.clienteDocumento">
+        <input id="documento" class="controle" type="text" inputmode="numeric" autocomplete="off" formControlName="clienteDocumento" />
+      </app-campo>
+
+      <app-campo id="validade" rotulo="Validade">
+        <select id="validade" class="controle" formControlName="validadeHoras">
+          <option [value]="1">1 hora</option>
+          <option [value]="24">24 horas</option>
+          <option [value]="168">7 dias</option>
+        </select>
+      </app-campo>
+
+      <button appBotao type="submit">Revisar cobrança</button>
+    </form>
+
+    <aside class="painel preview" aria-label="Pré-visualização">
+      <h2>Pré-visualização</h2>
+      <p class="valor numero">{{ (valores().valorCentavos ?? 0) | moeda }}</p>
+      <p class="texto-suave">{{ valores().descricao || 'Descrição da cobrança' }}</p>
+
+      @if (valores().tipo === 'pix') {
+        <div class="qr"><app-qr-placeholder [texto]="previewTexto()" /></div>
+        <p class="texto-suave nota">Ilustração. O QR Code real é gerado ao confirmar.</p>
+      } @else {
+        <p class="link numero">{{ previewLink() }}</p>
+        <p class="texto-suave nota">Link ilustrativo. O endereço final aparece ao confirmar.</p>
+      }
+    </aside>
+  </div>
+
+  @if (criada(); as cobranca) {
+    <section class="painel criada" aria-live="polite" aria-labelledby="titulo-criada">
+      <h2 id="titulo-criada">Cobrança #{{ cobranca.codigo }} criada</h2>
+      <p>{{ cobranca.valorCentavos | moeda }} para {{ cobranca.clienteNome }}</p>
+      <p class="link numero">{{ cobranca.url }}</p>
+      <button appBotao variante="secundario" type="button" (click)="copiar(cobranca.url)">Copiar link</button>
+    </section>
+  }
+</div>
+
+<app-modal [aberto]="confirmando()" titulo="Confirmar cobrança" (fechar)="confirmando.set(false)">
+  <dl class="resumo">
+    <dt>Tipo</dt>
+    <dd>{{ valores().tipo === 'pix' ? 'Pix' : 'Link de pagamento' }}</dd>
+    <dt>Cliente</dt>
+    <dd>{{ valores().clienteNome }}</dd>
+    <dt>Descrição</dt>
+    <dd>{{ valores().descricao }}</dd>
+    <dt>Valor</dt>
+    <dd class="numero"><strong>{{ (valores().valorCentavos ?? 0) | moeda }}</strong></dd>
+  </dl>
+  <div class="acoes-modal">
+    <button appBotao variante="secundario" type="button" (click)="confirmando.set(false)">Voltar</button>
+    <button appBotao type="button" [disabled]="enviando()" (click)="confirmar()">
+      {{ enviando() ? 'Criando...' : 'Confirmar e criar' }}
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,128 @@
+.pular-conteudo {
+  position: absolute;
+  top: -3rem;
+  left: var(--espaco-2);
+  z-index: 2000;
+  padding: var(--espaco-2) var(--espaco-3);
+  color: #fff;
+  background: var(--cor-primaria);
+  border-radius: var(--raio-pequeno);
+
+  &:focus {
+    top: var(--espaco-2);
+  }
+}
+
+/* mobile primeiro: topo fixo no alto, menu fixo embaixo */
+.layout {
+  display: grid;
+  grid-template-areas:
+    'topo'
+    'conteudo';
+  min-height: 100vh;
+}
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  grid-area: topo;
+  display: flex;
+  gap: var(--espaco-3);
+  align-items: center;
+  padding: var(--espaco-2) var(--espaco-4);
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.marca {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+.loja {
+  flex: 1;
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--cor-superficie);
+  border-top: 1px solid var(--cor-borda);
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-decoration: none;
+  }
+
+  a.ativo {
+    color: var(--cor-primaria);
+    background: var(--cor-primaria-suave);
+  }
+}
+
+.icone {
+  font-size: 1.125rem;
+}
+
+main {
+  grid-area: conteudo;
+  min-width: 0;
+  padding: var(--espaco-4) var(--espaco-4) 5.5rem; /* espaço para o menu inferior */
+}
+
+/* desktop: menu lateral */
+@media (min-width: 900px) {
+  .layout {
+    grid-template-areas:
+      'topo topo'
+      'menu conteudo';
+    grid-template-columns: 14rem 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .menu {
+    position: static;
+    grid-area: menu;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaco-1);
+    padding: var(--espaco-4) var(--espaco-3);
+    background: var(--cor-superficie);
+    border-top: 0;
+    border-right: 1px solid var(--cor-borda);
+
+    a {
+      flex-direction: row;
+      gap: var(--espaco-3);
+      justify-content: flex-start;
+      padding: 0 var(--espaco-3);
+      font-size: 1rem;
+      border-radius: var(--raio-pequeno);
+    }
+  }
+
+  main {
+    max-width: 72rem;
+    padding: var(--espaco-5) var(--espaco-6);
+  }
+}
