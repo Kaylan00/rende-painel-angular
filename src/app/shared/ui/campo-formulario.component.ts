@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 const MENSAGENS: Record<string, (erro: Record<string, string>) => string> = {
@@ -18,9 +18,12 @@ const MENSAGENS: Record<string, (erro: Record<string, string>) => string> = {
  */
 @Component({
   selector: 'app-campo',
+  // Eager = checado a cada ciclo (no Angular 22 o padrão passou a ser OnPush).
+  // Necessário porque touched/errors do FormControl não são signals.
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="campo">
-      <label [for]="id()">{{ rotulo() }}@if (obrigatorio()) {<span aria-hidden="true"> *</span>}</label>
+      <label [for]="para()">{{ rotulo() }}@if (obrigatorio()) {<span aria-hidden="true"> *</span>}</label>
       <ng-content />
       @if (dica() && !mensagemErro()) {
         <small class="campo__dica">{{ dica() }}</small>
@@ -38,14 +41,11 @@ const MENSAGENS: Record<string, (erro: Record<string, string>) => string> = {
   `,
 })
 export class CampoFormularioComponent {
-  id = input.required<string>();
+  /** id do <input> projetado (não usamos "id" para não duplicar o id no elemento host). */
+  para = input.required<string>();
   rotulo = input.required<string>();
   dica = input<string>('');
   obrigatorio = input(false);
-  /**
-   * Sem OnPush de propósito: touched/errors do FormControl não são signals,
-   * então o campo precisa ser reavaliado a cada ciclo de detecção.
-   */
   controle = input<AbstractControl | null>(null);
 
   // Os erros do controle não são signals, então calculamos pela função no template.

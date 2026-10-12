@@ -28,6 +28,9 @@ import { NotificacaoService } from '../../core/notificacao.service';
       align-items: flex-end;
       pointer-events: none;
     }
+    @media (max-width: 899px) {
+      .avisos { bottom: 4.5rem; } /* acima do menu inferior */
+    }
     .aviso {
       display: flex;
       gap: var(--espaco-3);

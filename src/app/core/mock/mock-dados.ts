@@ -58,6 +58,8 @@ export function gerarPedidos(agora: Date = new Date()): Pedido[] {
       const horaMax = diasAtras === 0 ? Math.max(agora.getHours(), 11) : 23;
       data.setHours(11 + Math.floor(aleatorio() * (horaMax - 10)), Math.floor(aleatorio() * 60));
 
+      if (data > agora) data.setTime(agora.getTime() - Math.floor(aleatorio() * 30) * 60_000);
+
       pedidos.push({
         id: ++numero,
         numero,

@@ -12,24 +12,24 @@
         <label><input type="radio" value="link" formControlName="tipo" /> Link de pagamento</label>
       </fieldset>
 
-      <app-campo id="descricao" rotulo="Descrição" [obrigatorio]="true" dica="Ex.: Combo festa, 10 hambúrgueres" [controle]="form.controls.descricao">
+      <app-campo para="descricao" rotulo="Descrição" [obrigatorio]="true" dica="Ex.: Combo festa, 10 hambúrgueres" [controle]="form.controls.descricao">
         <input id="descricao" class="controle" type="text" maxlength="80" formControlName="descricao" />
       </app-campo>
 
-      <app-campo id="valor" rotulo="Valor" [obrigatorio]="true" dica="De R$ 1,00 a R$ 5.000,00" [controle]="form.controls.valorCentavos">
+      <app-campo para="valor" rotulo="Valor" [obrigatorio]="true" dica="De R$ 1,00 a R$ 5.000,00" [controle]="form.controls.valorCentavos">
         <input id="valor" class="controle" type="text" inputmode="numeric" placeholder="R$ 0,00" autocomplete="off"
           appMascaraMoeda formControlName="valorCentavos" />
       </app-campo>
 
-      <app-campo id="cliente" rotulo="Nome do cliente" [obrigatorio]="true" [controle]="form.controls.clienteNome">
+      <app-campo para="cliente" rotulo="Nome do cliente" [obrigatorio]="true" [controle]="form.controls.clienteNome">
         <input id="cliente" class="controle" type="text" autocomplete="off" formControlName="clienteNome" />
       </app-campo>
 
-      <app-campo id="documento" rotulo="CPF ou CNPJ do cliente" dica="Opcional" [controle]="form.controls.clienteDocumento">
+      <app-campo para="documento" rotulo="CPF ou CNPJ do cliente" dica="Opcional" [controle]="form.controls.clienteDocumento">
         <input id="documento" class="controle" type="text" inputmode="numeric" autocomplete="off" formControlName="clienteDocumento" />
       </app-campo>
 
-      <app-campo id="validade" rotulo="Validade">
+      <app-campo para="validade" rotulo="Validade">
         <select id="validade" class="controle" formControlName="validadeHoras">
           <option [value]="1">1 hora</option>
           <option [value]="24">24 horas</option>

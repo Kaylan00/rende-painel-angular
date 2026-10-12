@@ -34,6 +34,16 @@ import { Coluna, TabelaComponent } from '../../shared/ui/tabela.component';
 
 const POR_PAGINA = 8;
 
+const ROTULO_ACAO: Record<StatusPedido, string> = {
+  aguardando_pagamento: 'Aguardar pagamento',
+  recebido: 'Confirmar pagamento',
+  preparo: 'Iniciar preparo',
+  pronto: 'Marcar pronto',
+  saiu: 'Saiu para entrega',
+  entregue: 'Marcar entregue',
+  cancelado: 'Cancelar',
+};
+
 @Component({
   selector: 'app-pedidos',
   imports: [
@@ -139,8 +149,8 @@ export class PedidosComponent {
     return ROTULO_FORMA[forma];
   }
 
-  /** Verbo curto para o botão de cada transição. */
+  /** Texto do botão de cada transição de status. */
   protected rotuloAcao(status: StatusPedido): string {
-    return status === 'cancelado' ? 'Cancelar' : ROTULO_STATUS[status];
+    return ROTULO_ACAO[status];
   }
 }
