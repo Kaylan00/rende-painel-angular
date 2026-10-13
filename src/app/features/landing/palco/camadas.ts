@@ -65,7 +65,7 @@ export const CAMADAS: Camada[] = [
     balanco: -4,
     pc: { x: -0.05, y: 0.38, giro: 6, escala: 1.05 },
     cel: { x: -0.28, y: 0.42, giro: 7, escala: 1 },
-    espera: { x: -0.62, y: 0.12, giro: 8 },
+    espera: { x: -0.44, y: 0.3, giro: 8 },
     esperaCel: { x: -0.8, y: 0.25, giro: 8 },
   },
   {
@@ -79,7 +79,7 @@ export const CAMADAS: Camada[] = [
     balanco: 5,
     pc: { x: 1.12, y: -0.02, giro: 12, escala: 0.86 },
     cel: { x: 0.38, y: 0, giro: 10, escala: 0.82 },
-    espera: { x: 0.18, y: -0.6, giro: 10 },
+    espera: { x: 0.22, y: -0.66, giro: 10 },
     esperaCel: { x: 0.8, y: -0.1, giro: 10 },
   },
   {
@@ -93,7 +93,7 @@ export const CAMADAS: Camada[] = [
     balanco: -6,
     pc: { x: -1.12, y: 0.02, giro: -14, escala: 0.9 },
     cel: { x: -0.38, y: -0.1, giro: -12, escala: 0.86 },
-    espera: { x: -0.6, y: -0.3, giro: -12 },
+    espera: { x: -0.46, y: -0.2, giro: -12 },
     esperaCel: { x: -0.8, y: -0.35, giro: -10 },
   },
   {
@@ -107,7 +107,7 @@ export const CAMADAS: Camada[] = [
     balanco: 4,
     pc: { x: 0.86, y: -0.54, giro: 9, escala: 0.8 },
     cel: { x: 0.3, y: -0.55, giro: 8, escala: 0.8 },
-    espera: { x: -0.1, y: -0.74, giro: 8 },
+    espera: { x: -0.16, y: -0.84, giro: 8 },
     esperaCel: { x: 0.75, y: -0.45, giro: 8 },
   },
   {
@@ -121,7 +121,7 @@ export const CAMADAS: Camada[] = [
     balanco: -3,
     pc: { x: -0.72, y: -0.32, giro: -10, escala: 0.95 },
     cel: { x: -0.25, y: -0.62, giro: -9, escala: 0.94 },
-    espera: { x: -0.55, y: -0.74, giro: -8 },
+    espera: { x: -0.42, y: -0.6, giro: -8 },
     esperaCel: { x: -0.7, y: -0.55, giro: -8 },
   },
 ];

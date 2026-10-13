@@ -192,7 +192,7 @@ export class PalcoComponent {
             y: () => (espera().y - meio) * L(),
             rotation: () => espera().giro,
             scale: () => (celular() ? 0.8 : 0.74),
-            duration: inicio,
+            duration: Math.min(inicio, 1.1),
             ease: 'power2.inOut',
           },
           0,

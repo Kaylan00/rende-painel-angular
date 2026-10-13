@@ -12,14 +12,19 @@
       </div>
 
       <div class="objeto" aria-hidden="true">
+        <div class="objeto__dentro">
         @switch (i) {
           @case (0) {
-            <!-- celular do cliente lendo o QR da mesa -->
+            <!-- celular do cliente lendo o QR da mesa (fotos do Codex + tela em HTML) -->
             <div class="mesa">
-              <div class="mesa__qr"><app-qr-placeholder texto="bocca-burger/mesa-7" /></div>
-              <p>Peça por aqui<br /><strong>Mesa 7</strong></p>
+              <img src="assets/cena/mesa.webp" alt="" width="700" height="471" loading="lazy" decoding="async" />
+              <div class="mesa__cartao">
+                <div class="mesa__qr"><app-qr-placeholder texto="bocca-burger/mesa-7" /></div>
+                <p>Peça por aqui<br /><strong>Mesa 7</strong></p>
+              </div>
             </div>
             <div class="fone">
+              <img src="assets/cena/celular.webp" alt="" width="456" height="900" loading="lazy" decoding="async" />
               <div class="fone__tela">
                 <div class="mira">
                   <div class="mira__qr"><app-qr-placeholder texto="bocca-burger/mesa-7" /></div>
@@ -33,7 +38,7 @@
             </div>
           }
           @case (1) {
-            <!-- pedido chegando no painel da loja -->
+            <!-- pedido chegando no painel da loja (interface) -->
             <div class="cartao cartao--velho">
               <span class="cartao__rotulo">Pedido #1047 · Saiu</span>
               <p class="cartao__titulo">Smash Clássico, batata</p>
@@ -61,48 +66,53 @@
             </div>
           }
           @case (2) {
-            <!-- impressora da cozinha soltando a comanda -->
-            <div class="impressora"><span class="impressora__fenda"></span><span class="impressora__luz"></span></div>
-            <div class="comanda">
-              <div class="comanda__papel">
-                <p class="comanda__loja">BOCCA BURGER · COZINHA</p>
-                <p class="numero">{{ pedido.numero }} · {{ pedido.hora }} · ENTREGA</p>
-                <ul>
-                  @for (c of comanda; track c.item) {
-                    <li><span class="numero">{{ c.qtd }}x</span> {{ c.item }}@if (c.obs) {<em>{{ c.obs }}</em>}</li>
-                  }
-                </ul>
-                <p class="comanda__pe">Preparo estimado: 12 min</p>
+            <!-- impressora da cozinha (foto) soltando a comanda -->
+            <div class="cozinha">
+              <div class="comanda">
+                <div class="comanda__papel">
+                  <p class="comanda__loja">BOCCA BURGER · COZINHA</p>
+                  <p class="numero">{{ pedido.numero }} · {{ pedido.hora }} · ENTREGA</p>
+                  <ul>
+                    @for (c of comanda; track c.item) {
+                      <li><span class="numero">{{ c.qtd }}x</span> {{ c.item }}@if (c.obs) {<em>{{ c.obs }}</em>}</li>
+                    }
+                  </ul>
+                  <p class="comanda__pe">Preparo: 12 min</p>
+                </div>
               </div>
+              <img class="impressora" src="assets/cena/impressora.webp" alt="" width="700" height="678" loading="lazy" decoding="async" />
             </div>
             <div class="cronometro"><strong class="numero">12:00</strong><span>tempo de preparo</span></div>
           }
           @case (3) {
-            <!-- rota do motoboy -->
+            <!-- rota do motoboy sobre o mapa da cidade (foto aérea) -->
             <div class="mapa">
-              <svg viewBox="0 0 320 220" class="mapa__ruas">
-                <path d="M0 40H320M0 120H320M0 180H320M40 0V220M130 0V220M250 0V220M190 0V120" />
-                <path class="mapa__rio" d="M0 205C60 190 110 214 170 200S280 188 320 196" />
-              </svg>
+              <img class="mapa__foto" src="assets/cena/mapa.jpg" alt="" width="1000" height="1000" loading="lazy" decoding="async" />
               <svg viewBox="0 0 320 220" class="mapa__rota">
                 <path pathLength="1" d="M40 180V120H130V60H250V40" />
               </svg>
               <span class="mapa__loja"></span>
               <span class="mapa__casa"></span>
-              <span class="mapa__moto"></span>
-              <div class="mapa__info">
-                <strong>Saiu às 19:58</strong>
-                <span>chega em ~12 min · Aquidabã</span>
-              </div>
+              <img class="mapa__moto" src="assets/cena/moto.webp" alt="" width="520" height="391" loading="lazy" decoding="async" />
+            </div>
+            <div class="mapa__info">
+              <strong>Saiu às 19:58</strong>
+              <span>chega em ~12 min · Aquidabã</span>
             </div>
           }
           @case (4) {
-            <!-- Pix caindo na conta -->
-            <div class="notificacao">
-              <span class="notificacao__icone">Pix</span>
-              <div>
-                <strong>Pix recebido</strong>
-                <span>R$ 68,30 de Marina Alves · agora</span>
+            <!-- Pix caindo: celular (foto) com a notificação na tela + comprovante -->
+            <div class="fone fone--pix">
+              <img src="assets/cena/celular.webp" alt="" width="456" height="900" loading="lazy" decoding="async" />
+              <div class="fone__tela fone__tela--bloqueio">
+                <span class="bloqueio__hora numero">19:58</span>
+                <div class="notificacao">
+                  <span class="notificacao__icone">Pix</span>
+                  <div>
+                    <strong>Pix recebido</strong>
+                    <span>R$ 68,30 de Marina Alves</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="comprovante">
@@ -115,6 +125,7 @@
             </div>
           }
         }
+        </div>
       </div>
     </li>
   }

@@ -70,7 +70,12 @@
 
 .objeto {
   position: relative;
-  height: 300px;
+}
+
+/* área de desenho fixa de cada objeto; com movimento, fica centrada entre o título e a linha do tempo */
+.objeto__dentro {
+  position: relative;
+  height: 400px;
 }
 
 .linha {
@@ -78,62 +83,76 @@
 }
 
 /* ---------- objetos ---------- */
-.papel {
-  color: var(--tinta);
-  background: var(--papel);
-}
-
-/* 1. mesa + celular */
+/* 1. mesa + celular (fotos) */
 .mesa {
   position: absolute;
-  top: 14%;
+  top: 40%;
   left: 44%;
-  width: 150px;
-  padding: 0.8rem;
+  width: 230px;
+  filter: drop-shadow(0 30px 30px rgb(0 0 0 / 55%));
+
+  img {
+    width: 100%;
+  }
+}
+
+/* área branca do cartão na foto: 5%–95% da largura, 0–72% da altura */
+.mesa__cartao {
+  position: absolute;
+  top: 4%;
+  right: 7%;
+  left: 7%;
+  height: 64%;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0 0.4rem;
   color: var(--tinta);
-  background: #fbf7ef;
-  border-radius: 10px;
-  box-shadow: 0 30px 50px -24px rgb(0 0 0 / 70%);
-  transform: rotate(5deg);
 
   p {
-    margin: 0.5rem 0 0;
-    font-size: 0.8125rem;
-    line-height: 1.25;
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.2;
     color: var(--tinta-suave);
   }
 
   strong {
     font-family: var(--fonte-titulo);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--verde-950);
   }
+}
+
+.mesa__qr {
+  flex: 0 0 auto;
+  width: 84px;
 }
 
 .fone {
   position: absolute;
   top: 0;
   left: 6%;
-  width: 190px;
-  height: 380px;
-  padding: 8px;
-  background: #0b0f0d;
-  border-radius: 14px;
-  box-shadow: 0 40px 60px -26px rgb(0 0 0 / 80%), inset 0 0 0 1px rgb(255 255 255 / 12%);
-  transform: rotate(-6deg);
+  width: 196px;
+  filter: drop-shadow(0 40px 40px rgb(0 0 0 / 60%));
+  transform: rotate(-5deg);
+
+  > img {
+    width: 100%;
+  }
 }
 
+/* tela do celular da foto (moldura fina: 4% dos lados, 2,2% em cima e embaixo) */
 .fone__tela {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  inset: 2.2% 4.2%;
   overflow: hidden;
   background: radial-gradient(90% 60% at 50% 40%, #34413a, #141a17);
-  border-radius: 9px;
+  border-radius: 22px;
 }
 
 .mira {
   position: absolute;
-  top: 22%;
+  top: 20%;
   left: 50%;
   width: 118px;
   padding: 10px;
@@ -168,7 +187,7 @@
 .fone__aviso {
   position: absolute;
   right: 8px;
-  bottom: 10px;
+  bottom: 14px;
   left: 8px;
   display: flex;
   flex-direction: column;
@@ -178,7 +197,7 @@
   line-height: 1.25;
   color: var(--tinta);
   background: rgb(252 250 245 / 94%);
-  border-radius: 10px;
+  border-radius: 12px;
 
   strong {
     font-size: 0.6875rem;
@@ -186,10 +205,10 @@
   }
 }
 
-/* 2. painel */
+/* 2. painel (interface) */
 .cartao {
   position: absolute;
-  top: 22%;
+  top: 26%;
   left: 0;
   width: min(100%, 22rem);
   padding: 1.1rem 1.2rem;
@@ -204,7 +223,7 @@
 }
 
 .cartao--velho {
-  top: 4%;
+  top: 8%;
   left: 14%;
   width: 19rem;
   opacity: 0.5;
@@ -299,73 +318,56 @@
   stroke-linecap: round;
 }
 
-/* 3. cozinha */
+/* 3. cozinha: impressora (foto) com a comanda subindo pela fenda */
+.cozinha {
+  position: absolute;
+  bottom: 0;
+  left: 2%;
+  width: 330px;
+  height: 400px;
+}
+
 .impressora {
   position: absolute;
-  top: 0;
-  left: 4%;
-  z-index: 2;
-  width: 300px;
-  height: 56px;
-  background: linear-gradient(#26302b, #121916);
-  border-radius: 12px;
-  box-shadow: 0 24px 40px -20px rgb(0 0 0 / 80%), inset 0 1px 0 rgb(255 255 255 / 10%);
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  filter: drop-shadow(0 34px 34px rgb(0 0 0 / 60%));
 }
 
-.impressora__fenda {
-  position: absolute;
-  right: 18px;
-  bottom: 12px;
-  left: 18px;
-  height: 4px;
-  background: #050807;
-  border-radius: 2px;
-}
-
-.impressora__luz {
-  position: absolute;
-  top: 12px;
-  right: 18px;
-  width: 8px;
-  height: 8px;
-  background: #7ed39b;
-  border-radius: 2px;
-  box-shadow: 0 0 10px #7ed39b;
-}
-
+/* a comanda nasce na fenda (30% da altura da foto) e sobe */
 .comanda {
   position: absolute;
-  top: 44px;
-  left: calc(4% + 22px);
-  width: 256px;
+  bottom: calc(320px * 0.7);
+  left: 25.5%;
+  width: 47%;
+  height: 215px;
   overflow: hidden;
-  filter: drop-shadow(0 26px 24px rgb(0 0 0 / 55%));
 }
 
 .comanda__papel {
-  padding: 1.2rem 1rem 1.6rem;
+  position: absolute;
+  inset: 0;
+  padding: 1.1rem 0.6rem 0.6rem;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.8125rem;
-  line-height: 1.45;
+  font-size: 0.625rem;
+  line-height: 1.4;
   color: #1d1a16;
-  background: #fbf8f1;
-  /* borda de baixo serrilhada, como papel de impressora cortado */
-  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
+  background: url('/assets/cena/papel.webp') center / 100% 100%;
 
   p {
     margin: 0;
   }
 
   ul {
-    margin: 0.7rem 0;
-    padding: 0.6rem 0;
+    margin: 0.4rem 0;
+    padding: 0.35rem 0;
     list-style: none;
     border-top: 1px solid #d9d1c2;
     border-bottom: 1px solid #d9d1c2;
   }
 
   li {
-    padding: 0.15rem 0;
     font-weight: 600;
   }
 
@@ -378,17 +380,14 @@
   }
 }
 
-.comanda__loja {
-  font-weight: 700;
-}
-
+.comanda__loja,
 .comanda__pe {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .cronometro {
   position: absolute;
-  top: 30%;
+  top: 34%;
   right: 0;
   display: flex;
   flex-direction: column;
@@ -412,45 +411,42 @@
   }
 }
 
-/* 4. mapa */
+/* 4. mapa: foto aérea da cidade à noite + rota (interface) */
 .mapa {
   position: absolute;
-  top: 0;
+  top: 6%;
   left: 0;
   width: 320px;
   height: 220px;
-  background: #143426;
+  overflow: hidden;
   border-radius: var(--raio);
   box-shadow: 0 40px 60px -30px rgb(0 0 0 / 80%), inset 0 0 0 1px rgb(242 234 219 / 10%);
-  transform: scale(1.2);
+  transform: scale(1.22);
   transform-origin: top left;
+}
 
-  svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: none;
+.mapa__foto {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 100%;
+}
+
+.mapa__rota {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+
+  path {
+    stroke: var(--ambar);
+    stroke-width: 4;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    filter: drop-shadow(0 0 6px rgb(227 154 75 / 80%));
   }
-}
-
-.mapa__ruas path {
-  stroke: rgb(242 234 219 / 11%);
-  stroke-width: 9;
-}
-
-.mapa__ruas .mapa__rio {
-  stroke: #2d6170;
-  stroke-width: 7;
-  opacity: 0.6;
-}
-
-.mapa__rota path {
-  stroke: var(--ambar);
-  stroke-width: 4;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
 }
 
 .mapa__loja,
@@ -480,12 +476,9 @@
 }
 
 .mapa__moto {
-  width: 16px;
-  height: 16px;
-  background: var(--ambar);
-  border: 3px solid #fff8ee;
-  border-radius: 50%;
-  box-shadow: 0 0 0 6px rgb(227 154 75 / 25%);
+  width: 52px;
+  margin: -30px 0 0 -26px;
+  filter: drop-shadow(0 6px 6px rgb(0 0 0 / 70%));
   offset-path: path('M40 180V120H130V60H250V40');
   offset-distance: 100%;
   offset-rotate: 0deg;
@@ -493,43 +486,64 @@
 
 .mapa__info {
   position: absolute;
-  right: -48px;
-  bottom: -36px;
+  top: calc(6% + 220px * 1.22 - 10px);
+  left: calc(320px * 1.22 - 150px);
   display: flex;
   flex-direction: column;
   padding: 0.65rem 0.85rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: var(--tinta-suave);
   background: var(--papel);
   border-radius: 10px;
   box-shadow: 0 20px 30px -16px rgb(0 0 0 / 70%);
 
   strong {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--tinta);
   }
 }
 
-/* 5. Pix */
+/* 5. Pix: celular (foto) com a tela bloqueada e a notificação */
+.fone--pix {
+  top: 0;
+  left: 2%;
+  transform: rotate(4deg);
+}
+
+.fone__tela--bloqueio {
+  background: linear-gradient(180deg, #1d3b2f, #0d1f18);
+}
+
+.bloqueio__hora {
+  position: absolute;
+  top: 9%;
+  right: 0;
+  left: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 3rem;
+  line-height: 1;
+  text-align: center;
+  color: var(--creme);
+}
+
 .notificacao {
   position: absolute;
-  top: 0;
-  left: 4%;
-  z-index: 2;
+  top: 30%;
+  right: 7px;
+  left: 7px;
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-items: center;
-  width: 20rem;
-  padding: 0.8rem 0.95rem;
-  font-size: 0.875rem;
-  line-height: 1.3;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.6875rem;
+  line-height: 1.25;
   color: var(--tinta);
-  background: rgb(252 250 245 / 95%);
-  border-radius: var(--raio);
-  box-shadow: 0 24px 40px -20px rgb(0 0 0 / 75%);
+  background: rgb(252 250 245 / 94%);
+  border-radius: 12px;
 
   strong {
     display: block;
+    font-size: 0.75rem;
   }
 
   span {
@@ -541,22 +555,22 @@
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  font-size: 0.75rem;
+  width: 30px;
+  height: 30px;
+  font-size: 0.625rem;
   font-weight: 700;
   color: var(--creme) !important;
   background: var(--verde-900);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .comprovante {
   position: absolute;
-  top: 32%;
-  left: 16%;
+  top: 34%;
+  left: 42%;
   display: flex;
   flex-direction: column;
-  width: 20rem;
+  width: 18rem;
   padding: 1.2rem 1.3rem;
   font-size: 0.875rem;
   color: var(--creme);
@@ -583,7 +597,7 @@
 
 .comprovante__valor {
   font-family: var(--fonte-titulo);
-  font-size: 3.4rem;
+  font-size: 3.2rem;
   font-weight: 500;
   line-height: 1.05;
 }
@@ -626,8 +640,10 @@
   }
 
   .objeto {
+    display: grid;
     flex: 1;
-    height: auto;
+    align-content: center;
+    min-height: 0;
     opacity: 0;
     transform: translateX(50px);
     transition: opacity 0.6s var(--curva), transform 0.8s var(--curva), filter 0.6s var(--curva);
@@ -653,11 +669,11 @@
     }
   }
 
-  /* o passo anterior fica ao fundo, menor e desfocado: dá profundidade */
+  /* o passo anterior sai para a esquerda, encolhendo e desfocando (sem ficar de fantasma) */
   .passo[data-estado='antes'] .objeto {
-    opacity: 0.22;
-    transform: translate(-14%, -10%) scale(0.78);
-    filter: blur(2px) saturate(0.6);
+    opacity: 0;
+    transform: translateX(-70px) scale(0.92);
+    filter: blur(3px);
   }
 
   /* animações de cada objeto, disparadas quando o passo vira o atual */
@@ -696,6 +712,10 @@
 
     .mapa__info {
       animation: subir 0.6s var(--curva) 1.8s both;
+    }
+
+    .bloqueio__hora {
+      animation: subir 0.5s var(--curva) both;
     }
 
     .notificacao {
@@ -819,7 +839,7 @@
 
 @keyframes imprimir {
   from {
-    transform: translateY(-100%);
+    transform: translateY(100%);
   }
 }
 
