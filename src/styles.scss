@@ -287,3 +287,68 @@ select.controle {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   Landing (página pública): palco escuro e botões de chamada.
+   ============================================================ */
+:root {
+  --noite: #0e2a20; /* palco: verde-noite */
+  --terracota: #b5532a;
+  --ambar: #e39a4b;
+}
+
+/* --solto: 1 = camadas do hambúrguer soltas no ar; 0 = montado (animado pelo GSAP) */
+@property --solto {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: var(--raio-pequeno);
+  transition: background-color 0.2s var(--curva), transform 0.2s var(--curva);
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.cta--creme {
+  color: var(--noite);
+  background: var(--creme);
+
+  &:hover {
+    background: #fff;
+  }
+}
+
+.cta--verde {
+  color: var(--creme);
+  background: var(--verde-900);
+
+  &:hover {
+    background: var(--verde-700);
+  }
+}
+
+/* Lenis (rolagem suave da landing) cuida da suavidade: o "smooth" nativo atrapalharia */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}

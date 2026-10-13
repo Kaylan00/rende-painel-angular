@@ -1,181 +1,51 @@
 <a class="pular-conteudo" href="#conteudo-landing">Pular para o conteúdo</a>
 
-<header class="topo" [class.topo--solido]="rolou()">
-  <div class="topo__dentro">
-    <a class="logo" routerLink="/" aria-label="Rende, início">Rende</a>
-    <nav class="topo__nav" aria-label="Seções">
-      <a routerLink="/" fragment="como-funciona">Como funciona</a>
-      <a routerLink="/" fragment="calculadora">Calculadora</a>
-      <a routerLink="/" fragment="modelos">Lojas</a>
-      <a routerLink="/" fragment="preco">Preço</a>
-      <a routerLink="/" fragment="duvidas">Dúvidas</a>
-    </nav>
-    <div class="topo__acoes">
-      <a class="topo__entrar" [routerLink]="autenticado() ? '/dashboard' : '/entrar'">{{ autenticado() ? 'Abrir painel' : 'Entrar' }}</a>
-      <a class="botao botao--creme topo__whats" [href]="whatsapp" target="_blank" rel="noopener">Falar no WhatsApp</a>
-    </div>
-  </div>
+<header class="topo" [class.topo--escondido]="topoEscondido()">
+  <a class="logo" routerLink="/" aria-label="Rende, início">Rende</a>
+  <nav class="topo__nav" aria-label="Seções">
+    @for (s of secoes; track s.id) {
+      <a [href]="'#' + s.id" (click)="irPara($event, s.id)">{{ s.rotulo }}</a>
+    }
+  </nav>
+  <a class="topo__entrar" [routerLink]="autenticado() ? '/dashboard' : '/entrar'">{{ autenticado() ? 'Abrir painel' : 'Entrar' }}</a>
 </header>
 
 <main id="conteudo-landing" tabindex="-1">
-  <!-- ============ HERO: foto real + cartões do painel flutuando ============ -->
-  <section class="hero" aria-labelledby="titulo-hero">
-    <img class="hero__foto" src="assets/fotos/hero-hamburguer.jpg" alt="" width="1600" height="1067" fetchpriority="high" />
+  <app-palco [whatsapp]="whatsapp" />
 
-    <div class="hero__dentro">
-      <div class="hero__texto" appRevelar="filhos">
-        <h1 id="titulo-hero">
-          <span class="hero__marca">Rende</span>
-          <span class="hero__frase">O pedido é seu, <br />o dinheiro também.</span>
-        </h1>
-        <p class="hero__apoio">
-          Cardápio por QR Code, pedido direto no seu painel e Pix caindo na conta da loja.
-          Mensalidade fixa, sem comissão por pedido.
-        </p>
-        <div class="hero__botoes">
-          <a class="botao botao--creme" routerLink="/" fragment="calculadora">Calcular quanto sobra</a>
-          <a class="botao botao--contorno-claro" routerLink="/entrar">Ver o painel funcionando</a>
-        </div>
-      </div>
-
-      <app-cartoes-hero />
-    </div>
-  </section>
-
-  <!-- ============ MANIFESTO: foto + frase grande ============ -->
-  <section class="manifesto" aria-labelledby="titulo-manifesto">
-    <div class="envoltorio manifesto__grade">
-      <img class="manifesto__foto" src="assets/fotos/salao.jpg" alt="Salão de restaurante com mesas de madeira e luz baixa"
-        width="1600" height="1067" loading="lazy" appRevelar />
-      <div class="manifesto__texto" appRevelar [revelarAtraso]="0.1">
-        <h2 id="titulo-manifesto">
-          O cliente que já pede toda semana não precisa de intermediário. Ele precisa do seu cardápio, do seu Pix e de um pedido que chega certo na cozinha.
-        </h2>
-        <p>
-          O Rende nasceu para restaurantes do interior do Espírito Santo que pagavam ao app uma fatia de cada
-          pedido, inclusive dos clientes de anos. Aqui a conta é simples: uma mensalidade, e a venda é toda sua.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ COMO FUNCIONA ============ -->
-  <section id="como-funciona" class="secao" aria-labelledby="titulo-como">
+  <section id="fatia" class="secao-fatia" aria-label="A fatia do app: quanto a comissão leva do seu faturamento">
     <div class="envoltorio">
-      <div class="cabeca" appRevelar>
-        <h2 id="titulo-como">Do QR Code na mesa ao Pix na conta</h2>
-        <p>Três passos, e nenhum deles depende de app de terceiro.</p>
-      </div>
-
-      <div class="como">
-        <img class="como__foto" src="assets/fotos/fatia-pizza.jpg" alt="Mão pegando uma fatia de pizza de espinafre com muçarela numa mesa de mármore"
-          width="1600" height="2400" loading="lazy" appRevelar />
-        <ol class="passos" appRevelar="filhos">
-          @for (passo of passos; track passo.numero) {
-            <li>
-              <span class="passos__numero numero" aria-hidden="true">{{ passo.numero }}</span>
-              <div>
-                <h3>{{ passo.titulo }}</h3>
-                <p>{{ passo.texto }}</p>
-                <p class="passos__detalhe">{{ passo.detalhe }}</p>
-              </div>
-            </li>
-          }
-        </ol>
-      </div>
+      <app-fatia />
     </div>
   </section>
 
-  <!-- ============ CALCULADORA (o diferencial) ============ -->
-  <section id="calculadora" class="faixa-verde" aria-label="Calculadora: comissão do app ou mensalidade fixa">
-    <div class="envoltorio">
-      <app-calculadora />
-    </div>
-  </section>
-
-  <!-- ============ MODELOS DE LOJA ============ -->
-  <section id="modelos" class="secao" aria-labelledby="titulo-modelos">
-    <div class="envoltorio">
-      <div class="cabeca" appRevelar>
-        <h2 id="titulo-modelos">Uma loja com a cara da sua cozinha</h2>
-        <p>Cada restaurante tem cardápio, fotos e cor próprios. Alguns modelos de como a loja aparece no celular do cliente.</p>
-      </div>
-
-      <ul class="modelos" appRevelar="filhos">
-        @for (modelo of modelos; track modelo.nome) {
-          <li class="modelo" [style.--cor-loja]="modelo.cor">
-            <img [src]="modelo.foto" [alt]="modelo.alt" width="800" height="1000" loading="lazy" />
-            <div class="modelo__corpo">
-              <h3>{{ modelo.nome }}</h3>
-              <p class="modelo__tipo">{{ modelo.tipo }} · {{ modelo.cidade }}</p>
-              <ul class="modelo__itens">
-                @for (item of modelo.itens; track item.nome) {
-                  <li><span>{{ item.nome }}</span><span class="numero">{{ item.preco }}</span></li>
-                }
-              </ul>
-              <span class="modelo__botao" aria-hidden="true">Fazer pedido</span>
-            </div>
-          </li>
-        }
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ RECEITA LÍQUIDA POR FORMA DE PAGAMENTO ============ -->
-  <section class="secao secao--papel" aria-labelledby="titulo-receita">
-    <div class="envoltorio receita">
-      <div class="receita__texto" appRevelar>
-        <h2 id="titulo-receita">Você vê quanto cai de verdade, em cada forma de pagamento</h2>
-        <p>
-          Venda de R$ 100 no crédito não é R$ 100 na conta. O painel do Rende desconta a taxa de cada canal
-          e mostra a receita líquida e o dia em que o dinheiro chega, para você decidir com o número certo.
-        </p>
-        <a class="link-seta" routerLink="/entrar">Abrir o painel de demonstração</a>
-      </div>
-
-      <div class="receita__tabela" appRevelar [revelarAtraso]="0.1">
-        <p class="receita__legenda">Num pedido de <strong class="numero">R$ 100,00</strong></p>
-        <ul class="receita__lista">
-          @for (linha of receita; track linha.forma) {
-            <li>
-              <span class="receita__forma">{{ linha.rotulo }}</span>
-              <span class="receita__taxa numero">{{ linha.taxa }} · {{ linha.prazo }}</span>
-              <strong class="receita__valor numero">{{ linha.liquido }}</strong>
-            </li>
-          }
-        </ul>
-        <p class="receita__nota">Taxas de demonstração. As reais dependem da sua operadora.</p>
-      </div>
-    </div>
-  </section>
+  <app-lojas />
 
   <!-- ============ PREÇO: um plano só ============ -->
-  <section id="preco" class="secao" aria-labelledby="titulo-preco">
-    <div class="envoltorio">
-      <div class="plano" appRevelar>
-        <div class="plano__preco">
-          <h2 id="titulo-preco">Um plano. Preço fechado.</h2>
-          <p class="plano__valor"><span class="numero">{{ mensalidade }}</span><span class="plano__mes">por mês</span></p>
-          <p class="plano__apoio">Sem comissão, sem taxa por pedido, sem fidelidade. Venda R$ 3 mil ou R$ 80 mil no mês, o valor é o mesmo.</p>
-          <a class="botao botao--verde" [href]="whatsapp" target="_blank" rel="noopener">Quero o Rende na minha loja</a>
-        </div>
+  <section id="preco" class="plano" aria-labelledby="titulo-preco">
+    <div class="envoltorio plano__grade">
+      <p class="plano__valor" appRevelar>
+        <span class="numero">{{ mensalidade }}</span>
+        <span class="plano__mes">por mês. Venda R$ 3 mil ou R$ 80 mil, o valor é o mesmo.</span>
+      </p>
+      <div class="plano__texto" appRevelar [revelarAtraso]="0.1">
+        <h2 id="titulo-preco">Um plano. Preço fechado. Sem comissão.</h2>
         <ul class="plano__lista">
           @for (item of incluso; track item) {
-            <li>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg>
-              {{ item }}
-            </li>
+            <li>{{ item }}</li>
           }
         </ul>
+        <a class="cta cta--verde" [href]="whatsapp" target="_blank" rel="noopener">Quero o Rende na minha loja</a>
+        <p class="plano__nota">Preço de demonstração. Sem fidelidade e sem taxa de instalação.</p>
       </div>
     </div>
   </section>
 
   <!-- ============ DÚVIDAS ============ -->
-  <section id="duvidas" class="secao secao--sem-topo" aria-labelledby="titulo-duvidas">
-    <div class="envoltorio duvidas">
-      <h2 id="titulo-duvidas" appRevelar>Perguntas que todo dono de restaurante faz</h2>
-      <div class="duvidas__lista" appRevelar="filhos">
+  <section id="duvidas" class="duvidas" aria-labelledby="titulo-duvidas">
+    <div class="envoltorio duvidas__grade">
+      <h2 id="titulo-duvidas" appRevelar>Perguntas de quem tem restaurante</h2>
+      <div class="duvidas__lista">
         @for (item of perguntas; track item.pergunta) {
           <details>
             <summary>{{ item.pergunta }}</summary>
@@ -188,41 +58,21 @@
 
   <!-- ============ CHAMADA FINAL ============ -->
   <section class="final" aria-labelledby="titulo-final">
-    <img class="final__foto" src="assets/fotos/salao-cheio.jpg" alt="" width="1600" height="1138" loading="lazy" />
-    <div class="envoltorio final__dentro" appRevelar>
-      <h2 id="titulo-final">Mande o seu cardápio. A gente monta a loja com você.</h2>
-      <p>Uma conversa pelo WhatsApp, sem compromisso. Em poucos dias seus clientes já pedem direto de você.</p>
-      <div class="final__botoes">
-        <a class="botao botao--creme" [href]="whatsapp" target="_blank" rel="noopener">Chamar no WhatsApp</a>
-        <a class="botao botao--contorno-claro" routerLink="/entrar">Ver o painel de demonstração</a>
-      </div>
+    <div class="envoltorio">
+      <h2 id="titulo-final" class="final__frase">Mande o seu cardápio. A gente monta a loja com você.</h2>
+      <a class="final__whats" [href]="whatsapp" target="_blank" rel="noopener">
+        <span>Chamar no WhatsApp</span>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38 38 10M16 10h22v22" /></svg>
+      </a>
+      <a class="final__painel" routerLink="/entrar">Ou abra o painel de demonstração</a>
     </div>
   </section>
 </main>
 
 <footer class="rodape">
-  <div class="envoltorio">
-    <div class="rodape__topo">
-      <div>
-        <p class="rodape__marca">Rende</p>
-        <p class="rodape__frase">Delivery próprio para restaurantes. Feito no Espírito Santo.</p>
-      </div>
-      <nav class="rodape__nav" aria-label="Rodapé">
-        <a routerLink="/" fragment="como-funciona">Como funciona</a>
-        <a routerLink="/" fragment="calculadora">Calculadora</a>
-        <a routerLink="/" fragment="preco">Preço</a>
-        <a routerLink="/entrar">Entrar no painel</a>
-        <a [href]="whatsapp" target="_blank" rel="noopener">WhatsApp</a>
-      </nav>
-    </div>
-    <div class="rodape__base">
-      <p>Projeto de portfólio de Kaylan Argollo. Dados do painel são de demonstração.</p>
-      <p>
-        Fotos do <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>:
-        @for (credito of creditos; track credito.autor; let ultimo = $last) {
-          {{ credito.autor }} ({{ credito.foto }}){{ ultimo ? '.' : ', ' }}
-        }
-      </p>
-    </div>
+  <div class="envoltorio rodape__dentro">
+    <p class="rodape__marca">Rende</p>
+    <p>Delivery próprio para restaurantes. Feito no Espírito Santo.</p>
+    <p>Projeto de portfólio de Kaylan Argollo, {{ ano }}. Dados do painel são de demonstração.</p>
   </div>
 </footer>

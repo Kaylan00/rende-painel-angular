@@ -14,7 +14,7 @@ describe('rotas', () => {
   it('"/" abre a landing pública, sem pedir login', async () => {
     const harness = await RouterTestingHarness.create('/');
     expect(TestBed.inject(Router).url).toBe('/');
-    expect(harness.routeNativeElement?.querySelector('app-calculadora')).not.toBeNull();
+    expect(harness.routeNativeElement?.querySelector('app-fatia')).not.toBeNull();
   });
 
   it('o painel continua protegido: sem sessão vai para /entrar com o retorno', async () => {
