@@ -1,35 +1,120 @@
 .login {
   display: grid;
-  place-items: center;
   min-height: 100vh;
-  padding: var(--espaco-4);
+  grid-template-columns: 1fr;
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+
+/* lado com foto real: só aparece no desktop */
+.lado {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background: var(--verde-950);
+
+  @media (min-width: 960px) {
+    display: block;
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+  }
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: linear-gradient(to top, rgb(11 46 35 / 92%) 10%, rgb(11 46 35 / 20%) 70%);
+  }
+}
+
+.lado__texto {
+  position: absolute;
+  right: var(--espaco-7);
+  bottom: var(--espaco-7);
+  left: var(--espaco-7);
+  z-index: 1;
+  color: var(--creme);
+
+  p {
+    max-width: 22ch;
+    margin: var(--espaco-3) 0 0;
+    font-family: var(--fonte-titulo);
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+}
+
+.lado__marca {
+  font-family: var(--fonte-titulo);
+  font-size: 5.5rem;
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-6);
+  padding: var(--espaco-6) var(--espaco-4);
+}
+
+.voltar {
+  align-self: flex-start;
+  font-size: 0.9375rem;
+
+  @media (min-width: 960px) {
+    position: absolute;
+    top: var(--espaco-6);
+    right: var(--espaco-6);
+    align-self: auto;
+  }
 }
 
 .caixa {
   display: flex;
   flex-direction: column;
   gap: var(--espaco-4);
-  width: min(26rem, 100%);
-  padding: var(--espaco-5);
-  background: var(--cor-superficie);
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio);
-  box-shadow: var(--sombra);
+  width: min(25rem, 100%);
 
   p {
     margin: 0;
   }
+
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  button {
+    margin-top: var(--espaco-2);
+  }
 }
 
 .marca {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--cor-primaria);
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--verde-900);
+
+  @media (min-width: 960px) {
+    display: none;
+  }
 }
 
 .erro {
-  padding: var(--espaco-3);
-  font-weight: 600;
+  padding: var(--espaco-3) var(--espaco-4);
+  font-weight: 500;
   color: var(--cor-perigo);
   background: var(--cor-perigo-fundo);
   border-radius: var(--raio-pequeno);

@@ -8,6 +8,8 @@ import { formatarDataBr } from '../../core/utils/datas';
 import { comEstado, Estado } from '../../core/utils/estado-requisicao';
 import { MoedaPipe } from '../../shared/pipes/moeda.pipe';
 import { EstadoComponent } from '../../shared/ui/estado-vazio.component';
+import { ContadorDirective } from '../../shared/movimento/contador.directive';
+import { RevelarDirective } from '../../shared/movimento/revelar.directive';
 import { MetricCardComponent } from '../../shared/ui/metric-card.component';
 
 export interface GrupoRecebivel {
@@ -30,7 +32,7 @@ export function agruparPorData(lista: Recebivel[]): GrupoRecebivel[] {
 
 @Component({
   selector: 'app-recebiveis',
-  imports: [MoedaPipe, MetricCardComponent, EstadoComponent],
+  imports: [MoedaPipe, MetricCardComponent, EstadoComponent, ContadorDirective, RevelarDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './recebiveis.component.html',
   styleUrl: './recebiveis.component.scss',

@@ -4,8 +4,8 @@
   left: var(--espaco-2);
   z-index: 2000;
   padding: var(--espaco-2) var(--espaco-3);
-  color: #fff;
-  background: var(--cor-primaria);
+  color: var(--creme);
+  background: var(--verde-900);
   border-radius: var(--raio-pequeno);
 
   &:focus {
@@ -13,7 +13,7 @@
   }
 }
 
-/* mobile primeiro: topo fixo no alto, menu fixo embaixo */
+/* celular primeiro: topo fixo no alto, menu fixo embaixo */
 .layout {
   display: grid;
   grid-template-areas:
@@ -30,21 +30,31 @@
   display: flex;
   gap: var(--espaco-3);
   align-items: center;
-  padding: var(--espaco-2) var(--espaco-4);
-  background: var(--cor-superficie);
-  border-bottom: 1px solid var(--cor-borda);
+  padding: var(--espaco-3) var(--espaco-4);
+  background: color-mix(in srgb, var(--creme) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--linha);
 }
 
 .marca {
-  font-size: 1.375rem;
-  font-weight: 800;
-  color: var(--cor-primaria);
+  font-family: var(--fonte-titulo);
+  font-size: 1.625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--verde-900);
   text-decoration: none;
+}
+
+.marca--lateral,
+.conta {
+  display: none;
 }
 
 .loja {
   flex: 1;
   overflow: hidden;
+  font-size: 0.9375rem;
   color: var(--cor-texto-suave);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -56,73 +66,150 @@
   bottom: 0;
   left: 0;
   z-index: 10;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  background: var(--cor-superficie);
-  border-top: 1px solid var(--cor-borda);
+  background: var(--papel);
+  border-top: 1px solid var(--linha);
+  padding-bottom: env(safe-area-inset-bottom);
 
-  a {
+  ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  ul a {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
     align-items: center;
     justify-content: center;
-    min-height: 3.5rem;
+    min-height: 3.75rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--cor-texto-suave);
     text-decoration: none;
   }
 
-  a.ativo {
-    color: var(--cor-primaria);
-    background: var(--cor-primaria-suave);
+  ul a.ativo {
+    color: var(--verde-900);
+
+    .icone {
+      stroke-width: 2;
+    }
   }
 }
 
 .icone {
-  font-size: 1.125rem;
+  width: 1.375rem;
+  height: 1.375rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 main {
   grid-area: conteudo;
   min-width: 0;
-  padding: var(--espaco-4) var(--espaco-4) 5.5rem; /* espaço para o menu inferior */
+  padding: var(--espaco-5) var(--espaco-4) 6rem; /* espaço para o menu inferior */
 }
 
-/* desktop: menu lateral */
+/* desktop: menu lateral fixo */
 @media (min-width: 900px) {
   .layout {
-    grid-template-areas:
-      'topo topo'
-      'menu conteudo';
-    grid-template-columns: 14rem 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-areas: 'menu conteudo';
+    grid-template-columns: 15.5rem 1fr;
+  }
+
+  .topo {
+    display: none;
   }
 
   .menu {
-    position: static;
+    position: sticky;
+    top: 0;
     grid-area: menu;
     display: flex;
     flex-direction: column;
-    gap: var(--espaco-1);
-    padding: var(--espaco-4) var(--espaco-3);
-    background: var(--cor-superficie);
+    gap: var(--espaco-6);
+    height: 100vh;
+    padding: var(--espaco-6) var(--espaco-4) var(--espaco-5);
+    background: transparent;
     border-top: 0;
-    border-right: 1px solid var(--cor-borda);
+    border-right: 1px solid var(--linha);
 
-    a {
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    ul a {
       flex-direction: row;
       gap: var(--espaco-3);
       justify-content: flex-start;
+      min-height: 2.75rem;
       padding: 0 var(--espaco-3);
       font-size: 1rem;
+      color: var(--tinta);
       border-radius: var(--raio-pequeno);
+      transition: background-color 0.15s;
+    }
+
+    ul a:hover:not(.ativo) {
+      background: var(--creme-escuro);
+    }
+
+    ul a.ativo {
+      color: var(--creme);
+      background: var(--verde-900);
     }
   }
 
+  .marca--lateral {
+    display: block;
+    padding: 0 var(--espaco-3);
+    font-size: 2rem;
+  }
+
+  .conta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+    padding: var(--espaco-4) var(--espaco-3) 0;
+    border-top: 1px solid var(--linha);
+  }
+
+  .conta__loja {
+    font-weight: 500;
+  }
+
+  .conta__plano {
+    font-size: 0.8125rem;
+    color: var(--cor-texto-suave);
+  }
+
+  .conta__sair {
+    align-self: flex-start;
+    min-height: 2.25rem;
+    margin-top: var(--espaco-2);
+    padding: 0;
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--verde-900);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+    background: none;
+    border: 0;
+  }
+
   main {
-    max-width: 72rem;
-    padding: var(--espaco-5) var(--espaco-6);
+    width: 100%;
+    max-width: 78rem;
+    padding: var(--espaco-7) clamp(2rem, 4vw, 4rem) var(--espaco-8);
   }
 }

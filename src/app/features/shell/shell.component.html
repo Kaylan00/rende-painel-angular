@@ -2,18 +2,28 @@
 
 <div class="layout">
   <header class="topo">
-    <a class="marca" routerLink="/dashboard" aria-label="Rende, ir para o dashboard">Rende</a>
+    <a class="marca" routerLink="/dashboard" aria-label="Rende, ir para o resumo">Rende</a>
     <span class="loja">{{ auth.lojista() }}</span>
-    <button appBotao variante="secundario" tamanho="pequeno" type="button" (click)="sair()">Sair</button>
+    <button appBotao variante="secundario" tamanho="pequeno" type="button" class="sair-topo" (click)="sair()">Sair</button>
   </header>
 
   <nav class="menu" aria-label="Principal">
-    @for (item of menu; track item.rota) {
-      <a [routerLink]="item.rota" routerLinkActive="ativo" ariaCurrentWhenActive="page">
-        <span class="icone" aria-hidden="true">{{ item.icone }}</span>
-        {{ item.rotulo }}
-      </a>
-    }
+    <a class="marca marca--lateral" routerLink="/dashboard" aria-label="Rende, ir para o resumo">Rende</a>
+    <ul>
+      @for (item of menu; track item.rota) {
+        <li>
+          <a [routerLink]="item.rota" routerLinkActive="ativo" ariaCurrentWhenActive="page">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icone" /></svg>
+            <span>{{ item.rotulo }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+    <div class="conta">
+      <span class="conta__loja">{{ auth.lojista() }}</span>
+      <span class="conta__plano">Plano mensal · sem comissão</span>
+      <button type="button" class="conta__sair" (click)="sair()">Sair do painel</button>
+    </div>
   </nav>
 
   <main id="conteudo" tabindex="-1">

@@ -1,23 +1,40 @@
 .filtros {
   display: grid;
-  gap: var(--espaco-3);
+  gap: var(--espaco-3) var(--espaco-4);
   align-items: end;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-bottom: var(--espaco-5);
+  border-bottom: 1px solid var(--linha);
+
+  @media (min-width: 760px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+
+  > button {
+    grid-column: 1 / -1;
+    justify-self: start;
+
+    @media (min-width: 760px) {
+      grid-column: auto;
+    }
+  }
 }
 
 .filtro {
   display: flex;
   flex-direction: column;
   gap: var(--espaco-1);
+  min-width: 0;
 
   label {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
   }
 }
 
 .rodape {
-  margin-top: var(--espaco-4);
+  margin-top: var(--espaco-5);
 }
 
 .acoes {
@@ -27,5 +44,11 @@
 }
 
 .pequeno {
+  margin-top: 2px;
   font-size: 0.8125rem;
+}
+
+strong {
+  font-weight: 600;
+  color: var(--verde-950);
 }

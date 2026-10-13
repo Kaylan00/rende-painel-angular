@@ -8,8 +8,14 @@
     <form class="painel formulario" [formGroup]="form" (ngSubmit)="pedirConfirmacao()" novalidate>
       <fieldset class="tipos">
         <legend>Tipo de cobrança</legend>
-        <label><input type="radio" value="pix" formControlName="tipo" /> Pix</label>
-        <label><input type="radio" value="link" formControlName="tipo" /> Link de pagamento</label>
+        <label class="opcao">
+          <input type="radio" value="pix" formControlName="tipo" />
+          <span><strong>Pix</strong><small>QR Code e copia e cola, cai na hora</small></span>
+        </label>
+        <label class="opcao">
+          <input type="radio" value="link" formControlName="tipo" />
+          <span><strong>Link de pagamento</strong><small>Para mandar no WhatsApp</small></span>
+        </label>
       </fieldset>
 
       <app-campo para="descricao" rotulo="Descrição" [obrigatorio]="true" dica="Ex.: Combo festa, 10 hambúrgueres" [controle]="form.controls.descricao">
@@ -40,17 +46,17 @@
       <button appBotao type="submit">Revisar cobrança</button>
     </form>
 
-    <aside class="painel preview" aria-label="Pré-visualização">
-      <h2>Pré-visualização</h2>
+    <aside class="preview" aria-label="Pré-visualização">
+      <h2>Como o cliente vai ver</h2>
       <p class="valor numero">{{ (valores().valorCentavos ?? 0) | moeda }}</p>
-      <p class="texto-suave">{{ valores().descricao || 'Descrição da cobrança' }}</p>
+      <p class="descricao">{{ valores().descricao || 'Descrição da cobrança' }}</p>
 
       @if (valores().tipo === 'pix') {
         <div class="qr"><app-qr-placeholder [texto]="previewTexto()" /></div>
-        <p class="texto-suave nota">Ilustração. O QR Code real é gerado ao confirmar.</p>
+        <p class="nota">Ilustração. O QR Code real é gerado ao confirmar.</p>
       } @else {
         <p class="link numero">{{ previewLink() }}</p>
-        <p class="texto-suave nota">Link ilustrativo. O endereço final aparece ao confirmar.</p>
+        <p class="nota">Link ilustrativo. O endereço final aparece ao confirmar.</p>
       }
     </aside>
   </div>

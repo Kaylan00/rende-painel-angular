@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PainelService } from '../../core/api/painel.service';
 import { Dashboard } from '../../core/models/painel.model';
@@ -28,7 +29,7 @@ describe('DashboardComponent', () => {
   const api = { dashboard: jest.fn() };
 
   function criar() {
-    TestBed.configureTestingModule({ imports: [DashboardComponent], providers: [{ provide: PainelService, useValue: api }] });
+    TestBed.configureTestingModule({ imports: [DashboardComponent], providers: [provideRouter([]), { provide: PainelService, useValue: api }] });
     const fixture = TestBed.createComponent(DashboardComponent);
     fixture.detectChanges();
     return { fixture, el: fixture.nativeElement as HTMLElement };

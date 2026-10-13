@@ -1,5 +1,6 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { PainelService } from '../../core/api/painel.service';
 import { Dashboard } from '../../core/models/painel.model';
@@ -10,11 +11,16 @@ import { MoedaPipe } from '../../shared/pipes/moeda.pipe';
 import { BadgeStatusComponent } from '../../shared/ui/badge-status.component';
 import { EstadoComponent } from '../../shared/ui/estado-vazio.component';
 import { GraficoBarrasComponent } from '../../shared/ui/grafico-barras.component';
+import { ContadorDirective } from '../../shared/movimento/contador.directive';
+import { RevelarDirective } from '../../shared/movimento/revelar.directive';
 import { MetricCardComponent } from '../../shared/ui/metric-card.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [AsyncPipe, DatePipe, MoedaPipe, MetricCardComponent, GraficoBarrasComponent, BadgeStatusComponent, EstadoComponent],
+  imports: [
+    AsyncPipe, DatePipe, RouterLink, MoedaPipe, MetricCardComponent, GraficoBarrasComponent, BadgeStatusComponent,
+    EstadoComponent, ContadorDirective, RevelarDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -24,6 +30,7 @@ export class DashboardComponent {
 
   protected readonly rotuloForma = ROTULO_FORMA;
   protected readonly formatarBps = formatarBps;
+  protected readonly hoje = new Date();
 
   /** Gatilho para recarregar: cada .next() dispara uma nova busca (switchMap cancela a anterior). */
   private readonly recarregar$ = new BehaviorSubject<void>(undefined);
@@ -44,6 +51,7 @@ export class DashboardComponent {
   }
 
   protected legendaForma(f: ResumoFormaPagamento): string {
-    return `Bruto ${formatarMoeda(f.brutoCentavos)} · taxa ${formatarBps(f.taxaBps)} (${formatarMoeda(f.taxaCentavos)})`;
+    if (f.taxaBps === 0) return `sem taxa · ${formatarMoeda(f.brutoCentavos)} recebidos`;
+    return `taxa ${formatarBps(f.taxaBps)} · ${formatarMoeda(f.taxaCentavos)} sobre ${formatarMoeda(f.brutoCentavos)}`;
   }
 }

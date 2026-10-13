@@ -1,10 +1,10 @@
 <div class="pagina">
   <div class="pagina__titulo">
     <h1>Pedidos</h1>
-    <p>Acompanhe e avance o status de cada pedido</p>
+    <p>Acompanhe cada pedido e avance o status quando a cozinha andar</p>
   </div>
 
-  <form class="filtros painel" [formGroup]="filtro" aria-label="Filtros de pedidos" (submit)="$event.preventDefault()">
+  <form class="filtros" [formGroup]="filtro" aria-label="Filtros de pedidos" (submit)="$event.preventDefault()">
     <div class="filtro">
       <label for="f-status">Status</label>
       <select id="f-status" class="controle" formControlName="status">

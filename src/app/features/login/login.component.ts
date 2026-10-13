@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { RevelarDirective } from '../../shared/movimento/revelar.directive';
 import { BotaoComponent } from '../../shared/ui/botao.component';
 import { CampoFormularioComponent } from '../../shared/ui/campo-formulario.component';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, BotaoComponent, CampoFormularioComponent],
+  imports: [ReactiveFormsModule, RouterLink, BotaoComponent, CampoFormularioComponent, RevelarDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -43,7 +44,7 @@ export class LoginComponent {
       .login(email, senha)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.router.navigateByUrl(this.retorno() || "/dashboard"),
+        next: () => this.router.navigateByUrl(this.retorno() || '/dashboard'),
         error: () => {
           this.enviando.set(false);
           this.erro.set('E-mail ou senha inválidos. Use qualquer e-mail válido e senha com 6+ caracteres.');

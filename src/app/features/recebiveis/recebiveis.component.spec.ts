@@ -38,7 +38,7 @@ describe('RecebiveisComponent', () => {
     expect(texto).toContain('R$ 164,69');
     expect(texto).toContain('Bruto R$ 170,00');
     expect(texto).toContain('taxas R$ 5,31');
-    expect(el.querySelectorAll('section.painel')).toHaveLength(2);
+    expect(el.querySelectorAll('section.grupo')).toHaveLength(2);
     expect(texto).toContain('13/10/2026');
   });
 

@@ -1,7 +1,7 @@
 <div class="pagina">
   <div class="pagina__titulo">
     <h1>Recebíveis</h1>
-    <p>Valores de crédito e débito que ainda vão cair na sua conta</p>
+    <p>Crédito e débito que ainda vão cair na sua conta, dia a dia</p>
   </div>
 
   @switch (estado().status) {
@@ -13,20 +13,23 @@
     }
     @case ('ok') {
       @if (grupos().length === 0) {
-        <app-estado tipo="vazio" mensagem="Você não tem valores a receber no momento." />
+        <app-estado tipo="vazio" titulo="Tudo já caiu na conta" mensagem="Você não tem valores a receber no momento." />
       } @else {
-        <section class="totais" aria-label="Totais a receber">
-          <app-metric-card titulo="Total a receber (líquido)" [valor]="totalLiquido() | moeda"
-            [legenda]="'Bruto ' + (totalBruto() | moeda) + ' · taxas ' + (totalTaxas() | moeda)" />
+        <section class="totais" aria-label="Totais a receber" appRevelar="filhos">
+          <article class="total">
+            <h2 class="total__titulo">Total a receber (líquido)</h2>
+            <p class="total__valor numero" [appContador]="totalLiquido()"></p>
+            <p class="total__detalhe numero">Bruto {{ totalBruto() | moeda }} · taxas {{ totalTaxas() | moeda }}</p>
+          </article>
           @if (proximoDia(); as proximo) {
-            <app-metric-card titulo="Próximo recebimento" [valor]="proximo.liquidoCentavos | moeda"
+            <app-metric-card titulo="Próximo recebimento" [centavos]="proximo.liquidoCentavos"
               [legenda]="'em ' + formatarData(proximo.data)" />
           }
         </section>
 
-        <div class="datas">
+        <div class="agenda" appRevelar="filhos">
           @for (grupo of grupos(); track grupo.data) {
-            <section class="painel" [attr.aria-labelledby]="'data-' + grupo.data">
+            <section class="grupo" [attr.aria-labelledby]="'data-' + grupo.data">
               <header>
                 <h2 [id]="'data-' + grupo.data">{{ formatarData(grupo.data) }}</h2>
                 <strong class="numero">{{ grupo.liquidoCentavos | moeda }}</strong>

@@ -1,7 +1,7 @@
 <div class="pagina">
   <div class="pagina__titulo">
-    <h1>Dashboard</h1>
-    <p>Resumo do dia do seu restaurante</p>
+    <h1>Resumo de hoje</h1>
+    <p>{{ hoje | date: "EEEE, d 'de' MMMM" }}</p>
   </div>
 
   @if (estado$ | async; as estado) {
@@ -13,41 +13,66 @@
         <app-estado tipo="erro" [mensagem]="estado.mensagem" (tentarNovamente)="recarregar()" />
       }
       @case ('ok') {
-        <section class="metricas" aria-label="Métricas do dia">
-          <app-metric-card titulo="Vendas do dia" [valor]="estado.dados.vendasHojeCentavos | moeda"
-            [legenda]="estado.dados.pedidosHoje + ' pedidos pagos hoje'" />
-          <app-metric-card titulo="Ticket médio" [valor]="estado.dados.ticketMedioCentavos | moeda" legenda="Valor médio por pedido hoje" />
-          <app-metric-card titulo="A receber" [valor]="estado.dados.aReceberCentavos | moeda" legenda="Já descontadas as taxas, crédito e débito" />
+        <section class="destaque" aria-label="Métricas do dia" appRevelar="filhos">
+          <article class="saldo">
+            <h2 class="saldo__titulo">A receber</h2>
+            <p class="saldo__valor numero" [appContador]="estado.dados.aReceberCentavos"></p>
+            <p class="saldo__legenda">Crédito e débito que ainda vão cair na conta, já sem as taxas.</p>
+            <a class="saldo__link" routerLink="/recebiveis">Ver agenda de recebíveis</a>
+          </article>
+
+          <div class="dia">
+            <app-metric-card titulo="Vendas do dia" [centavos]="estado.dados.vendasHojeCentavos"
+              [legenda]="estado.dados.pedidosHoje + ' pedidos pagos hoje'" />
+            <app-metric-card titulo="Ticket médio" [centavos]="estado.dados.ticketMedioCentavos" legenda="Valor médio por pedido hoje" />
+          </div>
         </section>
 
-        <section class="painel" aria-labelledby="titulo-liquido">
+        <section class="liquido" aria-labelledby="titulo-liquido" appRevelar>
           <div class="cabecalho">
             <h2 id="titulo-liquido">Receita líquida por forma de pagamento</h2>
             <p class="texto-suave">Últimos 7 dias. Total líquido: <strong class="numero">{{ totalLiquido(estado.dados) | moeda }}</strong></p>
           </div>
-          <div class="formas">
+
+          <div class="proporcao" aria-hidden="true">
             @for (forma of estado.dados.porFormaPagamento; track forma.forma) {
-              <app-metric-card [titulo]="rotuloForma[forma.forma]" [valor]="forma.liquidoCentavos | moeda"
-                [legenda]="legendaForma(forma)" />
+              <span [class]="'fatia fatia--' + forma.forma" [style.flex-grow]="forma.brutoCentavos"></span>
             }
           </div>
+
+          <ul class="formas">
+            @for (forma of estado.dados.porFormaPagamento; track forma.forma) {
+              <li>
+                <span [class]="'chave chave--' + forma.forma" aria-hidden="true"></span>
+                <span class="formas__nome">
+                  {{ rotuloForma[forma.forma] }}
+                  <small>{{ forma.pedidos }} {{ forma.pedidos === 1 ? 'pedido' : 'pedidos' }}</small>
+                </span>
+                <span class="formas__taxa numero">{{ legendaForma(forma) }}</span>
+                <strong class="formas__liquido numero">{{ forma.liquidoCentavos | moeda }}</strong>
+              </li>
+            }
+          </ul>
           <p class="nota texto-suave">A taxa de cada canal é cobrada pela operadora de pagamento. O Rende não cobra comissão sobre as vendas.</p>
         </section>
 
-        <div class="duas-colunas">
+        <div class="duas-colunas" appRevelar="filhos">
           <section class="painel" aria-labelledby="titulo-grafico">
             <h2 id="titulo-grafico">Vendas nos últimos 7 dias</h2>
             <app-grafico-barras [pontos]="pontosGrafico(estado.dados)" />
           </section>
 
           <section class="painel" aria-labelledby="titulo-ultimos">
-            <h2 id="titulo-ultimos">Últimos pedidos</h2>
+            <div class="cabecalho">
+              <h2 id="titulo-ultimos">Últimos pedidos</h2>
+              <a routerLink="/pedidos">Ver todos</a>
+            </div>
             <ul class="ultimos">
               @for (pedido of estado.dados.ultimosPedidos; track pedido.id) {
                 <li>
                   <div>
-                    <strong>#{{ pedido.numero }} · {{ pedido.cliente }}</strong>
-                    <span class="texto-suave">{{ pedido.criadoEm | date: 'dd/MM HH:mm' }}</span>
+                    <strong>{{ pedido.cliente }}</strong>
+                    <span class="texto-suave numero">#{{ pedido.numero }} · {{ pedido.criadoEm | date: 'dd/MM HH:mm' }}</span>
                   </div>
                   <div class="direita">
                     <span class="numero">{{ pedido.totalCentavos | moeda }}</span>
