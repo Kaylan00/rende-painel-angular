@@ -1,0 +1,566 @@
+/* Palco: nome gigante + hambúrguer explodido; com movimento, vira a montagem presa na tela. */
+:host {
+  display: block;
+}
+
+.palco {
+  --L: clamp(240px, 30vw, 440px);
+  --centro-y: 47svh;
+  --bx: 0px;
+  --by: 0px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--creme);
+  background: radial-gradient(120% 80% at 50% 45%, #13372a 0%, var(--noite) 60%);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+
+  @media (max-width: 767px) {
+    --L: 60vw;
+    --centro-y: 38svh;
+  }
+}
+
+.palco__vapor {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  width: 100%;
+  height: 100svh;
+  pointer-events: none;
+}
+
+/* ---------- abertura ---------- */
+/* sem z-index: não cria camada própria, então o hambúrguer ainda passa na frente e atrás do nome */
+.palco__abertura {
+  position: relative;
+  min-height: max(100svh, 600px);
+}
+
+.palco__titulo {
+  color: inherit;
+}
+
+.palco__nome {
+  position: absolute;
+  top: var(--centro-y);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  translate: -50% -50%;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(6.2rem, 25.5vw, 25rem);
+  font-weight: 600;
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--creme);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.letra {
+  display: block;
+}
+
+.palco__frase,
+.palco__apoio,
+.palco__acoes {
+  position: absolute;
+  z-index: 6;
+}
+
+.palco__frase {
+  bottom: clamp(5.5rem, 13svh, 8.5rem);
+  left: clamp(16px, 4vw, 3.5rem);
+  display: block;
+  max-width: 13ch;
+  font-size: clamp(1.75rem, 1.1rem + 2.1vw, 3.1rem);
+  font-weight: 500;
+  line-height: 1.02;
+  color: var(--creme);
+}
+
+.palco__apoio {
+  bottom: clamp(2rem, 5svh, 3rem);
+  left: clamp(16px, 4vw, 3.5rem);
+  max-width: 34rem;
+  margin: 0;
+  font-size: 1rem;
+  color: rgb(242 234 219 / 78%);
+}
+
+.palco__acoes {
+  right: clamp(16px, 4vw, 3.5rem);
+  bottom: clamp(2rem, 5svh, 3rem);
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.palco__link {
+  color: var(--creme);
+  font-weight: 500;
+  text-underline-offset: 0.3em;
+}
+
+@media (max-width: 767px) {
+  .palco__frase {
+    bottom: 11.6rem;
+    font-size: 1.85rem;
+  }
+
+  .palco__apoio {
+    right: 16px;
+    bottom: 6.3rem;
+    font-size: 0.9375rem;
+  }
+
+  .palco__acoes {
+    left: 16px;
+    bottom: 1.4rem;
+    justify-content: space-between;
+    gap: 1rem;
+
+    .cta {
+      flex: 1;
+    }
+  }
+
+  .palco__link {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ---------- hambúrguer ---------- */
+.hamburguer {
+  position: absolute;
+  top: var(--centro-y);
+  left: 50%;
+  width: var(--L);
+  height: calc(var(--L) * 1.02);
+  margin: calc(var(--L) * -0.51) 0 0 calc(var(--L) / -2);
+  pointer-events: none;
+}
+
+.camada {
+  --x: var(--x-pc);
+  --y: var(--y-pc);
+  --giro: var(--giro-pc);
+  --escala: var(--escala-pc);
+  position: absolute;
+  top: calc(var(--topo) * var(--L));
+  left: 50%;
+  z-index: 1;
+  width: calc(var(--largura) * var(--L));
+  margin-left: calc(var(--largura) * var(--L) / -2);
+  /* deslocamento do hambúrguer inteiro (propriedade translate, separada do transform do GSAP) */
+  transform: translate(var(--bx), var(--by));
+
+  @media (max-width: 767px) {
+    --x: var(--x-cel);
+    --y: var(--y-cel);
+    --giro: var(--giro-cel);
+    --escala: var(--escala-cel);
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 28px 30px rgb(0 0 0 / 38%));
+    animation: boiar var(--duracao) ease-in-out infinite alternate;
+  }
+}
+
+/* pose explodida (o GSAP assume este transform quando há movimento) */
+.camada__pose {
+  transform: translate(calc(var(--x) * var(--L)), calc(var(--y) * var(--L))) rotate(var(--giro)) scale(var(--escala));
+  will-change: transform;
+}
+
+.camada--frente {
+  z-index: 4;
+}
+
+/* balanço contínuo; --solto vai de 1 (solto no ar) a 0 (montado) */
+@keyframes boiar {
+  from {
+    transform: translateY(calc(var(--solto) * -9px)) rotate(calc(var(--solto) * var(--balanco) * -1));
+  }
+
+  to {
+    transform: translateY(calc(var(--solto) * 9px)) rotate(calc(var(--solto) * var(--balanco)));
+  }
+}
+
+/* ---------- jornada (versão parada: logo abaixo do topo) ---------- */
+.jornada {
+  position: relative;
+  z-index: 6;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  @media (min-width: 700px) {
+    padding: 0 clamp(2rem, 4vw, 3.5rem);
+  }
+}
+
+.jornada__titulo {
+  max-width: 18ch;
+  margin-bottom: 2.5rem;
+  font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+  color: var(--creme);
+}
+
+.jornada__passos {
+  display: grid;
+  gap: 1.75rem;
+  margin: 0 0 3rem;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.passo {
+  h3 {
+    margin: 0.35rem 0 0.5rem;
+    font-size: 1.375rem;
+    color: var(--creme);
+  }
+
+  p {
+    margin: 0;
+    color: rgb(242 234 219 / 74%);
+  }
+}
+
+.passo__conta {
+  font-size: 0.875rem;
+  color: var(--ambar);
+}
+
+.jornada__tela {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 12rem minmax(0, 22rem) minmax(0, 20rem);
+  }
+}
+
+.qr,
+.pedido {
+  color: var(--tinta);
+  background: var(--papel);
+  border-radius: var(--raio);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 60%);
+}
+
+.qr {
+  width: 12rem;
+  padding: 0.9rem;
+
+  p {
+    margin: 0.6rem 0 0;
+    font-size: 0.875rem;
+    color: var(--tinta-suave);
+
+    strong {
+      display: block;
+      color: var(--verde-950);
+    }
+  }
+}
+
+.pedido {
+  padding: 1.1rem 1.2rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+.pedido__linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pedido__rotulo {
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.pedido__titulo {
+  margin-top: 0.4rem !important;
+  font-weight: 600;
+}
+
+.pedido__itens {
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
+}
+
+.pedido__status {
+  display: flex;
+  gap: 0.25rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    flex: 1;
+    padding-top: 0.55rem;
+    font-size: 0.8125rem;
+    color: var(--tinta-suave);
+    border-top: 3px solid var(--linha);
+    transition: border-color 0.4s var(--curva), color 0.4s var(--curva);
+  }
+
+  .aceso {
+    color: var(--verde-950);
+    border-color: var(--verde-700);
+  }
+
+  .agora {
+    font-weight: 600;
+    border-color: var(--terracota);
+  }
+}
+
+.pedido__linha--fim {
+  font-size: 0.9375rem;
+
+  strong {
+    font-size: 1.125rem;
+    color: var(--verde-950);
+  }
+}
+
+.pix {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1.1rem 1.25rem;
+  color: var(--creme);
+  background: var(--terracota);
+  border-radius: var(--raio);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 70%);
+}
+
+.pix__rotulo,
+.pix__nota {
+  font-size: 0.875rem;
+}
+
+.pix__valor {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.4rem, 1.6rem + 2vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.palco__fim {
+  margin: 3.5rem auto 0;
+  padding: 0 16px;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.2rem, 1.2rem + 4vw, 5.5rem);
+  line-height: 1;
+  text-align: center;
+  color: var(--creme);
+}
+
+/* =============== versão com movimento (pin) =============== */
+.palco--vivo {
+  height: 100svh;
+  min-height: 560px;
+  padding: 0;
+
+  .palco__abertura {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+  }
+
+  .jornada {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    right: clamp(16px, 6vw, 6rem);
+    width: min(38vw, 32rem);
+    margin: 0;
+    padding: 0;
+    translate: 0 -50%;
+    visibility: hidden;
+  }
+
+  .jornada__titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .jornada__passos {
+    position: relative;
+    display: block;
+    height: 10.5rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .passo {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.45s var(--curva), transform 0.6s var(--curva);
+
+    h3 {
+      font-size: clamp(1.6rem, 1rem + 1.6vw, 2.4rem);
+    }
+  }
+
+  .passo--feito {
+    transform: translateY(-22px);
+  }
+
+  .passo--atual {
+    opacity: 1;
+    transform: none;
+  }
+
+  .jornada__tela {
+    position: relative;
+    display: block;
+    height: 19rem;
+  }
+
+  .qr,
+  .pedido,
+  .pix {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s var(--curva), transform 0.7s var(--curva);
+  }
+
+  .qr {
+    top: 0;
+    left: 0;
+    transform: translateY(30px) rotate(-3deg);
+  }
+
+  .pedido {
+    top: 0;
+    left: 0;
+    width: min(100%, 22rem);
+    transform: translateX(60px);
+  }
+
+  .pix {
+    right: 0;
+    bottom: 0;
+    width: min(88%, 19rem);
+    transform: translateY(40px);
+  }
+
+  [data-passo='1'] .qr {
+    opacity: 1;
+    transform: rotate(-3deg);
+  }
+
+  [data-passo='2'],
+  [data-passo='3'],
+  [data-passo='4'],
+  [data-passo='5'] {
+    .pedido {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  [data-passo='5'] .pix {
+    opacity: 1;
+    transform: none;
+  }
+
+  .palco__fim {
+    position: absolute;
+    bottom: clamp(1.5rem, 6svh, 3.5rem);
+    left: 0;
+    right: 0;
+    z-index: 7;
+    margin: 0;
+    visibility: hidden;
+  }
+
+  @media (max-width: 767px) {
+    .jornada {
+      top: auto;
+      right: 16px;
+      bottom: 1.25rem;
+      left: 16px;
+      width: auto;
+      translate: none;
+    }
+
+    .jornada__passos {
+      height: 8.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .passo h3 {
+      font-size: 1.5rem;
+    }
+
+    .passo p {
+      font-size: 0.9375rem;
+    }
+
+    .jornada__tela {
+      height: 13.5rem;
+    }
+
+    .qr {
+      width: 9.5rem;
+      padding: 0.7rem;
+    }
+
+    .pedido {
+      width: 100%;
+      padding: 0.9rem 1rem;
+    }
+
+    .pedido__status {
+      margin: 0.7rem 0;
+    }
+
+    .pix {
+      width: 72%;
+      padding: 0.8rem 1rem;
+    }
+
+    .pix__nota {
+      display: none;
+    }
+
+    .palco__fim {
+      top: 3.3rem;
+      bottom: auto;
+      font-size: 1.7rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camada img {
+    animation: none;
+  }
+}
