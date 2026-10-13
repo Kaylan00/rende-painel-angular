@@ -482,7 +482,7 @@
     inset: 0;
     backface-visibility: hidden;
     transform: rotateY(calc(var(--i) * var(--passo))) translateZ(var(--r)) rotateY(var(--contra, 0deg));
-    transition: box-shadow 0.6s var(--curva);
+    transition: box-shadow 0.6s var(--curva), opacity 0.25s linear;
   }
 
   .celular--frente {

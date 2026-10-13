@@ -198,14 +198,14 @@ describe('celulares do anel pela angulação', () => {
     expect(anguloRelativo(180)).toBe(-180);
   });
 
-  it('de frente e a 60° ficam inteiros; de lado (90°) e de costas somem', () => {
+  it('tudo ou nada: até 70° fica inteiro, depois some (nunca translúcido)', () => {
     expect(opacidadeNoAnel(0)).toBe(1);
     expect(opacidadeNoAnel(60)).toBe(1);
-    expect(opacidadeNoAnel(-60)).toBe(1);
+    expect(opacidadeNoAnel(-70)).toBe(1);
+    expect(opacidadeNoAnel(75)).toBe(0);
     expect(opacidadeNoAnel(90)).toBe(0);
     expect(opacidadeNoAnel(180)).toBe(0);
-    expect(opacidadeNoAnel(75)).toBeGreaterThan(0);
-    expect(opacidadeNoAnel(75)).toBeLessThan(1);
+    expect(opacidadeNoAnel(420)).toBe(1); // 420° = 60°
   });
 });
 

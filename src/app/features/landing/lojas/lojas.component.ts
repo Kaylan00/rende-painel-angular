@@ -42,13 +42,12 @@ export function anguloRelativo(angulo: number): number {
 }
 
 /**
- * Opacidade de um celular do anel pela angulação em relação a quem olha:
- * de frente (0°) até 60° fica inteiro; perto de 90° (de lado, vira uma tira fina) some.
+ * Opacidade de um celular do anel pela angulação em relação a quem olha: tudo ou nada.
+ * Até 70° fica inteiro (com corpo); depois disso some (o CSS faz um fade curto na troca),
+ * para nunca aparecer um celular translúcido com o texto vazando por trás.
  */
 export function opacidadeNoAnel(anguloGraus: number): number {
-  const rad = (anguloGraus * Math.PI) / 180;
-  const v = (Math.cos(rad) - 0.12) / 0.38;
-  return Math.round(Math.min(1, Math.max(0, v)) * 100) / 100;
+  return Math.abs(anguloRelativo(anguloGraus)) <= 70 ? 1 : 0;
 }
 
 const INTERVALO_PEDIDO_MS = 1150;
