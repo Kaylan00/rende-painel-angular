@@ -1,0 +1,311 @@
+/* Lojas: 4 celulares num anel 3D que gira com a rolagem e com o arrastar. */
+:host {
+  display: block;
+}
+
+.lojas {
+  --w: 250px;
+  --h: 520px;
+  --r: 360px;
+  --cor-ativa: #c8642f;
+  position: relative;
+  overflow-x: clip;
+  color: var(--creme);
+  background-color: color-mix(in srgb, var(--cor-ativa) 16%, var(--noite));
+  transition: background-color 0.8s var(--curva);
+
+  @media (max-width: 767px) {
+    --w: 188px;
+    --h: 392px;
+    --r: 230px;
+  }
+}
+
+.lojas__palco {
+  display: grid;
+  gap: 2.5rem;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: clamp(4.5rem, 9vw, 7rem) 16px;
+
+  @media (min-width: 700px) {
+    padding-inline: clamp(2rem, 4vw, 3.5rem);
+  }
+}
+
+.lojas__texto {
+  h2 {
+    max-width: 17ch;
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.5rem);
+    line-height: 1.02;
+    color: var(--creme);
+  }
+
+  p {
+    max-width: 30rem;
+    margin: 1rem 0 0;
+    color: rgb(242 234 219 / 78%);
+  }
+}
+
+.lojas__cena {
+  position: relative;
+  min-width: 0;
+}
+
+/* sem movimento: os celulares lado a lado (rola dentro da faixa no celular) */
+.anel {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+}
+
+.celular {
+  flex: 0 0 var(--w);
+  height: var(--h);
+  padding: 7px;
+  background: #0c100e;
+  border-radius: 14px;
+  box-shadow: 0 40px 70px -30px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(255 255 255 / 10%);
+  scroll-snap-align: center;
+}
+
+.tela {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  color: #1d1a16;
+  background: #fffaf2;
+  border-radius: 9px;
+}
+
+.tela__barra {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.6875rem;
+  color: var(--cor-texto);
+  background: var(--cor);
+
+  span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.85;
+  }
+}
+
+.tela__foto {
+  width: 100%;
+  height: 27%;
+  object-fit: cover;
+}
+
+.tela__loja {
+  padding: 0.7rem 0.8rem 0.4rem;
+
+  h3 {
+    font-family: var(--fonte-titulo);
+    font-size: 1.25rem;
+    color: #1d1a16;
+  }
+
+  p {
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    color: #6a625a;
+  }
+}
+
+.tela__categorias {
+  display: flex;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0.35rem 0.8rem 0;
+  list-style: none;
+  font-size: 0.75rem;
+  color: #6a625a;
+  border-bottom: 1px solid #ece3d6;
+
+  li {
+    padding-bottom: 0.35rem;
+  }
+
+  .ativa {
+    font-weight: 600;
+    color: #1d1a16;
+    box-shadow: inset 0 -2px 0 var(--cor);
+  }
+}
+
+.tela__itens {
+  flex: 1;
+  margin: 0;
+  padding: 0 0.8rem;
+  overflow: hidden;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.5rem;
+    padding: 0.55rem 1.9rem 0.55rem 0;
+    border-bottom: 1px solid #f0e8dc;
+  }
+}
+
+.tela__nome {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.tela__desc {
+  grid-row: 2;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: #6a625a;
+}
+
+.tela__preco {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.tela__mais {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: -0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--cor-texto);
+  background: var(--cor);
+  border-radius: 6px;
+}
+
+.tela__sacola {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+  background: var(--cor);
+  border-radius: 8px;
+}
+
+.lojas__atual {
+  display: none;
+}
+
+/* =============== versão com movimento: anel 3D preso na tela =============== */
+.lojas--vivo {
+  height: 330svh;
+
+  @media (max-width: 767px) {
+    height: 260svh;
+  }
+
+  .lojas__palco {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 600px;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    padding-top: clamp(5rem, 11svh, 7rem);
+    padding-bottom: clamp(1.25rem, 4svh, 2.5rem);
+
+    @media (min-width: 960px) {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      padding-top: 4rem;
+    }
+  }
+
+  .lojas__texto {
+    @media (min-width: 960px) {
+      align-self: center;
+    }
+  }
+
+  .lojas__cena {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    perspective: 1500px;
+    perspective-origin: 50% 40%;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+
+    @media (max-width: 767px) {
+      perspective: 1000px;
+    }
+  }
+
+  .lojas__cena.arrastando {
+    cursor: grabbing;
+  }
+
+  .anel {
+    position: relative;
+    display: block;
+    width: var(--w);
+    height: var(--h);
+    padding: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--r) * -1)) rotateX(-9deg) rotateY(var(--giro, 0deg));
+  }
+
+  .celular {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    transform: rotateY(calc(var(--i) * var(--passo))) translateZ(var(--r));
+  }
+
+  .lojas__atual {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    align-items: baseline;
+    justify-content: center;
+    margin: 0;
+    font-size: 0.9375rem;
+    color: rgb(242 234 219 / 80%);
+
+    strong {
+      font-family: var(--fonte-titulo);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--creme);
+    }
+
+    @media (min-width: 960px) {
+      grid-column: 2;
+    }
+  }
+
+  .lojas__dica {
+    width: 100%;
+    font-size: 0.8125rem;
+    text-align: center;
+    color: rgb(242 234 219 / 55%);
+  }
+}

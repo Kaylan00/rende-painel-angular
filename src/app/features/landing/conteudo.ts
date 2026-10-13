@@ -7,43 +7,26 @@
 const MENSAGEM_WHATSAPP = 'Oi! Vi o site do Rende e quero entender como fica para a minha loja.';
 export const LINK_WHATSAPP = `https://wa.me/?text=${encodeURIComponent(MENSAGEM_WHATSAPP)}`;
 
-export interface Passo {
-  numero: string;
-  titulo: string;
-  texto: string;
-  detalhe: string;
+export interface ItemCardapio {
+  nome: string;
+  descricao: string;
+  preco: string;
 }
-
-export const PASSOS: Passo[] = [
-  {
-    numero: '01',
-    titulo: 'O cliente abre o cardápio',
-    texto: 'Aponta a câmera para o QR Code na mesa, no balcão ou no saquinho da entrega. Abre no navegador, sem baixar aplicativo.',
-    detalhe: 'Também por link no Instagram e no WhatsApp',
-  },
-  {
-    numero: '02',
-    titulo: 'O pedido cai no seu painel',
-    texto: 'Com itens, observações e endereço. A cozinha avança o status, e o cliente acompanha do celular.',
-    detalhe: 'Recebido, preparo, pronto, saiu, entregue',
-  },
-  {
-    numero: '03',
-    titulo: 'O Pix vai para a conta da loja',
-    texto: 'O cliente paga pelo Pix da sua loja. O dinheiro não passa pelo Rende e não espera repasse de ninguém.',
-    detalhe: 'Cartão por link de pagamento, se preferir',
-  },
-];
 
 export interface ModeloLoja {
   nome: string;
   tipo: string;
   cidade: string;
+  horario: string;
   foto: string;
   alt: string;
   /** cor de destaque da loja (cada loja tem a sua) */
   cor: string;
-  itens: { nome: string; preco: string }[];
+  /** cor do texto sobre a cor da loja */
+  corTexto: string;
+  categorias: string[];
+  itens: ItemCardapio[];
+  sacola: string;
 }
 
 export const MODELOS: ModeloLoja[] = [
@@ -51,49 +34,69 @@ export const MODELOS: ModeloLoja[] = [
     nome: 'Bocca Burger',
     tipo: 'Hamburgueria',
     cidade: 'Cachoeiro',
+    horario: 'aberto até 23h',
     foto: 'assets/fotos/hamburgueria.jpg',
     alt: 'Hambúrguer duplo com queijo, alface e tomate',
-    cor: '#0f3d2e',
+    cor: '#c8642f',
+    corTexto: '#fff8ee',
+    categorias: ['Burgers', 'Porções', 'Bebidas'],
     itens: [
-      { nome: 'Bocca Duplo', preco: 'R$ 41,90' },
-      { nome: 'Smash Clássico', preco: 'R$ 27,90' },
+      { nome: 'Bocca Duplo', descricao: 'Dois smash, cheddar, cebola na chapa', preco: 'R$ 41,90' },
+      { nome: 'Smash Clássico', descricao: 'Pão brioche, carne 90 g, queijo', preco: 'R$ 27,90' },
+      { nome: 'Batata média', descricao: 'Com páprica e maionese da casa', preco: 'R$ 16,00' },
     ],
+    sacola: 'R$ 57,90',
   },
   {
     nome: 'Forno da Praça',
     tipo: 'Pizzaria',
     cidade: 'Vila Velha',
+    horario: 'aberto até 0h',
     foto: 'assets/fotos/pizzaria.jpg',
     alt: 'Pizza assada inteira, vista de cima',
-    cor: '#8a2f1d',
+    cor: '#9e2b25',
+    corTexto: '#fff4ec',
+    categorias: ['Pizzas', 'Calzones', 'Bebidas'],
     itens: [
-      { nome: 'Margherita grande', preco: 'R$ 62,00' },
-      { nome: 'Calabresa com cebola', preco: 'R$ 58,00' },
+      { nome: 'Margherita grande', descricao: 'Tomate pelado, muçarela, manjericão', preco: 'R$ 62,00' },
+      { nome: 'Calabresa com cebola', descricao: 'Calabresa artesanal e cebola roxa', preco: 'R$ 58,00' },
+      { nome: 'Quatro queijos', descricao: 'Muçarela, provolone, gorgonzola, parmesão', preco: 'R$ 66,00' },
     ],
+    sacola: 'R$ 62,00',
   },
   {
     nome: 'Açaí do Porto',
     tipo: 'Açaiteria',
     cidade: 'Guarapari',
+    horario: 'aberto até 22h',
     foto: 'assets/fotos/acaiteria.jpg',
     alt: 'Duas tigelas de açaí com banana, morango, mirtilo e granola',
-    cor: '#4a2747',
+    cor: '#5b2a5c',
+    corTexto: '#fbf0ff',
+    categorias: ['Tigelas', 'Copos', 'Adicionais'],
     itens: [
-      { nome: 'Tigela 500 ml', preco: 'R$ 24,00' },
-      { nome: 'Copo 300 ml', preco: 'R$ 16,00' },
+      { nome: 'Tigela 500 ml', descricao: 'Banana, morango e granola', preco: 'R$ 24,00' },
+      { nome: 'Copo 300 ml', descricao: 'Leite em pó e paçoca', preco: 'R$ 16,00' },
+      { nome: 'Tigela da casa', descricao: 'Cupuaçu, kiwi e mel', preco: 'R$ 28,00' },
     ],
+    sacola: 'R$ 40,00',
   },
   {
     nome: 'Padaria Dona Lia',
     tipo: 'Padaria e café',
     cidade: 'Colatina',
+    horario: 'aberto até 20h',
     foto: 'assets/fotos/padaria.jpg',
     alt: 'Croissants dourados sobre uma pedra escura',
-    cor: '#6b4423',
+    cor: '#e0a948',
+    corTexto: '#2a1d0c',
+    categorias: ['Pães', 'Doces', 'Café'],
     itens: [
-      { nome: 'Croissant de manteiga', preco: 'R$ 9,50' },
-      { nome: 'Café coado 200 ml', preco: 'R$ 6,00' },
+      { nome: 'Croissant de manteiga', descricao: 'Folhado, saído do forno às 7h', preco: 'R$ 9,50' },
+      { nome: 'Pão de queijo (6 un.)', descricao: 'Com queijo canastra', preco: 'R$ 12,00' },
+      { nome: 'Café coado 200 ml', descricao: 'Grão do Caparaó', preco: 'R$ 6,00' },
     ],
+    sacola: 'R$ 15,50',
   },
 ];
 
@@ -137,16 +140,4 @@ export const PERGUNTAS: Pergunta[] = [
     resposta:
       'Sim. Você define a taxa de entrega por bairro, o pedido mínimo e se a loja aceita retirada no balcão ou consumo na mesa.',
   },
-];
-
-/** Créditos das fotos (Unsplash). */
-export const CREDITOS_FOTOS: { autor: string; foto: string }[] = [
-  { autor: 'Jonathan Borba', foto: 'hambúrguer do topo' },
-  { autor: 'Pinar Kucuk', foto: 'pizza na mesa' },
-  { autor: 'Jason Leung', foto: 'salão do restaurante' },
-  { autor: 'Nick Hillier', foto: 'restaurante cheio' },
-  { autor: 'amirali mirhashemian', foto: 'hamburgueria' },
-  { autor: 'Aurélien Lemasson-Théobald', foto: 'pizzaria' },
-  { autor: 'Vicky Ng', foto: 'açaiteria' },
-  { autor: 'Mae Mu', foto: 'padaria' },
 ];

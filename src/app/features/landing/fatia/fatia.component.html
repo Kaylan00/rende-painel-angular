@@ -1,0 +1,75 @@
+<div class="fatia" [class.fatia--rende]="comRende()">
+  <div class="pizza" aria-hidden="true"
+    [style.--ang]="fatia().graus + 'deg'" [style.--escala]="fatia().escala" [class.pizza--fora]="fatiaFora()">
+    <div class="pizza__corpo">
+      <img class="pizza__base" src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+      <div class="pizza__fatia">
+        <img src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+      </div>
+    </div>
+    <p class="pizza__rotulo">
+      <span>app de delivery</span>
+      <strong class="numero">{{ formatar(fatia().comissaoAppCentavos) }}</strong>
+      <span>por mês</span>
+    </p>
+  </div>
+
+  <div class="conta">
+    <h2 class="conta__titulo">
+      <span class="numero">{{ comissaoPct() }}%</span> de cada pedido vai para o app de delivery. Até do cliente que já é seu.
+    </h2>
+
+    <div class="faixa">
+      <label for="faturamento">Quanto sua loja vende por mês</label>
+      <output for="faturamento" class="faixa__valor numero">{{ faturamentoTexto() }}</output>
+      <input id="faturamento" type="range" [min]="faturamentoMin" [max]="faturamentoMax" step="500"
+        [value]="faturamentoReais()" [attr.aria-valuetext]="faturamentoTexto()" (input)="mudarFaturamento($event)" />
+    </div>
+
+    <div class="faixa">
+      <label for="comissao">Comissão que o app cobra</label>
+      <output for="comissao" class="faixa__valor numero">{{ comissaoPct() }}% por pedido</output>
+      <input id="comissao" type="range" [min]="comissaoMin" [max]="comissaoMax" step="1"
+        [value]="comissaoPct()" [attr.aria-valuetext]="comissaoPct() + ' por cento'" (input)="mudarComissao($event)" />
+    </div>
+
+    <dl class="valores">
+      <div>
+        <dt>{{ comRende() ? 'O Rende custa' : 'O app leva' }}</dt>
+        <dd class="numero">{{ comRende() ? mensalidade : formatar(fatia().comissaoAppCentavos) }}</dd>
+      </div>
+      <div>
+        <dt>Fica com a loja</dt>
+        <dd class="numero">{{ formatar(comRende() ? fatia().sobraRendeCentavos : fatia().sobraAppCentavos) }}</dd>
+      </div>
+    </dl>
+
+    <button type="button" class="alternar" [attr.aria-pressed]="comRende()" (click)="alternar()">
+      {{ comRende() ? 'Voltar para o app' : 'Com o Rende' }}
+    </button>
+
+    @if (comRende()) {
+      @if (fatia().rendeCompensa) {
+        <div class="ganho" aria-hidden="true">
+          <p><strong class="ganho__mes numero" [appContador]="fatia().diferencaMesCentavos" [contadorDuracao]="0.9"></strong> a mais por mês</p>
+          <p><strong class="ganho__ano numero" [appContador]="fatia().diferencaAnoCentavos" [contadorDuracao]="1.3"></strong> por ano</p>
+        </div>
+      } @else {
+        <p class="ganho__aviso">Nesse faturamento a comissão do app sai mais barata que a mensalidade de {{ mensalidade }}.</p>
+      }
+    }
+
+    <p class="sr-only" aria-live="polite">
+      @if (comRende()) {
+        @if (fatia().rendeCompensa) {
+          Com o Rende sobram {{ formatar(fatia().diferencaMesCentavos) }} a mais por mês,
+          {{ formatar(fatia().diferencaAnoCentavos) }} por ano.
+        } @else {
+          Nesse faturamento, a comissão do app sai mais barata que a mensalidade.
+        }
+      } @else {
+        O app leva {{ formatar(fatia().comissaoAppCentavos) }} por mês.
+      }
+    </p>
+  </div>
+</div>

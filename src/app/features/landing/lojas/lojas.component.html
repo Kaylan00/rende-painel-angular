@@ -1,0 +1,47 @@
+<section id="lojas" class="lojas" [class.lojas--vivo]="vivo()" [style.--cor-ativa]="lojaAtual().cor" aria-labelledby="titulo-lojas" #secao>
+  <div class="lojas__palco">
+    <div class="lojas__texto">
+      <h2 id="titulo-lojas">Cada restaurante com a sua loja, a sua cor e o seu cardápio.</h2>
+      <p>O cliente pede pelo navegador, sem baixar nada. Quatro exemplos de lojas montadas no Rende.</p>
+    </div>
+
+    <div class="lojas__cena" #cena>
+      <div class="anel" #anel>
+        @for (m of modelos; track m.nome; let i = $index) {
+          <article class="celular" [style.--i]="i" [style.--passo]="passoAnel + 'deg'" [style.--cor]="m.cor" [style.--cor-texto]="m.corTexto"
+            [attr.aria-label]="'Loja de exemplo: ' + m.nome">
+            <div class="tela">
+              <div class="tela__barra numero" aria-hidden="true"><span>19:42</span><span>{{ endereco(m.nome) }}</span></div>
+              <img class="tela__foto" [src]="m.foto" [alt]="m.alt" width="800" height="1000" loading="lazy" decoding="async" />
+              <div class="tela__loja">
+                <h3>{{ m.nome }}</h3>
+                <p>{{ m.tipo }} · {{ m.cidade }} · {{ m.horario }}</p>
+              </div>
+              <ul class="tela__categorias" aria-hidden="true">
+                @for (c of m.categorias; track c; let primeira = $first) {
+                  <li [class.ativa]="primeira">{{ c }}</li>
+                }
+              </ul>
+              <ul class="tela__itens">
+                @for (item of m.itens; track item.nome) {
+                  <li>
+                    <span class="tela__nome">{{ item.nome }}</span>
+                    <span class="tela__desc">{{ item.descricao }}</span>
+                    <span class="tela__preco numero">{{ item.preco }}</span>
+                    <span class="tela__mais" aria-hidden="true">+</span>
+                  </li>
+                }
+              </ul>
+              <div class="tela__sacola" aria-hidden="true"><span>Ver sacola</span><span class="numero">{{ m.sacola }}</span></div>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+
+    <p class="lojas__atual" aria-hidden="true">
+      <strong>{{ lojaAtual().nome }}</strong> {{ lojaAtual().tipo }}, {{ lojaAtual().cidade }}
+      <span class="lojas__dica">arraste para girar</span>
+    </p>
+  </div>
+</section>
