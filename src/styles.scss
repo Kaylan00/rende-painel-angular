@@ -145,6 +145,7 @@ h3 {
   line-height: 1.1;
   letter-spacing: -0.01em;
   color: var(--verde-950);
+  text-wrap: balance;
 }
 
 h1 {
@@ -167,6 +168,7 @@ a {
 img {
   display: block;
   max-width: 100%;
+  height: auto;
 }
 
 /* foco sempre visível para quem navega pelo teclado */
@@ -233,6 +235,10 @@ select.controle {
   display: flex;
   flex-direction: column;
   gap: var(--espaco-6);
+
+  @media (min-width: 900px) {
+    gap: var(--espaco-7);
+  }
 }
 
 .pagina__titulo {

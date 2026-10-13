@@ -22,13 +22,13 @@ import { ChangeDetectionStrategy, Component, effect, ElementRef, input, output, 
       width: min(30rem, calc(100vw - 2rem));
       padding: 0;
       color: var(--cor-texto);
-      background: var(--cor-superficie);
+      background: var(--papel);
       border: 0;
       border-radius: var(--raio);
       box-shadow: 0 12px 40px rgb(0 0 0 / 25%);
     }
     .modal::backdrop {
-      background: rgb(16 28 24 / 55%);
+      background: rgb(11 46 35 / 55%);
     }
     .modal__conteudo {
       display: flex;

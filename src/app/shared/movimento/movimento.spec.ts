@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { animate, inView } from 'motion';
 import { ContadorDirective, formatarContador } from './contador.directive';
+import { FlutuarDirective } from './flutuar.directive';
 import { movimentoReduzido } from './movimento';
 import { RevelarDirective } from './revelar.directive';
 
@@ -28,6 +29,12 @@ class HospedeContador {
 })
 class HospedeRevelar {}
 
+@Component({
+  imports: [FlutuarDirective],
+  template: `<div appFlutuar [flutuarAmplitude]="10" [flutuarDuracao]="5">cartão</div>`,
+})
+class HospedeFlutuar {}
+
 describe('movimento (diretivas com motion)', () => {
   const matchMediaOriginal = window.matchMedia;
 
@@ -38,7 +45,7 @@ describe('movimento (diretivas com motion)', () => {
   afterEach(() => (window.matchMedia = matchMediaOriginal));
 
   it('formata o contador como dinheiro ou inteiro', () => {
-    expect(formatarContador(123_456, 'moeda').replace(/ /g, ' ')).toBe('R$ 1.234,56');
+    expect(formatarContador(123_456, 'moeda').replace(/\u00a0/g, ' ')).toBe('R$ 1.234,56');
     expect(formatarContador(1234.4, 'inteiro')).toBe('1.234');
   });
 
@@ -53,7 +60,7 @@ describe('movimento (diretivas com motion)', () => {
     const fixture = TestBed.createComponent(HospedeContador);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent.replace(/ /g, ' ')).toBe('R$ 364,90');
+    expect(fixture.nativeElement.textContent.replace(/\u00a0/g, ' ')).toBe('R$ 364,90');
     expect(animateMock).not.toHaveBeenCalled();
   });
 
@@ -66,7 +73,7 @@ describe('movimento (diretivas com motion)', () => {
     // cada quadro da animação reescreve o texto formatado
     const { onUpdate } = animateMock.mock.calls[0][2];
     onUpdate(1_000);
-    expect(fixture.nativeElement.textContent.replace(/ /g, ' ')).toBe('R$ 10,00');
+    expect(fixture.nativeElement.textContent.replace(/\u00a0/g, ' ')).toBe('R$ 10,00');
 
     fixture.componentInstance.valor.set(50_000);
     fixture.detectChanges();
@@ -83,6 +90,21 @@ describe('movimento (diretivas com motion)', () => {
     const [alvosLista] = animateMock.mock.calls[0];
     expect(alvosLista).toHaveLength(3);
     expect(animateMock.mock.calls[1][0][0].textContent).toBe('sozinho');
+  });
+
+  it('flutuar repete um sobe-e-desce suave e para quando o componente some', async () => {
+    simularPreferencia(false);
+    const parar = jest.fn();
+    animateMock.mockReturnValueOnce({ stop: parar });
+    const fixture = TestBed.createComponent(HospedeFlutuar);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const [, quadros, opcoes] = animateMock.mock.calls[0];
+    expect(quadros).toEqual({ y: [0, -10, 0] });
+    expect(opcoes).toEqual(expect.objectContaining({ repeat: Infinity, duration: 5 }));
+    fixture.destroy();
+    expect(parar).toHaveBeenCalled();
   });
 
   it('revelar não esconde nada com movimento reduzido', async () => {

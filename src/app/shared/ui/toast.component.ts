@@ -36,15 +36,24 @@ import { NotificacaoService } from '../../core/notificacao.service';
       gap: var(--espaco-3);
       align-items: center;
       max-width: 26rem;
-      padding: var(--espaco-3) var(--espaco-4);
-      font-weight: 600;
+      padding: var(--espaco-3) var(--espaco-3) var(--espaco-3) var(--espaco-4);
+      font-weight: 500;
+      color: var(--creme);
+      background: var(--verde-950);
       border-radius: var(--raio-pequeno);
-      box-shadow: var(--sombra);
+      box-shadow: var(--sombra-alta);
       pointer-events: auto;
     }
-    .aviso--sucesso { color: var(--cor-sucesso); background: var(--cor-sucesso-fundo); }
-    .aviso--erro { color: var(--cor-perigo); background: var(--cor-perigo-fundo); }
-    .aviso--info { color: var(--cor-info); background: var(--cor-info-fundo); }
+    .aviso::before {
+      flex: none;
+      width: 0.5rem;
+      height: 0.5rem;
+      content: '';
+      border-radius: 50%;
+      background: var(--verde-200);
+    }
+    .aviso--erro::before { background: var(--acento-claro); }
+    .aviso--info::before { background: var(--creme); }
     .fechar {
       min-width: 2rem;
       min-height: 2rem;

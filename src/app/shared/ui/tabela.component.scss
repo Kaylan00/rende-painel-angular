@@ -1,34 +1,102 @@
 .rolagem {
   overflow-x: auto;
-  background: var(--cor-superficie);
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio);
 }
 
 table {
   width: 100%;
-  min-width: 40rem;
+  min-width: 44rem;
   border-collapse: collapse;
 }
 
 th,
 td {
-  padding: var(--espaco-3) var(--espaco-4);
+  padding: var(--espaco-4) var(--espaco-3);
   text-align: left;
-  border-bottom: 1px solid var(--cor-borda);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--linha);
+}
+
+th:first-child,
+td:first-child {
+  padding-left: 0;
+}
+
+th:last-child,
+td:last-child {
+  padding-right: 0;
 }
 
 th {
-  font-size: 0.8125rem;
+  padding-top: 0;
+  padding-bottom: var(--espaco-3);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--cor-texto-suave);
-  background: var(--cor-fundo);
   white-space: nowrap;
+  border-bottom-color: var(--linha-forte);
 }
 
-tbody tr:last-child td {
-  border-bottom: 0;
+tbody tr {
+  transition: background-color 0.15s;
+}
+
+tbody tr:hover {
+  background: rgb(255 255 255 / 45%);
 }
 
 .direita {
   text-align: right;
+}
+
+/* celular: cada linha vira um bloco com rótulo e valor (sem rolagem lateral) */
+@media (max-width: 699px) {
+  table {
+    min-width: 0;
+  }
+
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+  }
+
+  tr {
+    padding: var(--espaco-3) 0;
+    border-bottom: 1px solid var(--linha);
+  }
+
+  td,
+  td:first-child,
+  td:last-child {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--espaco-3);
+    align-items: baseline;
+    padding: var(--espaco-1) 0;
+    text-align: left;
+    border-bottom: 0;
+  }
+
+  td::before {
+    font-size: 0.8125rem;
+    color: var(--cor-texto-suave);
+    content: attr(data-rotulo);
+  }
+
+  tbody tr:hover {
+    background: none;
+  }
+
+  td.direita {
+    text-align: left;
+  }
 }

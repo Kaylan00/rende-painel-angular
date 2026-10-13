@@ -12,14 +12,16 @@
       @for (linha of linhas(); track $index) {
         <tr>
           @for (coluna of colunas(); track coluna.chave) {
-            <td [class.direita]="coluna.alinhar === 'direita'">
-              @if (celula(); as modelo) {
-                <ng-container
-                  *ngTemplateOutlet="modelo; context: { $implicit: linha, coluna: coluna }"
-                />
-              } @else {
-                {{ linha[coluna.chave] }}
-              }
+            <td [class.direita]="coluna.alinhar === 'direita'" [attr.data-rotulo]="coluna.titulo">
+              <div class="celula">
+                @if (celula(); as modelo) {
+                  <ng-container
+                    *ngTemplateOutlet="modelo; context: { $implicit: linha, coluna: coluna }"
+                  />
+                } @else {
+                  {{ linha[coluna.chave] }}
+                }
+              </div>
             </td>
           }
         </tr>

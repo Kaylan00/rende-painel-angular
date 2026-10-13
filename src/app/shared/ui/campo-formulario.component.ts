@@ -35,9 +35,9 @@ const MENSAGENS: Record<string, (erro: Record<string, string>) => string> = {
   `,
   styles: `
     .campo { display: flex; flex-direction: column; gap: var(--espaco-1); }
-    label { font-size: 0.875rem; font-weight: 600; }
-    .campo__dica { color: var(--cor-texto-suave); }
-    .campo__erro { color: var(--cor-perigo); font-weight: 600; }
+    label { font-size: 0.9375rem; font-weight: 500; }
+    .campo__dica { font-size: 0.8125rem; color: var(--cor-texto-suave); }
+    .campo__erro { font-size: 0.8125rem; color: var(--cor-perigo); font-weight: 500; }
   `,
 })
 export class CampoFormularioComponent {

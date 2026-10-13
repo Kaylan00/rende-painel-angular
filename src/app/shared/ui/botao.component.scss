@@ -4,40 +4,53 @@
   justify-content: center;
   gap: var(--espaco-2);
   min-height: var(--altura-controle);
-  padding: 0 var(--espaco-4);
+  padding: 0 var(--espaco-5);
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
+  line-height: 1.2;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: var(--raio-pequeno);
-  transition: background-color 0.15s;
+  transition:
+    background-color 0.18s var(--curva),
+    border-color 0.18s var(--curva),
+    transform 0.18s var(--curva);
+}
+
+:host(:active:not(:disabled)) {
+  transform: translateY(1px);
 }
 
 :host(.botao--primario) {
-  color: var(--cor-sobre-primaria);
-  background: var(--cor-primaria);
-
+  color: var(--creme);
+  background: var(--verde-900);
 }
 
 :host(.botao--primario:hover:not(:disabled)) {
-  background: var(--cor-primaria-hover);
+  background: var(--verde-700);
 }
 
 :host(.botao--secundario) {
-  color: var(--cor-texto);
-  background: var(--cor-superficie);
-  border-color: var(--cor-borda);
-
+  color: var(--verde-950);
+  background: transparent;
+  border-color: var(--linha-forte);
 }
 
 :host(.botao--secundario:hover:not(:disabled)) {
-  background: var(--cor-fundo);
+  background: var(--creme-escuro);
+  border-color: var(--tinta-suave);
 }
 
 :host(.botao--perigo) {
-  color: #fff;
-  background: var(--cor-perigo);
+  color: var(--cor-perigo);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--cor-perigo) 40%, transparent);
+}
+
+:host(.botao--perigo:hover:not(:disabled)) {
+  background: var(--cor-perigo-fundo);
 }
 
 :host(.botao--pequeno) {
@@ -48,5 +61,5 @@
 
 :host(:disabled) {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.5;
 }
