@@ -35,7 +35,7 @@ Tudo em português, responsivo (menu inferior no celular, lateral no desktop; no
 - [motion](https://motion.dev) para animação (diretivas `appRevelar`, `appContador`, `appFlutuar`) e View Transitions do router entre telas
 - GSAP 3 + ScrollTrigger e Lenis (rolagem suave) só na landing, encapsulados em serviço/componentes e destruídos ao sair da página
 - Fontes Gambetta (títulos) e General Sans (interface e números tabulares), do Fontshare, servidas localmente
-- Jest 30 + jest-preset-angular (123 testes) e `HttpTestingController`
+- Jest 30 + jest-preset-angular (125 testes) e `HttpTestingController`
 - ESLint com `angular-eslint` (regras de acessibilidade de template incluídas)
 
 ## Como rodar
@@ -52,7 +52,7 @@ Entre com **qualquer e-mail válido e senha com 6 ou mais caracteres** (é uma d
 Outros comandos:
 
 ```bash
-npm test           # Jest (123 testes)
+npm test           # Jest (125 testes)
 npm run lint       # ESLint
 npm run build      # build de produção em dist/
 ```
@@ -118,7 +118,7 @@ src/styles.scss            # tokens do design system
 
 ## Testes
 
-123 testes em 16 arquivos, cobrindo:
+125 testes em 16 arquivos, cobrindo:
 
 - utilitários e pipe de moeda, arredondamento de taxas;
 - máquina de estados do pedido e receita líquida por canal;
