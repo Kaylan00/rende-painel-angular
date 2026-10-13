@@ -11,7 +11,7 @@ import { MODELOS } from './conteudo';
 import { JornadaComponent, progressoLinha } from './palco/jornada/jornada.component';
 import { FatiaComponent } from './fatia/fatia.component';
 import { LandingComponent, posicaoDaJornada } from './landing.component';
-import { lojaDeFrente, LojasComponent } from './lojas/lojas.component';
+import { anguloRelativo, lojaDeFrente, LojasComponent, opacidadeNoAnel } from './lojas/lojas.component';
 import { RolagemService } from './movimento/rolagem.service';
 import { CAMADAS, centroMontado, JORNADA, PASSO_POR_CAMADA, statusDoPasso } from './palco/camadas';
 import { PalcoComponent } from './palco/palco.component';
@@ -190,6 +190,25 @@ describe('lojaDeFrente (anel 3D das lojas)', () => {
   });
 });
 
+describe('celulares do anel pela angulação', () => {
+  it('normaliza o ângulo para -180..180', () => {
+    expect(anguloRelativo(0)).toBe(0);
+    expect(anguloRelativo(300)).toBe(-60);
+    expect(anguloRelativo(-420)).toBe(-60);
+    expect(anguloRelativo(180)).toBe(-180);
+  });
+
+  it('de frente e a 60° ficam inteiros; de lado (90°) e de costas somem', () => {
+    expect(opacidadeNoAnel(0)).toBe(1);
+    expect(opacidadeNoAnel(60)).toBe(1);
+    expect(opacidadeNoAnel(-60)).toBe(1);
+    expect(opacidadeNoAnel(90)).toBe(0);
+    expect(opacidadeNoAnel(180)).toBe(0);
+    expect(opacidadeNoAnel(75)).toBeGreaterThan(0);
+    expect(opacidadeNoAnel(75)).toBeLessThan(1);
+  });
+});
+
 describe('pedidos ao vivo das lojas', () => {
   it('converte o preço do cardápio em centavos inteiros', () => {
     expect(precoEmCentavos('R$ 41,90')).toBe(4190);
@@ -314,18 +333,19 @@ describe('LandingComponent', () => {
     expect(primeira.textContent).toContain('boccaburger.rende.app');
   });
 
-  it('mostra um plano só, como uma comanda: mensalidade e comissão zero', () => {
+  it('mostra um plano só: a mensalidade grande e a comissão zero', () => {
     const { el } = criar();
-    expect(el.querySelectorAll('.comanda-plano')).toHaveLength(1);
-    expect(semEspacoDuro(el.querySelector('.cp__total')?.textContent)).toContain('R$ 129');
-    expect(semEspacoDuro(el.querySelector('.cp__contas')?.textContent)).toContain('Comissão por pedido');
+    expect(el.querySelectorAll('.preco__numero')).toHaveLength(1);
+    expect(semEspacoDuro(el.querySelector('.preco__numero')?.textContent)).toContain('R$ 129');
+    expect(semEspacoDuro(el.querySelector('.preco__zeros')?.textContent)).toContain('Comissão por pedido');
+    expect(semEspacoDuro(el.querySelector('.preco__zeros')?.textContent)).toContain('R$ 0,00');
   });
 
-  it('as dúvidas são bilhetes que abrem pelo teclado (details/summary nativos)', () => {
+  it('as dúvidas abrem pelo teclado (details/summary nativos)', () => {
     const { el } = criar();
-    const bilhetes = el.querySelectorAll('.bilhete details');
-    expect(bilhetes).toHaveLength(5);
-    for (const b of Array.from(bilhetes)) expect(b.querySelector('summary')).not.toBeNull();
+    const duvidas = el.querySelectorAll('.duvida');
+    expect(duvidas).toHaveLength(5);
+    for (const d of Array.from(duvidas)) expect(d.querySelector('summary')).not.toBeNull();
   });
 
   it('chamadas de WhatsApp abrem em nova aba com a mensagem pronta', () => {

@@ -94,289 +94,269 @@
   background: #0b231b;
 }
 
-/* ---------- preço + dúvidas: parede clara da cozinha, trilho de inox, papel ---------- */
-.cozinha {
-  color: var(--tinta);
-  background:
-    radial-gradient(70% 50% at 30% 10%, rgb(255 255 255 / 55%), transparent 70%),
-    #e9e1d2;
-}
-
-/* trilho de comanda (barra de inox presa na parede) */
-.trilho {
+/* ---------- preço: sino de balcão (foto) + o número ---------- */
+.preco {
   position: relative;
-  z-index: 2;
-  height: 26px;
-  margin: 0 clamp(16px, 4vw, 3.5rem);
-  background: linear-gradient(180deg, #fbfbfa 0%, #c9cccc 30%, #9a9e9e 52%, #6f7474 60%, #c3c6c6 82%, #e8e9e8 100%);
-  border-radius: 6px;
-  box-shadow: 0 14px 22px -10px rgb(0 0 0 / 40%), inset 0 -2px 0 rgb(0 0 0 / 12%);
-
-  /* suportes parafusados na parede, nas duas pontas */
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    width: 34px;
-    height: 42px;
-    background: radial-gradient(circle at 50% 50%, #5d6262 0 4px, transparent 5px), linear-gradient(180deg, #d9dbdb, #8f9494);
-    border-radius: 6px;
-    box-shadow: 0 8px 14px -6px rgb(0 0 0 / 45%);
-  }
-
-  &::before {
-    left: 18px;
-  }
-
-  &::after {
-    right: 18px;
-  }
+  overflow: clip;
+  padding: clamp(5rem, 10vw, 8.5rem) 0;
+  color: var(--creme);
+  background: linear-gradient(180deg, #0b231b 0%, var(--noite) 100%);
 }
 
-.conta {
-  padding: clamp(4.5rem, 9vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
-}
-
-.conta__grade {
+.preco__grade {
   display: grid;
-  gap: 3rem;
-  margin-top: -13px; /* a comanda sai de dentro do trilho */
+  gap: 2rem;
+  align-items: center;
 
   @media (min-width: 960px) {
-    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
-    gap: clamp(3rem, 7vw, 7rem);
-    align-items: center;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
   }
 }
 
-.comanda-plano {
+.preco__sino {
   justify-self: center;
-  width: min(100%, 25rem);
-  transform: rotate(-1.4deg);
-  transform-origin: 50% 0;
-  filter: drop-shadow(0 34px 30px rgb(40 30 15 / 28%));
-}
+  width: min(100%, 36rem);
 
-.comanda-plano__papel {
-  padding: 2rem 1.6rem 2.4rem;
-  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #1d1a16;
-  background: #fdfbf6;
-  /* picote embaixo: dentes de papel rasgado */
-  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
+  img {
+    width: 100%;
+    filter: drop-shadow(0 60px 50px rgb(0 0 0 / 55%));
+    transform-origin: 50% 85%;
+    animation: sino-respira 6s ease-in-out infinite alternate;
+  }
 
-  p {
-    margin: 0;
+  @media (max-width: 959px) {
+    width: min(70%, 20rem);
   }
 }
 
-.cp__cabeca {
-  font-weight: 700;
-  letter-spacing: 0.04em;
+/* o sino "toca" quando a pessoa chega no botão */
+.preco__grade:has(.preco__cta:hover, .preco__cta:focus-visible) .preco__sino img {
+  animation: sino-toca 0.6s ease-in-out 2;
 }
 
-.cp__meta {
-  color: #6a625a;
-}
+@keyframes sino-respira {
+  from {
+    transform: translateY(-6px) rotate(-1deg);
+  }
 
-.cp__itens {
-  margin: 1.1rem 0;
-  padding: 0.9rem 0;
-  list-style: none;
-  border-top: 1px solid #d8cfbf;
-  border-bottom: 1px solid #d8cfbf;
-
-  li {
-    display: grid;
-    grid-template-columns: 2.6ch 1fr auto;
-    gap: 0.6rem;
-    padding: 0.2rem 0;
+  to {
+    transform: translateY(6px) rotate(1deg);
   }
 }
 
-.cp__ok {
-  color: #6a625a;
+@keyframes sino-toca {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+
+  25% {
+    transform: rotate(-6deg);
+  }
+
+  75% {
+    transform: rotate(6deg);
+  }
 }
 
-.cp__contas {
-  display: grid;
-  gap: 0.2rem;
-  margin: 0;
+.preco__texto h2 {
+  max-width: 16ch;
+  font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem);
+  line-height: 1.05;
+  color: var(--creme);
+}
+
+.preco__valor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  align-items: baseline;
+  margin: 1.25rem 0 0;
+}
+
+.preco__numero {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(5.5rem, 3rem + 9vw, 11rem);
+  font-weight: 500;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--creme);
+}
+
+.preco__mes {
+  font-size: 1.25rem;
+  color: rgb(242 234 219 / 75%);
+}
+
+.preco__zeros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  margin: 2rem 0 0;
 
   div {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    flex-direction: column-reverse;
+  }
+
+  dt {
+    font-size: 0.875rem;
+    color: rgb(242 234 219 / 65%);
   }
 
   dd {
     margin: 0;
-    font-weight: 600;
-  }
-}
-
-.cp__total {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-top: 1rem !important;
-  padding-top: 0.8rem;
-  font-weight: 700;
-  border-top: 2px solid #1d1a16;
-
-  strong {
     font-family: var(--fonte-titulo);
-    font-size: 3.2rem;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--verde-950);
-  }
-
-  small {
-    font-family: var(--fonte);
-    font-size: 1rem;
+    font-size: 1.75rem;
+    color: var(--ambar);
   }
 }
 
-.cp__pe {
-  margin-top: 0.8rem !important;
-  color: #6a625a;
-}
+/* o que vem no plano, como texto corrido (sem lista de bolinhas) */
+.preco__incluso {
+  max-width: 36rem;
+  margin: 2rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgb(242 234 219 / 82%);
 
-.conta__texto {
-  h2 {
-    max-width: 14ch;
-    font-size: clamp(2.2rem, 1.4rem + 2.6vw, 4rem);
-    line-height: 1;
-  }
-
-  p {
-    max-width: 30rem;
-    margin: 1.2rem 0 0;
-    font-size: 1.0625rem;
-    color: var(--tinta-suave);
-  }
-
-  .cta {
-    margin-top: 2rem;
+  span:not(:last-child)::after {
+    content: ' · ';
+    color: var(--ambar);
   }
 }
 
-.conta__nota {
-  font-size: 0.875rem !important;
-}
-
-/* dúvidas: bilhetes pendurados no trilho; puxar = abrir */
-.duvidas {
-  padding: 0 0 clamp(3rem, 6vw, 5rem);
-}
-
-.duvidas__cabeca {
+.preco__acoes {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 2rem;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 1.75rem;
-
-  h2 {
-    font-size: clamp(1.9rem, 1.3rem + 1.8vw, 2.9rem);
-  }
-
-  p {
-    margin: 0;
-    color: var(--tinta-suave);
-  }
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin-top: 2.25rem;
 }
 
-.bilhetes {
+.preco__nota {
+  max-width: 18rem;
+  font-size: 0.875rem;
+  color: rgb(242 234 219 / 60%);
+}
+
+/* ---------- dúvidas: foto do salão fechado + perguntas ---------- */
+.duvidas {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  color: var(--tinta);
+  background: var(--creme);
+}
+
+.duvidas__grade {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(15rem, 1fr);
-  gap: 1rem;
-  align-items: start;
-  margin-top: -13px;
-  padding: 0 clamp(16px, 4vw, 3.5rem) 2rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 16px;
+  gap: 2.5rem;
 
-  @media (max-width: 767px) {
-    grid-auto-columns: 80%;
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    align-items: start;
   }
 }
 
-.bilhete {
-  scroll-snap-align: start;
-  transform: rotate(var(--inclina));
-  transform-origin: 50% 0;
-  filter: drop-shadow(0 18px 16px rgb(40 30 15 / 22%));
-  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.5, 1), filter 0.3s var(--curva);
+.duvidas__foto {
+  margin: 0;
+
+  img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--raio);
+  }
+
+  @media (min-width: 960px) {
+    position: sticky;
+    top: 6rem;
+  }
+
+  @media (max-width: 959px) {
+    img {
+      aspect-ratio: 4 / 3;
+    }
+  }
+}
+
+.duvidas__lista h2 {
+  max-width: 17ch;
+  margin-bottom: 2rem;
+  font-size: clamp(1.9rem, 1.3rem + 1.8vw, 3rem);
+  line-height: 1.04;
+}
+
+.duvida {
+  border-radius: var(--raio);
+  transition: background-color 0.3s var(--curva);
 
   summary {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-height: 9.5rem;
-    padding: 1.4rem 1.2rem 1.2rem;
+    position: relative;
+    display: block;
+    padding: 1.15rem 3.5rem 1.15rem 1.1rem;
+    font-family: var(--fonte-titulo);
+    font-size: clamp(1.2rem, 1rem + 0.6vw, 1.5rem);
+    line-height: 1.2;
+    color: var(--verde-950);
     cursor: pointer;
     list-style: none;
+    border-radius: var(--raio);
 
     &::-webkit-details-marker {
       display: none;
     }
 
+    /* "+" que vira "−" ao abrir */
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 1.2rem;
+      width: 16px;
+      height: 2px;
+      background: var(--terracota);
+      transition: transform 0.35s var(--curva);
+    }
+
+    &::after {
+      transform: rotate(90deg);
+    }
+
+    &:hover {
+      background: rgb(15 61 46 / 6%);
+    }
+
     &:focus-visible {
       outline: 3px solid var(--verde-700);
-      outline-offset: 3px;
+      outline-offset: 2px;
     }
   }
 
   p {
+    max-width: 36rem;
     margin: 0;
-    padding: 0 1.2rem 1.8rem;
+    padding: 0 3.5rem 1.4rem 1.1rem;
+    font-size: 1.0625rem;
     color: var(--tinta-suave);
   }
+}
 
-  /* a ponta de baixo do bilhete é sempre serrilhada (fechado ou aberto) */
-  details {
-    background: #fdfbf6;
-    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
-  }
+.duvida[open] {
+  background: #fffaf0;
+  box-shadow: 0 20px 40px -30px rgb(40 30 15 / 45%);
 
-  &:hover {
-    transform: rotate(var(--inclina)) translateY(5px);
+  summary::after {
+    transform: rotate(0deg);
   }
 }
 
-.bilhete:has(details[open]) {
-  transform: rotate(0deg) translateY(10px);
-  filter: drop-shadow(0 30px 26px rgb(40 30 15 / 30%));
-
-  summary {
-    padding-bottom: 0.9rem;
+@media (prefers-reduced-motion: reduce) {
+  .preco__sino img {
+    animation: none !important;
   }
-
-  .bilhete__pergunta {
-    color: var(--verde-950);
-  }
-}
-
-.bilhete__num {
-  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.8125rem;
-  color: #6a625a;
-}
-
-.bilhete__pergunta {
-  font-family: var(--fonte-titulo);
-  font-size: 1.3rem;
-  line-height: 1.15;
-  color: var(--tinta);
 }
 
 /* ---------- chamada final ---------- */
