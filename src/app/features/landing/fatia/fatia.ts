@@ -46,3 +46,26 @@ export function calcularFatia(
     rendeCompensa: comparativo.diferencaMesCentavos > 0,
   };
 }
+
+/** Direção para onde a fatia é puxada (0° = para cima, sentido horário). Tem que bater com --meio no CSS. */
+export const DIRECAO_FATIA_GRAUS = 48;
+
+export interface Ponto {
+  x: number;
+  y: number;
+}
+
+/**
+ * Ponto na pizza vista de cima, em % do quadrado (centro = 50, 50).
+ * Ângulo em graus a partir do topo, no sentido horário (o mesmo do conic-gradient).
+ */
+export function pontoNaPizza(anguloGraus: number, raioPct: number): Ponto {
+  const rad = (anguloGraus * Math.PI) / 180;
+  const arred = (v: number) => Math.round(v * 100) / 100;
+  return { x: arred(50 + raioPct * Math.sin(rad)), y: arred(50 - raioPct * Math.cos(rad)) };
+}
+
+/** As duas linhas do corte (do centro até a borda) para uma fatia de `graus` apontada para `direcao`. */
+export function cortesDaFatia(graus: number, direcao = DIRECAO_FATIA_GRAUS, raioPct = 49): [Ponto, Ponto] {
+  return [pontoNaPizza(direcao - graus / 2, raioPct), pontoNaPizza(direcao + graus / 2, raioPct)];
+}

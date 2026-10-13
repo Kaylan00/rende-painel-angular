@@ -1,17 +1,36 @@
 <div class="fatia" [class.fatia--rende]="comRende()">
-  <div class="pizza" aria-hidden="true"
-    [style.--ang]="fatia().graus + 'deg'" [style.--escala]="fatia().escala" [class.pizza--fora]="fatiaFora()">
-    <div class="pizza__corpo">
-      <img class="pizza__base" src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
-      <div class="pizza__fatia">
-        <img src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
-      </div>
+  <div class="pizza" aria-hidden="true" #pizza
+    [style.--ang]="fatia().graus + 'deg'" [style.--escala]="fatia().escala"
+    [class.pizza--fora]="fatiaFora()" [class.pizza--rende]="comRende()">
+    <canvas class="pizza__vapor" #vapor></canvas>
+
+    <div class="sacola">
+      <img src="assets/pizza/sacola.webp" alt="" width="500" height="620" loading="lazy" decoding="async" />
+      <p class="sacola__rotulo">
+        <span>app de delivery</span>
+        <strong class="numero" [appContador]="fatia().comissaoAppCentavos" [contadorDuracao]="0.6"></strong>
+        <span>por mês, de comissão</span>
+      </p>
     </div>
-    <p class="pizza__rotulo">
-      <span>app de delivery</span>
-      <strong class="numero">{{ formatar(fatia().comissaoAppCentavos) }}</strong>
-      <span>por mês</span>
-    </p>
+
+    <div class="pizza__corpo" #corpo>
+      <img class="pizza__massa" src="assets/pizza/pizza-massa.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+      <div class="pizza__cobertura">
+        <img class="pizza__base" src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+        <div class="pizza__fatia">
+          <img src="assets/fotos/pizza-cima.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />
+        </div>
+      </div>
+      @for (f of folhas; track $index) {
+        <img class="folha" src="assets/pizza/manjericao.webp" alt="" width="139" height="220" loading="lazy"
+          [style.left.%]="f.x" [style.top.%]="f.y" [style.rotate]="f.giro + 'deg'" />
+      }
+      <svg class="pizza__cortes" viewBox="0 0 100 100">
+        <path pathLength="1" [attr.d]="'M50 50L' + cortes()[0].x + ' ' + cortes()[0].y" />
+        <path pathLength="1" [attr.d]="'M50 50L' + cortes()[1].x + ' ' + cortes()[1].y" />
+      </svg>
+      <img class="cortador" src="assets/pizza/cortador.webp" alt="" width="520" height="512" loading="lazy" decoding="async" />
+    </div>
   </div>
 
   <div class="conta">
