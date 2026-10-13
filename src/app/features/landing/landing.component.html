@@ -21,40 +21,68 @@
 
   <app-lojas />
 
-  <!-- ============ PREÇO: um plano só ============ -->
-  <section id="preco" class="plano" aria-labelledby="titulo-preco">
-    <div class="envoltorio plano__grade">
-      <p class="plano__valor" appRevelar>
-        <span class="numero">{{ mensalidade }}</span>
-        <span class="plano__mes">por mês. Venda R$ 3 mil ou R$ 80 mil, o valor é o mesmo.</span>
-      </p>
-      <div class="plano__texto" appRevelar [revelarAtraso]="0.1">
-        <h2 id="titulo-preco">Um plano. Preço fechado. Sem comissão.</h2>
-        <ul class="plano__lista">
-          @for (item of incluso; track item) {
-            <li>{{ item }}</li>
-          }
-        </ul>
-        <a class="cta cta--verde" [href]="whatsapp" target="_blank" rel="noopener">Quero o Rende na minha loja</a>
-        <p class="plano__nota">Preço de demonstração. Sem fidelidade e sem taxa de instalação.</p>
-      </div>
-    </div>
-  </section>
+  <!-- ============ PREÇO + DÚVIDAS: a parede da cozinha, com a comanda e os bilhetes no trilho ============ -->
+  <div class="cozinha">
+    <section id="preco" class="conta" aria-labelledby="titulo-preco">
+      <div class="trilho" aria-hidden="true"></div>
+      <div class="envoltorio conta__grade">
+        <div class="comanda-plano" appRevelar>
+          <div class="comanda-plano__papel">
+            <p class="cp__cabeca">RENDE · ASSINATURA MENSAL</p>
+            <p class="cp__meta numero">Pedido nº 0001 · para: a sua loja</p>
+            <ul class="cp__itens">
+              @for (item of incluso; track item) {
+                <li><span class="numero">1x</span><span>{{ item }}</span><span class="cp__ok">incluso</span></li>
+              }
+            </ul>
+            <dl class="cp__contas">
+              <div><dt>Mensalidade</dt><dd class="numero">R$ 129,00</dd></div>
+              <div><dt>Comissão por pedido</dt><dd class="numero">R$ 0,00</dd></div>
+              <div><dt>Taxa de instalação</dt><dd class="numero">R$ 0,00</dd></div>
+              <div><dt>Fidelidade</dt><dd>nenhuma</dd></div>
+            </dl>
+            <p class="cp__total"><span>Total</span><strong class="numero">{{ mensalidade }}<small>/mês</small></strong></p>
+            <p class="cp__pe">Venda R$ 3 mil ou R$ 80 mil no mês: a conta não muda.</p>
+          </div>
+        </div>
 
-  <!-- ============ DÚVIDAS ============ -->
-  <section id="duvidas" class="duvidas" aria-labelledby="titulo-duvidas">
-    <div class="envoltorio duvidas__grade">
-      <h2 id="titulo-duvidas" appRevelar>Perguntas de quem tem restaurante</h2>
-      <div class="duvidas__lista">
-        @for (item of perguntas; track item.pergunta) {
-          <details>
-            <summary>{{ item.pergunta }}</summary>
-            <p>{{ item.resposta }}</p>
-          </details>
-        }
+        <div class="conta__texto" appRevelar [revelarAtraso]="0.1">
+          <h2 id="titulo-preco">Um plano só. A conta é essa aqui.</h2>
+          <p>
+            Sem comissão escondida no rodapé, sem taxa por pedido, sem fidelidade. O que você vende é seu;
+            o Rende cobra a mensalidade e pronto.
+          </p>
+          <a class="cta cta--verde" [href]="whatsapp" target="_blank" rel="noopener">Fechar o pedido no WhatsApp</a>
+          <p class="conta__nota">Preço de demonstração.</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section id="duvidas" class="duvidas" aria-labelledby="titulo-duvidas">
+      <div class="envoltorio">
+        <div class="duvidas__cabeca">
+          <h2 id="titulo-duvidas" appRevelar>Perguntas que chegam no balcão</h2>
+          <p>Puxe um bilhete do trilho para ler a resposta.</p>
+        </div>
+      </div>
+      <div class="duvidas__trilho">
+        <div class="trilho" aria-hidden="true"></div>
+        <div class="bilhetes">
+          @for (item of perguntas; track item.pergunta; let i = $index) {
+            <div class="bilhete" [style.--inclina]="(i % 2 === 0 ? -1.6 : 1.3) + 'deg'">
+            <details>
+              <summary>
+                <span class="bilhete__num numero">Pedido #{{ 41 + i }}</span>
+                <span class="bilhete__pergunta">{{ item.pergunta }}</span>
+              </summary>
+              <p>{{ item.resposta }}</p>
+            </details>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- ============ CHAMADA FINAL ============ -->
   <section class="final" aria-labelledby="titulo-final">

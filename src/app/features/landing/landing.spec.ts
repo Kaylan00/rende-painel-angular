@@ -5,7 +5,10 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AuthService } from '../../core/auth/auth.service';
 import { compararCustos, COMISSAO_APP_BPS, MENSALIDADE_RENDE_CENTAVOS } from './comparativo';
-import { calcularFatia, FATURAMENTO_MAX_REAIS, FATURAMENTO_MIN_REAIS } from './fatia/fatia';
+import { calcularFatia, cortesDaFatia, DIRECAO_FATIA_GRAUS, FATURAMENTO_MAX_REAIS, FATURAMENTO_MIN_REAIS, pontoNaPizza } from './fatia/fatia';
+import { pedidoAoVivo, precoEmCentavos } from './lojas/ao-vivo';
+import { MODELOS } from './conteudo';
+import { JornadaComponent, progressoLinha } from './palco/jornada/jornada.component';
 import { FatiaComponent } from './fatia/fatia.component';
 import { LandingComponent, posicaoDaJornada } from './landing.component';
 import { lojaDeFrente, LojasComponent } from './lojas/lojas.component';
@@ -176,13 +179,97 @@ describe('posicaoDaJornada (link "Como funciona")', () => {
 });
 
 describe('lojaDeFrente (anel 3D das lojas)', () => {
-  it('descobre qual celular está de frente pelo giro do anel', () => {
+  it('descobre qual celular está de frente pelo giro do anel (6 lojas, 60° cada)', () => {
+    expect(MODELOS).toHaveLength(6);
     expect(lojaDeFrente(0)).toBe(0);
-    expect(lojaDeFrente(-90)).toBe(1);
-    expect(lojaDeFrente(-185)).toBe(2);
-    expect(lojaDeFrente(-270)).toBe(3);
-    expect(lojaDeFrente(90)).toBe(3); // girando ao contrário
+    expect(lojaDeFrente(-60)).toBe(1);
+    expect(lojaDeFrente(-185)).toBe(3);
+    expect(lojaDeFrente(-300)).toBe(5);
+    expect(lojaDeFrente(60)).toBe(5); // girando ao contrário
     expect(lojaDeFrente(-360)).toBe(0);
+  });
+});
+
+describe('pedidos ao vivo das lojas', () => {
+  it('converte o preço do cardápio em centavos inteiros', () => {
+    expect(precoEmCentavos('R$ 41,90')).toBe(4190);
+    expect(precoEmCentavos('R$ 9,50')).toBe(950);
+    expect(precoEmCentavos('')).toBe(0);
+  });
+
+  it('é determinístico, usa itens reais do cardápio e passa por todas as lojas', () => {
+    expect(pedidoAoVivo(7)).toEqual(pedidoAoVivo(7));
+    const lojas = new Set<number>();
+    for (let n = 0; n < MODELOS.length; n++) {
+      const p = pedidoAoVivo(n);
+      lojas.add(p.loja);
+      const item = MODELOS[p.loja].itens.find((i) => i.nome === p.item)!;
+      expect(item).toBeDefined();
+      expect(p.valorCentavos).toBe(precoEmCentavos(item.preco) * p.quantidade);
+      expect(['Pix', 'Cartão']).toContain(p.forma);
+    }
+    expect(lojas.size).toBe(MODELOS.length);
+  });
+
+  it('cada pedido que chega anda o contador da loja e o total da rede', () => {
+    simularPreferencia(true);
+    const fixture = TestBed.createComponent(LojasComponent);
+    fixture.detectChanges();
+    const lojas = fixture.componentInstance;
+    const antes = lojas.totalHoje();
+    const loja = pedidoAoVivo(0).loja;
+    const daLoja = lojas.pedidosHoje()[loja];
+    lojas.chegarPedido();
+    expect(lojas.totalHoje()).toBe(antes + 1);
+    expect(lojas.pedidosHoje()[loja]).toBe(daLoja + 1);
+  });
+});
+
+describe('geometria do corte da pizza', () => {
+  it('pontoNaPizza usa ângulo a partir do topo, no sentido horário', () => {
+    expect(pontoNaPizza(0, 50)).toEqual({ x: 50, y: 0 });
+    expect(pontoNaPizza(90, 50)).toEqual({ x: 100, y: 50 });
+    expect(pontoNaPizza(180, 50)).toEqual({ x: 50, y: 100 });
+  });
+
+  it('as duas linhas do corte ficam simétricas em volta da direção da fatia', () => {
+    const [a, b] = cortesDaFatia(90, 0, 50);
+    expect(a.x).toBeCloseTo(100 - b.x);
+    expect(a.y).toBeCloseTo(b.y);
+    const [c, d] = cortesDaFatia(calcularFatia(30_000, 27).graus);
+    expect(c).toEqual(pontoNaPizza(DIRECAO_FATIA_GRAUS - 48.6, 49));
+    expect(d).toEqual(pontoNaPizza(DIRECAO_FATIA_GRAUS + 48.6, 49));
+  });
+});
+
+describe('JornadaComponent (objetos da montagem)', () => {
+  it('a linha do tempo enche de 0 a 1 ao longo dos 5 passos', () => {
+    expect([0, 1, 2, 3, 4, 5].map((p) => progressoLinha(p))).toEqual([0, 0, 0.25, 0.5, 0.75, 1]);
+  });
+
+  it('com movimento mostra só o passo atual e o anterior (ao fundo); parado mostra todos', () => {
+    const fixture = TestBed.createComponent(JornadaComponent);
+    fixture.componentRef.setInput('passo', 3);
+    fixture.componentRef.setInput('vivo', true);
+    fixture.detectChanges();
+    const estados = () =>
+      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.passo')).map((li) => li.getAttribute('data-estado'));
+    expect(estados()).toEqual(['fora', 'antes', 'atual', 'fora', 'fora']);
+
+    fixture.componentRef.setInput('vivo', false);
+    fixture.detectChanges();
+    expect(estados()).toEqual(['atual', 'atual', 'atual', 'atual', 'atual']);
+  });
+
+  it('cada passo tem o seu objeto: celular, painel, comanda, mapa e Pix', () => {
+    const fixture = TestBed.createComponent(JornadaComponent);
+    fixture.componentRef.setInput('passo', 5);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    for (const seletor of ['.fone', '.cartao', '.comanda', '.mapa', '.comprovante']) {
+      expect(el.querySelector(seletor)).not.toBeNull();
+    }
+    expect(el.querySelector('.comanda')?.textContent).toContain('Bocca Duplo');
   });
 });
 
@@ -214,7 +301,7 @@ describe('LandingComponent', () => {
     }
     expect(el.querySelectorAll('.camada')).toHaveLength(6);
     expect(el.querySelectorAll('.passo')).toHaveLength(5);
-    expect(el.querySelectorAll('.celular')).toHaveLength(4);
+    expect(el.querySelectorAll('.celular')).toHaveLength(6);
     expect(el.querySelectorAll('details')).toHaveLength(5);
   });
 
@@ -227,10 +314,18 @@ describe('LandingComponent', () => {
     expect(primeira.textContent).toContain('boccaburger.rende.app');
   });
 
-  it('mostra um plano só, com a mensalidade', () => {
+  it('mostra um plano só, como uma comanda: mensalidade e comissão zero', () => {
     const { el } = criar();
-    expect(el.querySelectorAll('.plano')).toHaveLength(1);
-    expect(semEspacoDuro(el.querySelector('.plano__valor')?.textContent)).toContain('R$ 129');
+    expect(el.querySelectorAll('.comanda-plano')).toHaveLength(1);
+    expect(semEspacoDuro(el.querySelector('.cp__total')?.textContent)).toContain('R$ 129');
+    expect(semEspacoDuro(el.querySelector('.cp__contas')?.textContent)).toContain('Comissão por pedido');
+  });
+
+  it('as dúvidas são bilhetes que abrem pelo teclado (details/summary nativos)', () => {
+    const { el } = criar();
+    const bilhetes = el.querySelectorAll('.bilhete details');
+    expect(bilhetes).toHaveLength(5);
+    for (const b of Array.from(bilhetes)) expect(b.querySelector('summary')).not.toBeNull();
   });
 
   it('chamadas de WhatsApp abrem em nova aba com a mensagem pronta', () => {
@@ -269,8 +364,9 @@ describe('LandingComponent', () => {
     expect(gsap.timeline).not.toHaveBeenCalled();
     expect(ScrollTrigger.create).not.toHaveBeenCalled();
     expect(el.querySelector('.palco')!.classList).not.toContain('palco--vivo');
-    // passo 5 = cartão do painel e Pix à mostra
-    expect(el.querySelector('.jornada__tela')!.getAttribute('data-passo')).toBe('5');
+    // todos os passos (e seus objetos) à mostra
+    const estados = Array.from(el.querySelectorAll('.passo')).map((li) => li.getAttribute('data-estado'));
+    expect(estados).toEqual(['atual', 'atual', 'atual', 'atual', 'atual']);
   });
 });
 

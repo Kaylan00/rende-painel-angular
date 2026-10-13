@@ -93,48 +93,150 @@
   background: #0b231b;
 }
 
-/* ---------- preço ---------- */
-.plano {
-  padding: clamp(5rem, 10vw, 8rem) 0;
+/* ---------- preço + dúvidas: parede clara da cozinha, trilho de inox, papel ---------- */
+.cozinha {
   color: var(--tinta);
-  background: var(--creme);
+  background:
+    radial-gradient(70% 50% at 30% 10%, rgb(255 255 255 / 55%), transparent 70%),
+    #e9e1d2;
 }
 
-.plano__grade {
+/* trilho de comanda (barra de inox presa na parede) */
+.trilho {
+  position: relative;
+  z-index: 2;
+  height: 18px;
+  margin: 0 clamp(16px, 4vw, 3.5rem);
+  background: linear-gradient(180deg, #f4f4f2 0%, #b9bcbc 45%, #8d9191 55%, #d7d9d8 100%);
+  border-radius: 4px;
+  box-shadow: 0 10px 18px -8px rgb(0 0 0 / 35%);
+}
+
+.conta {
+  padding: clamp(4.5rem, 9vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
+}
+
+.conta__grade {
   display: grid;
-  gap: 2.5rem;
+  gap: 3rem;
+  margin-top: -9px; /* a comanda sai de dentro do trilho */
 
   @media (min-width: 960px) {
-    grid-template-columns: 1.1fr 1fr;
-    align-items: end;
+    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: center;
   }
 }
 
-.plano__valor {
+.comanda-plano {
+  justify-self: center;
+  width: min(100%, 25rem);
+  transform: rotate(-1.4deg);
+  transform-origin: 50% 0;
+  filter: drop-shadow(0 34px 30px rgb(40 30 15 / 28%));
+}
+
+.comanda-plano__papel {
+  padding: 2rem 1.6rem 2.4rem;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #1d1a16;
+  background: #fdfbf6;
+  /* picote embaixo: dentes de papel rasgado */
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
+
+  p {
+    margin: 0;
+  }
+}
+
+.cp__cabeca {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cp__meta {
+  color: #6a625a;
+}
+
+.cp__itens {
+  margin: 1.1rem 0;
+  padding: 0.9rem 0;
+  list-style: none;
+  border-top: 1px solid #d8cfbf;
+  border-bottom: 1px solid #d8cfbf;
+
+  li {
+    display: grid;
+    grid-template-columns: 2.6ch 1fr auto;
+    gap: 0.6rem;
+    padding: 0.2rem 0;
+  }
+}
+
+.cp__ok {
+  color: #6a625a;
+}
+
+.cp__contas {
+  display: grid;
+  gap: 0.2rem;
   margin: 0;
 
-  .numero {
-    display: block;
-    font-family: var(--fonte-titulo);
-    font-size: clamp(6rem, 3rem + 13vw, 15rem);
-    font-weight: 500;
-    line-height: 0.85;
-    letter-spacing: -0.04em;
-    color: var(--verde-950);
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
   }
 }
 
-.plano__mes {
-  display: block;
-  max-width: 24rem;
-  margin-top: 1rem;
-  font-size: 1.125rem;
-  color: var(--tinta-suave);
+.cp__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 1rem !important;
+  padding-top: 0.8rem;
+  font-weight: 700;
+  border-top: 2px solid #1d1a16;
+
+  strong {
+    font-family: var(--fonte-titulo);
+    font-size: 3.2rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--verde-950);
+  }
+
+  small {
+    font-family: var(--fonte);
+    font-size: 1rem;
+  }
 }
 
-.plano__texto {
+.cp__pe {
+  margin-top: 0.8rem !important;
+  color: #6a625a;
+}
+
+.conta__texto {
   h2 {
-    font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.6rem);
+    max-width: 14ch;
+    font-size: clamp(2.2rem, 1.4rem + 2.6vw, 4rem);
+    line-height: 1;
+  }
+
+  p {
+    max-width: 30rem;
+    margin: 1.2rem 0 0;
+    font-size: 1.0625rem;
+    color: var(--tinta-suave);
   }
 
   .cta {
@@ -142,96 +244,117 @@
   }
 }
 
-.plano__lista {
-  display: grid;
-  gap: 0.6rem;
-  margin: 1.5rem 0 0;
-  padding: 0 0 0 1.1rem;
-  font-size: 1.0625rem;
-
-  li::marker {
-    color: var(--terracota);
-  }
+.conta__nota {
+  font-size: 0.875rem !important;
 }
 
-.plano__nota {
-  margin: 0.9rem 0 0;
-  font-size: 0.875rem;
-  color: var(--tinta-suave);
-}
-
-/* ---------- dúvidas ---------- */
+/* dúvidas: bilhetes pendurados no trilho; puxar = abrir */
 .duvidas {
   padding: 0 0 clamp(5rem, 10vw, 8rem);
-  color: var(--tinta);
-  background: var(--creme);
 }
 
-.duvidas__grade {
-  display: grid;
-  gap: 2rem;
+.duvidas__cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
 
   h2 {
-    max-width: 12ch;
-    font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.6rem);
-  }
-
-  @media (min-width: 960px) {
-    grid-template-columns: 1fr 1.6fr;
-  }
-}
-
-details {
-  border-bottom: 1px solid var(--linha);
-
-  &:first-child {
-    border-top: 1px solid var(--linha);
+    font-size: clamp(1.9rem, 1.3rem + 1.8vw, 2.9rem);
   }
 
   p {
-    max-width: 38rem;
     margin: 0;
-    padding: 0 2.5rem 1.4rem 0;
     color: var(--tinta-suave);
   }
 }
 
-summary {
-  position: relative;
-  display: block;
-  padding: 1.3rem 2.5rem 1.3rem 0;
-  font-size: 1.125rem;
-  font-weight: 500;
-  cursor: pointer;
-  list-style: none;
+.bilhetes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(15rem, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin-top: -9px;
+  padding: 0 clamp(16px, 4vw, 3.5rem) 2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 16px;
 
-  &::-webkit-details-marker {
-    display: none;
-  }
-
-  /* seta feita com borda, gira ao abrir */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 0.4rem;
-    width: 0.6rem;
-    height: 0.6rem;
-    margin-top: -0.45rem;
-    border-right: 2px solid var(--verde-900);
-    border-bottom: 2px solid var(--verde-900);
-    transform: rotate(45deg);
-    transition: transform 0.3s var(--curva);
-  }
-
-  &:hover {
-    color: var(--verde-700);
+  @media (max-width: 767px) {
+    grid-auto-columns: 80%;
   }
 }
 
-details[open] summary::after {
-  margin-top: -0.1rem;
-  transform: rotate(-135deg);
+.bilhete {
+  scroll-snap-align: start;
+  transform: rotate(var(--inclina));
+  transform-origin: 50% 0;
+  filter: drop-shadow(0 18px 16px rgb(40 30 15 / 22%));
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.5, 1), filter 0.3s var(--curva);
+
+  summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 9.5rem;
+    padding: 1.4rem 1.2rem 1.2rem;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--verde-700);
+      outline-offset: 3px;
+    }
+  }
+
+  p {
+    margin: 0;
+    padding: 0 1.2rem 1.8rem;
+    color: var(--tinta-suave);
+  }
+
+  /* a ponta de baixo do bilhete é sempre serrilhada (fechado ou aberto) */
+  details {
+    background: #fdfbf6;
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
+  }
+
+  &:hover {
+    transform: rotate(var(--inclina)) translateY(5px);
+  }
+}
+
+.bilhete:has(details[open]) {
+  transform: rotate(0deg) translateY(10px);
+  filter: drop-shadow(0 30px 26px rgb(40 30 15 / 30%));
+
+  summary {
+    padding-bottom: 0.9rem;
+  }
+
+  .bilhete__pergunta {
+    color: var(--verde-950);
+  }
+}
+
+.bilhete__num {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  color: #6a625a;
+}
+
+.bilhete__pergunta {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  color: var(--tinta);
 }
 
 /* ---------- chamada final ---------- */
