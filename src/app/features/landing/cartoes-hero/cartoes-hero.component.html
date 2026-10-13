@@ -1,0 +1,37 @@
+<div class="cartao cartao--pedido" appRevelar [revelarAtraso]="0.5">
+  <div appFlutuar [flutuarDuracao]="7" [flutuarAmplitude]="7">
+    <div class="cartao__linha">
+      <span class="cartao__rotulo">Pedido novo</span>
+      <span class="cartao__hora numero">19:42</span>
+    </div>
+    <p class="cartao__titulo"><span class="numero">#1048</span> · Marina Alves</p>
+    <p class="cartao__itens">Bocca Duplo, batata média, refrigerante</p>
+    <div class="cartao__linha cartao__linha--fim">
+      <span class="cartao__pago"><span class="ponto" aria-hidden="true"></span>Pago no Pix</span>
+      <strong class="numero">R$ 68,30</strong>
+    </div>
+  </div>
+</div>
+
+<div class="cartao cartao--liquido" appRevelar [revelarAtraso]="0.7">
+  <div appFlutuar [flutuarDuracao]="8" [flutuarAmplitude]="9" [flutuarAtraso]="1.2">
+    <span class="cartao__rotulo">Receita líquida hoje · Pix</span>
+    <p class="cartao__valor numero">R$ 1.284,30</p>
+    <span class="cartao__nota">Taxa de 0,99% já descontada</span>
+  </div>
+</div>
+
+<div class="cartao cartao--entrega" appRevelar [revelarAtraso]="0.9">
+  <div appFlutuar [flutuarDuracao]="6.5" [flutuarAmplitude]="6" [flutuarAtraso]="0.6">
+    <div class="cartao__linha">
+      <span class="cartao__rotulo">Pedido <span class="numero">#1045</span></span>
+      <span class="cartao__status">Saiu para entrega</span>
+    </div>
+    <ol class="etapas" aria-label="Andamento do pedido">
+      <li class="feito">Recebido</li>
+      <li class="feito">Preparo</li>
+      <li class="feito">Pronto</li>
+      <li class="atual">Saiu</li>
+    </ol>
+  </div>
+</div>

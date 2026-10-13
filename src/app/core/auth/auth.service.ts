@@ -36,7 +36,7 @@ export class AuthService {
     this._sessao.set(null);
     this.salvar(null);
     if (irParaLogin) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/entrar']);
     }
   }
 

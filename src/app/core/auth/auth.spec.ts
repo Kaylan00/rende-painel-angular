@@ -47,7 +47,7 @@ describe('AuthService', () => {
     expect(JSON.parse(localStorage.getItem('rende.sessao') ?? '{}')).toEqual(SESSAO);
   });
 
-  it('logout limpa tudo e volta para /login', () => {
+  it('logout limpa tudo e volta para /entrar', () => {
     localStorage.setItem('rende.sessao', JSON.stringify(SESSAO));
     const auth = TestBed.inject(AuthService);
     const navegar = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
@@ -57,7 +57,7 @@ describe('AuthService', () => {
 
     expect(auth.autenticado()).toBe(false);
     expect(localStorage.getItem('rende.sessao')).toBeNull();
-    expect(navegar).toHaveBeenCalledWith(['/login']);
+    expect(navegar).toHaveBeenCalledWith(['/entrar']);
   });
 
   it('ignora JSON corrompido no localStorage', () => {
@@ -75,10 +75,10 @@ describe('guards', () => {
     configurar();
   });
 
-  it('authGuard redireciona visitante para /login guardando a rota pedida', () => {
+  it('authGuard redireciona visitante para /entrar guardando a rota pedida', () => {
     const resultado = TestBed.runInInjectionContext(() => authGuard(rota, estado));
     const router = TestBed.inject(Router);
-    expect(router.serializeUrl(resultado as ReturnType<Router['createUrlTree']>)).toBe('/login?retorno=%2Fpedidos');
+    expect(router.serializeUrl(resultado as ReturnType<Router['createUrlTree']>)).toBe('/entrar?retorno=%2Fpedidos');
   });
 
   it('authGuard libera quem está logado', () => {
