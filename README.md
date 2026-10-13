@@ -4,19 +4,20 @@ Painel de gestão para restaurantes, feito em **Angular 22** (standalone compone
 
 > **Contexto.** O [Rende](#sobre-o-rende) é um SaaS de delivery que eu criei para restaurantes do interior do Espírito Santo: mensalidade fixa, **sem comissão por pedido**. O produto original (site de pedidos e painel) é feito em **Next.js**. Este repositório é o **painel do lojista reescrito em Angular**, para praticar e demonstrar o framework em um problema real: pedidos, recebíveis e cobranças Pix. Os dados vêm de uma API simulada (mock); não há back-end real aqui.
 
-Restaurante de demonstração: **Bocca Burger**.
+Restaurante de demonstração: **Bocca Burger**. A raiz (`/`) é a **landing pública do Rende**; o painel fica em `/entrar` → `/dashboard`.
 
 ## O que o painel faz
 
 | Tela | O que mostra / permite |
 | --- | --- |
-| **Login** | Formulário reativo com validação. Guarda o token e libera as rotas protegidas. |
+| **Landing** (`/`) | Página pública do produto: foto real com cartões do painel flutuando, como funciona, **calculadora “comissão do app x mensalidade fixa”** (signals + `computed`), modelos de loja, receita líquida por forma de pagamento, um plano só, dúvidas e chamada para o WhatsApp. |
+| **Login** (`/entrar`) | Formulário reativo com validação. Guarda o token e libera as rotas protegidas. |
 | **Dashboard** | Vendas do dia, ticket médio, valor a receber, gráfico de vendas (SVG feito à mão) e **receita líquida por forma de pagamento** (Pix, crédito, débito e dinheiro), mostrando a taxa de cada canal e o valor líquido. |
 | **Pedidos** | Tabela com filtros (status, forma de pagamento, período) e paginação. A busca usa RxJS (`debounceTime` + `switchMap`). Cada pedido só pode mudar de status seguindo a **máquina de estados**: `aguardando_pagamento → recebido → preparo → pronto → saiu → entregue` (ou `cancelado`, antes de sair da cozinha). |
 | **Recebíveis** | Valores de crédito/débito que ainda vão cair na conta, agrupados por data, com totais calculados por `computed` signals. |
 | **Nova cobrança** | Cobrança Pix ou link de pagamento: formulário reativo, máscara de reais, validadores customizados (valor mínimo/máximo, CPF/CNPJ), preview em tempo real e confirmação em modal. |
 
-Tudo em português, responsivo (menu inferior no celular, lateral no desktop) e com cuidados de acessibilidade: labels associados, foco visível, link “pular para o conteúdo”, `aria-live` nas mudanças de estado, contraste mínimo 4,5:1 e alvos de toque de 44 px.
+Tudo em português, responsivo (menu inferior no celular, lateral no desktop; no celular a tabela de pedidos vira blocos com rótulo e valor) e com cuidados de acessibilidade: labels associados, foco visível, link “pular para o conteúdo”, `aria-live` nas mudanças de estado, contraste mínimo 4,5:1 e alvos de toque de 44 px.
 
 ## Sobre o Rende
 
@@ -31,7 +32,9 @@ Tudo em português, responsivo (menu inferior no celular, lateral no desktop) e 
 - TypeScript em modo `strict`
 - RxJS 7 (`switchMap`, `debounceTime`, `combineLatest`, `BehaviorSubject`, `catchError`, `toSignal`, `takeUntilDestroyed`, `async` pipe)
 - SCSS com tokens CSS (mini design system próprio, sem biblioteca de UI)
-- Jest 30 + jest-preset-angular (76 testes) e `HttpTestingController`
+- [motion](https://motion.dev) para animação (diretivas `appRevelar`, `appContador`, `appFlutuar`) e View Transitions do router entre telas
+- Fontes Gambetta (títulos) e General Sans (interface e números tabulares), do Fontshare, servidas localmente
+- Jest 30 + jest-preset-angular (100 testes) e `HttpTestingController`
 - ESLint com `angular-eslint` (regras de acessibilidade de template incluídas)
 
 ## Como rodar
@@ -40,7 +43,7 @@ Pré-requisito: **Node 22.22.3 ou superior** (exigência do Angular CLI 22).
 
 ```bash
 npm install
-npm start          # http://localhost:4200
+npm start          # http://localhost:4200 (landing); painel em /entrar
 ```
 
 Entre com **qualquer e-mail válido e senha com 6 ou mais caracteres** (é uma demonstração).
@@ -48,7 +51,7 @@ Entre com **qualquer e-mail válido e senha com 6 ou mais caracteres** (é uma d
 Outros comandos:
 
 ```bash
-npm test           # Jest (76 testes)
+npm test           # Jest (100 testes)
 npm run lint       # ESLint
 npm run build      # build de produção em dist/
 ```
@@ -73,7 +76,9 @@ src/app/
                            # gráfico de barras (SVG), QR placeholder, toast
     validators/            # valorMinimo, valorMaximo, cpfOuCnpj
     pipes/                 # moeda
-  features/                # uma pasta por tela (login, shell, dashboard,
+    movimento/             # diretivas de animação com motion (revelar,
+                           # contador, flutuar) e prefers-reduced-motion
+  features/                # uma pasta por tela (landing, login, shell, dashboard,
                            # pedidos, recebiveis, cobranca), cada uma lazy
   app.config.ts            # providers: router, http + interceptors, locale pt-BR
   app.routes.ts            # rotas com loadComponent e guards
@@ -96,28 +101,41 @@ src/styles.scss            # tokens do design system
 
 **API mock por interceptor, não json-server.** O projeto roda só com `npm start`, sem segundo processo. O mock responde com latência simulada, valida token (401), valida transições de status (409) e calcula dashboard e recebíveis em funções puras testadas.
 
-**Guard funcional.** `authGuard` devolve uma `UrlTree` para `/login?retorno=...`, e o login volta para a rota pedida (`withComponentInputBinding` liga o query param ao `input()`). `visitanteGuard` impede quem já entrou de ver o login.
+**Guard funcional.** `authGuard` devolve uma `UrlTree` para `/entrar?retorno=...`, e o login volta para a rota pedida (`withComponentInputBinding` liga o query param ao `input()`). `visitanteGuard` impede quem já entrou de ver o login.
 
 **OnPush em tudo.** No Angular 22 o padrão já é OnPush. O campo de formulário usa `controle.events` virado em signal para reagir a *touched/errors* sem abrir mão de OnPush.
 
 **Mini design system.** Tokens em variáveis CSS (`--cor-primaria`, `--espaco-*`, `--raio`...) em `styles.scss`; os componentes só consomem tokens. Um tema escuro seria só redefinir as variáveis. O modal usa o `<dialog>` nativo (foco preso, Esc e backdrop de graça).
 
+**Animação com propósito (motion).** Três diretivas pequenas em `shared/movimento/`: `appRevelar` (o bloco entra ao chegar na tela, com `inView`; `appRevelar="filhos"` faz os filhos entrarem em sequência com `stagger`), `appContador` (o número conta até o valor final; o texto final é escrito na hora e a animação vai por cima, então leitor de tela e teste sempre veem o valor certo) e `appFlutuar` (os cartões do topo da landing sobem e descem devagar). O gráfico de barras cresce da base. Entre rotas, `withViewTransitions()` faz um fade curto. Com `prefers-reduced-motion`, nada disso roda. No Jest, `motion` é trocado por um mock (`testing/motion.mock.ts` via `moduleNameMapper`).
+
+**Calculadora da landing com signals.** O slider escreve em dois `signal` (faturamento e comissão) e o resultado é um `computed` que chama a função pura `compararCustos()` (centavos inteiros, testada à parte). A tabela “quanto cai de verdade” da landing usa as mesmas taxas (`TAXA_BPS`) e a mesma função (`calcularLiquido`) do painel.
+
 **Não é over-engineering de propósito.** Sem NgRx, sem biblioteca de UI, sem camadas extras: serviços, componentes e funções pequenas, fáceis de ler.
 
 ## Testes
 
-76 testes em 13 arquivos, cobrindo:
+100 testes em 16 arquivos, cobrindo:
 
 - utilitários e pipe de moeda, arredondamento de taxas;
 - máquina de estados do pedido e receita líquida por canal;
 - validadores (valor mínimo/máximo, CPF, CNPJ);
 - `AuthService`, `authGuard`, `visitanteGuard`, `authInterceptor`, `erroInterceptor`;
 - `PedidosService` (parâmetros HTTP) e o back-end mock (401, 409, paginação, filtros);
+- rotas (landing pública, painel protegido, `/login` → `/entrar`);
+- landing: calculadora (`computed` recalculando ao mexer no slider), comparação de custos, tabela de taxas, links de WhatsApp e texto alternativo das fotos;
+- diretivas de animação (com e sem `prefers-reduced-motion`);
 - componentes: login, dashboard, pedidos (debounce e cancelamento por `switchMap` provados com timers falsos), recebíveis, nova cobrança (máscara, validação, modal, envio) e os componentes do design system.
 
 ### Observação sobre o Jest
 
 O Angular CLI 22 só oferece Karma e Vitest no `ng new`, então o Jest foi configurado manualmente (`jest.config.js`, `setup-jest.ts`, `jest-preset-angular` 17 em modo *zoneless*) e `npm test` roda `jest`. Funcionou sem adaptações.
+
+## Fontes e fotos
+
+- **Gambetta** e **General Sans**, do [Fontshare](https://www.fontshare.com) (ITF Free Font License), em `public/fonts/`.
+- Fotos reais do [Unsplash](https://unsplash.com) (licença Unsplash), em `src/assets/fotos/`: Jonathan Borba (hambúrguer do topo), Pinar Kucuk (pizza na mesa), Jason Leung (salão), Nick Hillier (restaurante cheio), amirali mirhashemian (hamburgueria), Aurélien Lemasson-Théobald (pizzaria), Vicky Ng (açaiteria) e Mae Mu (padaria). Os créditos também estão no rodapé da landing.
+- Lojas da landing (Forno da Praça, Açaí do Porto, Padaria Dona Lia), preço (R$ 129/mês) e textos de dúvidas são de demonstração. O link de WhatsApp abre a conversa com a mensagem pronta; para fixar um número, troque `LINK_WHATSAPP` em `features/landing/conteudo.ts`.
 
 ## O que ficou de fora (de propósito)
 

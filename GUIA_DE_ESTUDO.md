@@ -50,7 +50,10 @@ Regra de bolso: signal para estado que a tela lê na hora; RxJS para o que acont
 - Título por rota (`title`), redirecionamento (`redirectTo`), rota coringa (`**`): `app.routes.ts`.
 - `routerLink` e `routerLinkActive`: `features/shell/shell.component.html`.
 - Query param ligado a `input()` com `withComponentInputBinding()`: `app.config.ts` + `features/login/login.component.ts` (`retorno`).
-- Navegação por código: `Router.navigateByUrl` no login, `navigate(['/login'])` no `AuthService.logout()`.
+- Navegação por código: `Router.navigateByUrl` no login, `navigate(['/entrar'])` no `AuthService.logout()`.
+- Rota pública + rota protegida no mesmo caminho vazio: em `app.routes.ts`, a landing é `path: ''` com `pathMatch: 'full'` e o painel é outro `path: ''` com `canActivate: [authGuard]` e filhos. `/login` virou `redirectTo: 'entrar'`.
+- `withViewTransitions()` (fade entre telas) e `withInMemoryScrolling({ anchorScrolling: 'enabled' })` (links `fragment` da landing): `app.config.ts`.
+- Teste de rotas com `RouterTestingHarness`: `app.routes.spec.ts`.
 
 ### 6. Reactive Forms
 
@@ -126,6 +129,19 @@ Nenhum `subscribe` sem dono:
 
 `core/utils/moeda.ts`, `shared/pipes/moeda.pipe.ts` e `shared/ui/mascara-moeda.directive.ts`. Tudo é inteiro; só a tela formata.
 
+### 14. Animação (motion) e diretivas próprias
+
+- Diretiva de atributo com `input()` e `afterNextRender`: `shared/movimento/revelar.directive.ts` (só mexe no DOM depois do Angular desenhar; `DestroyRef.onDestroy` para parar o observador).
+- `effect` + `untracked` numa diretiva: `shared/movimento/contador.directive.ts` (reage ao valor novo e conta a partir do anterior).
+- Animação infinita que para ao destruir: `shared/movimento/flutuar.directive.ts`.
+- Acessibilidade: `movimentoReduzido()` em `shared/movimento/movimento.ts` lê `prefers-reduced-motion`; com ele ligado, nada anima.
+- Mock de biblioteca no Jest com `moduleNameMapper`: `jest.config.js` + `testing/motion.mock.ts`.
+
+### 15. Signals numa tela interativa (calculadora da landing)
+
+- `features/landing/calculadora/calculadora.component.ts`: dois `signal` (faturamento, comissão) e um `computed` com o resultado. O template lê `resultado()` e tudo recalcula ao mexer no slider, sem `subscribe`.
+- A conta em si é uma função pura (`features/landing/comparativo.ts`), testada separada da tela (`landing.spec.ts`).
+
 ---
 
 ## Parte 2 — 15 perguntas de entrevista (com respostas curtas)
@@ -143,7 +159,7 @@ Signal guarda um valor atual e notifica quem o leu; é síncrono, não tem "comp
 Há um injetor hierárquico: o componente pede um tipo (com `inject(Tipo)` ou construtor) e o Angular procura o provider mais próximo para cima. `providedIn: 'root'` registra o serviço como singleton global, e ele é "tree-shakable" (sai do bundle se ninguém usar). Em teste, substituo por `{ provide: PedidosService, useValue: falso }`.
 
 **5. Como funciona um guard funcional? E o que ele devolve?**
-É uma função `CanActivateFn` que usa `inject()`. Devolve `true` (libera), `false` (bloqueia) ou uma `UrlTree` (redireciona). O `authGuard` do projeto devolve `router.createUrlTree(['/login'], { queryParams: { retorno } })` quando não há sessão, para voltar à rota pedida depois do login.
+É uma função `CanActivateFn` que usa `inject()`. Devolve `true` (libera), `false` (bloqueia) ou uma `UrlTree` (redireciona). O `authGuard` do projeto devolve `router.createUrlTree(['/entrar'], { queryParams: { retorno } })` quando não há sessão, para voltar à rota pedida depois do login.
 
 **6. Diferença entre `FormControl` e `FormGroup` e entre Template-driven e Reactive Forms?**
 `FormControl` é um campo; `FormGroup` agrupa campos e tem o valor/validade do conjunto. Reactive Forms define o modelo em TypeScript (testável, validadores como funções, `valueChanges` como Observable); template-driven define tudo no HTML com `ngModel`. Usei reativo no login e na cobrança porque tenho validadores customizados e preview em tempo real via `valueChanges`.
