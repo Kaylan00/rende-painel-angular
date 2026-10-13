@@ -39,6 +39,7 @@
 .pizza__corpo {
   position: absolute;
   inset: 15% 17% 0 0;
+  z-index: 2;
   scale: var(--escala);
   transition: scale 0.5s var(--curva);
 }
@@ -99,10 +100,11 @@
   transition: transform 0.9s cubic-bezier(0.34, 1.3, 0.5, 1);
 }
 
-.pizza--fora {
-  --dist: 30cqw;
-  --giro: 16deg;
-  --encolhe: 0.82;
+.pizza--fora .pizza__fatia {
+  /* ponta da fatia (centro da pizza, em 41,5/56,5 cqw) vai para dentro da sacola (85/38 cqw);
+     gira para ficar em pé, com a borda para cima saindo pela boca */
+  transform: translate(calc(43.5cqw / var(--escala)), calc(-25cqw / var(--escala))) rotate(calc(var(--meio) * -1))
+    scale(0.5);
 }
 
 .folha {
@@ -148,47 +150,70 @@
   pointer-events: none;
 }
 
-/* sacola do app (sem marca): a fatia é puxada até ela */
+/* sacola do app (sem marca): a fatia entra nela pela boca.
+   Medidas em cqw (largura da .pizza): sacola com 30 de largura, topo em 13, boca em ~24. */
 .sacola {
   position: absolute;
-  top: 0;
+  top: 13cqw;
   right: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: flex-end;
-  width: 32%;
+  width: 30cqw;
+  pointer-events: none;
   transition: opacity 0.6s var(--curva), transform 0.6s var(--curva), filter 0.6s var(--curva);
-
-  img {
-    width: 70%;
-    margin-right: 6%;
-    filter: drop-shadow(0 30px 30px rgb(0 0 0 / 50%));
-  }
 }
 
+.sacola--tras {
+  z-index: 1;
+  filter: drop-shadow(0 30px 30px rgb(0 0 0 / 50%));
+}
+
+/* só a parte da boca para baixo, por cima da fatia */
+.sacola--frente {
+  z-index: 3;
+  clip-path: inset(32% 0 0 0);
+}
+
+/* o valor fica no lugar onde a fatia estava (no buraco da pizza), longe da sacola */
 .sacola__rotulo {
+  position: absolute;
+  top: 18cqw;
+  right: 31cqw;
+  z-index: 4;
   display: flex;
   flex-direction: column;
-  margin: 0 0 0.4rem;
+  margin: 0;
   font-size: 0.875rem;
-  line-height: 1.3;
+  line-height: 1.25;
   text-align: right;
   color: rgb(242 234 219 / 78%);
+  transition: opacity 0.6s var(--curva);
 
   strong {
     font-family: var(--fonte-titulo);
-    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.3rem);
+    font-size: clamp(1.15rem, 0.9rem + 0.9vw, 1.7rem);
     font-weight: 500;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--ambar);
+  }
+
+  @media (max-width: 767px) {
+    font-size: 0.75rem;
   }
 }
 
-.pizza--rende .sacola {
-  opacity: 0.28;
-  filter: grayscale(1);
-  transform: translateY(14px) rotate(-4deg);
+.pizza--rende {
+  .sacola {
+    opacity: 0.25;
+    filter: grayscale(1);
+    transform: translateY(12px) rotate(-4deg);
+  }
+
+  .sacola--frente {
+    opacity: 0;
+  }
+
+  .sacola__rotulo {
+    opacity: 0;
+  }
 }
 
 /* ---------- conta ---------- */

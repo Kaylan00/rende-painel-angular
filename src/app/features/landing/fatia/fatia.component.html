@@ -4,14 +4,14 @@
     [class.pizza--fora]="fatiaFora()" [class.pizza--rende]="comRende()">
     <canvas class="pizza__vapor" #vapor></canvas>
 
-    <div class="sacola">
-      <img src="assets/pizza/sacola.webp" alt="" width="500" height="620" loading="lazy" decoding="async" />
-      <p class="sacola__rotulo">
-        <span>app de delivery</span>
-        <strong class="numero" [appContador]="fatia().comissaoAppCentavos" [contadorDuracao]="0.6"></strong>
-        <span>por mês, de comissão</span>
-      </p>
-    </div>
+    <!-- sacola do app em duas camadas: a de trás e a frente (da boca para baixo), com a fatia entrando no meio -->
+    <img class="sacola sacola--tras" src="assets/pizza/sacola.webp" alt="" width="500" height="620" loading="lazy" decoding="async" />
+    <img class="sacola sacola--frente" src="assets/pizza/sacola.webp" alt="" width="500" height="620" loading="lazy" decoding="async" />
+    <p class="sacola__rotulo">
+      <span>app de delivery</span>
+      <strong class="numero" [appContador]="fatia().comissaoAppCentavos" [contadorDuracao]="0.6"></strong>
+      <span>por mês, de comissão</span>
+    </p>
 
     <div class="pizza__corpo" #corpo>
       <img class="pizza__massa" src="assets/pizza/pizza-massa.webp" alt="" width="900" height="900" loading="lazy" decoding="async" />

@@ -117,7 +117,7 @@ export class FatiaComponent {
       gsap.set('.folha', { opacity: 0, y: -90, scale: 2.2 });
       gsap.set('.pizza__cortes path', { strokeDashoffset: 1 });
       gsap.set('.cortador', { opacity: 0 });
-      gsap.set('.sacola', { opacity: 0, x: 60 });
+      gsap.set(['.sacola', '.sacola__rotulo'], { opacity: 0, y: -30 });
 
       tl = gsap.timeline({ paused: true });
       // 1) a massa gira e se abre
@@ -152,7 +152,7 @@ export class FatiaComponent {
       tl.to('.pizza__cortes path:last-child', { strokeDashoffset: 0, duration: 0.6, ease: 'power2.inOut' }, 3.9);
       tl.to('.cortador', { opacity: 0, x: '+=60', y: '-=40', duration: 0.4 }, 4.55);
       // 5) a sacola do app chega e a fatia é puxada até ela
-      tl.to('.sacola', { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 4.4);
+      tl.to(['.sacola', '.sacola__rotulo'], { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.05 }, 4.4);
       tl.call(() => this.entrou.set(true), [], 4.7);
     }, pizza);
 
