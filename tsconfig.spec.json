@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": { "types": ["jest"], "module": "preserve", "isolatedModules": true },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "setup-jest.ts"]
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "setup-jest.ts", "testing/**/*.ts"]
 }
