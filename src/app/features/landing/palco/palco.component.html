@@ -36,49 +36,7 @@
   </div>
 
   <!-- ===== jornada do pedido: um passo por camada que assenta ===== -->
-  <div class="jornada" id="jornada">
-    <h2 class="jornada__titulo">Do QR Code ao Pix, sem ninguém no meio</h2>
-    <ol class="jornada__passos">
-      @for (p of jornada; track p.titulo; let i = $index) {
-        <li class="passo" [class.passo--atual]="passo() === i + 1" [class.passo--feito]="passo() > i + 1">
-          <span class="passo__conta numero" aria-hidden="true">{{ i + 1 }} de {{ jornada.length }}</span>
-          <h3>{{ p.titulo }}</h3>
-          <p>{{ p.texto }}</p>
-        </li>
-      }
-    </ol>
-
-    <div class="jornada__tela" aria-hidden="true" [attr.data-passo]="passo()">
-      <div class="qr">
-        <div class="qr__codigo"><app-qr-placeholder texto="bocca-burger/cardapio" /></div>
-        <p><strong>Bocca Burger</strong> cardápio da mesa 7</p>
-      </div>
-
-      <div class="pedido">
-        <div class="pedido__linha">
-          <span class="pedido__rotulo">Pedido novo</span>
-          <span class="pedido__rotulo numero">{{ pedido.hora }}</span>
-        </div>
-        <p class="pedido__titulo"><span class="numero">{{ pedido.numero }}</span> · {{ pedido.cliente }}</p>
-        <p class="pedido__itens">{{ pedido.itens }}</p>
-        <ol class="pedido__status">
-          @for (s of statusCartao; track s; let i = $index) {
-            <li [class.aceso]="statusAceso() > i" [class.agora]="statusAceso() === i + 1">{{ s }}</li>
-          }
-        </ol>
-        <div class="pedido__linha pedido__linha--fim">
-          <span>Total</span>
-          <strong class="numero">{{ totalPedido }}</strong>
-        </div>
-      </div>
-
-      <div class="pix">
-        <span class="pix__rotulo">Pix recebido · conta da Bocca Burger</span>
-        <strong class="pix__valor numero" [appContador]="passo() >= 5 ? pedido.totalCentavos : 0" [contadorDuracao]="1.1"></strong>
-        <span class="pix__nota">Líquido de <span class="numero">{{ liquidoPix }}</span> depois da taxa do Pix. Comissão: zero.</span>
-      </div>
-    </div>
-  </div>
+  <app-jornada class="jornada" id="jornada" [passo]="passo()" [vivo]="vivo()" />
 
   <p class="palco__fim">O pedido inteiro é seu.</p>
 </section>

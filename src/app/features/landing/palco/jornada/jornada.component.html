@@ -1,0 +1,127 @@
+<h2 class="titulo">Do QR Code ao Pix, sem ninguém no meio</h2>
+
+<ol class="passos">
+  @for (p of jornada; track p.titulo; let i = $index) {
+    <li class="passo" [attr.data-estado]="estado(i)" [class]="'passo passo--' + (i + 1)">
+      <div class="passo__cabeca">
+        <span class="passo__numero numero" aria-hidden="true">{{ i + 1 }}</span>
+        <div>
+          <h3>{{ p.titulo }}</h3>
+          <p>{{ p.texto }}</p>
+        </div>
+      </div>
+
+      <div class="objeto" aria-hidden="true">
+        @switch (i) {
+          @case (0) {
+            <!-- celular do cliente lendo o QR da mesa -->
+            <div class="mesa">
+              <div class="mesa__qr"><app-qr-placeholder texto="bocca-burger/mesa-7" /></div>
+              <p>Peça por aqui<br /><strong>Mesa 7</strong></p>
+            </div>
+            <div class="fone">
+              <div class="fone__tela">
+                <div class="mira">
+                  <div class="mira__qr"><app-qr-placeholder texto="bocca-burger/mesa-7" /></div>
+                  <span class="mira__laser"></span>
+                </div>
+                <div class="fone__aviso">
+                  <strong>boccaburger.rende.app</strong>
+                  <span>Abrir o cardápio da Bocca Burger</span>
+                </div>
+              </div>
+            </div>
+          }
+          @case (1) {
+            <!-- pedido chegando no painel da loja -->
+            <div class="cartao cartao--velho">
+              <span class="cartao__rotulo">Pedido #1047 · Saiu</span>
+              <p class="cartao__titulo">Smash Clássico, batata</p>
+            </div>
+            <div class="cartao">
+              <div class="cartao__linha">
+                <span class="cartao__rotulo">Pedido novo</span>
+                <span class="cartao__rotulo numero">{{ pedido.hora }}</span>
+              </div>
+              <p class="cartao__titulo"><span class="numero">{{ pedido.numero }}</span> · {{ pedido.cliente }}</p>
+              <p class="cartao__itens">{{ pedido.itens }}</p>
+              <ol class="status">
+                @for (s of statusCartao; track s; let k = $index) {
+                  <li [class.aceso]="statusAceso() > k" [class.agora]="statusAceso() === k + 1">{{ s }}</li>
+                }
+              </ol>
+              <div class="cartao__linha cartao__fim">
+                <span>Total · entrega</span>
+                <strong class="numero">{{ totalPedido }}</strong>
+              </div>
+            </div>
+            <div class="aviso">
+              <svg class="aviso__sino" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6Zm-2 15a2 2 0 0 0 4 0" /></svg>
+              <span><strong>Novo pedido</strong> {{ pedido.numero }} chegou agora</span>
+            </div>
+          }
+          @case (2) {
+            <!-- impressora da cozinha soltando a comanda -->
+            <div class="impressora"><span class="impressora__fenda"></span><span class="impressora__luz"></span></div>
+            <div class="comanda">
+              <div class="comanda__papel">
+                <p class="comanda__loja">BOCCA BURGER · COZINHA</p>
+                <p class="numero">{{ pedido.numero }} · {{ pedido.hora }} · ENTREGA</p>
+                <ul>
+                  @for (c of comanda; track c.item) {
+                    <li><span class="numero">{{ c.qtd }}x</span> {{ c.item }}@if (c.obs) {<em>{{ c.obs }}</em>}</li>
+                  }
+                </ul>
+                <p class="comanda__pe">Preparo estimado: 12 min</p>
+              </div>
+            </div>
+            <div class="cronometro"><strong class="numero">12:00</strong><span>tempo de preparo</span></div>
+          }
+          @case (3) {
+            <!-- rota do motoboy -->
+            <div class="mapa">
+              <svg viewBox="0 0 320 220" class="mapa__ruas">
+                <path d="M0 40H320M0 120H320M0 180H320M40 0V220M130 0V220M250 0V220M190 0V120" />
+                <path class="mapa__rio" d="M0 205C60 190 110 214 170 200S280 188 320 196" />
+              </svg>
+              <svg viewBox="0 0 320 220" class="mapa__rota">
+                <path pathLength="1" d="M40 180V120H130V60H250V40" />
+              </svg>
+              <span class="mapa__loja"></span>
+              <span class="mapa__casa"></span>
+              <span class="mapa__moto"></span>
+              <div class="mapa__info">
+                <strong>Saiu às 19:58</strong>
+                <span>chega em ~12 min · Aquidabã</span>
+              </div>
+            </div>
+          }
+          @case (4) {
+            <!-- Pix caindo na conta -->
+            <div class="notificacao">
+              <span class="notificacao__icone">Pix</span>
+              <div>
+                <strong>Pix recebido</strong>
+                <span>R$ 68,30 de Marina Alves · agora</span>
+              </div>
+            </div>
+            <div class="comprovante">
+              <span>Entrou na conta da Bocca Burger</span>
+              <strong class="comprovante__valor numero" [appContador]="estado(4) === 'atual' ? pedido.totalCentavos : 0" [contadorDuracao]="1.2"></strong>
+              <dl>
+                <div><dt>Líquido</dt><dd class="numero">{{ liquidoPix }}</dd></div>
+                <div><dt>Comissão</dt><dd class="numero">R$ 0,00</dd></div>
+              </dl>
+            </div>
+          }
+        }
+      </div>
+    </li>
+  }
+</ol>
+
+<ol class="linha" aria-hidden="true" [style.--progresso]="progresso()">
+  @for (r of rotulos; track r; let i = $index) {
+    <li [class.feito]="passo() > i + 1" [class.atual]="passo() === i + 1">{{ r }}</li>
+  }
+</ol>

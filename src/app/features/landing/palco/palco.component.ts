@@ -2,7 +2,6 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   ElementRef,
   inject,
@@ -13,13 +12,10 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
-import { calcularLiquido } from '../../../core/models/pedido.model';
-import { formatarMoeda } from '../../../core/utils/moeda';
-import { ContadorDirective } from '../../../shared/movimento/contador.directive';
-import { QrPlaceholderComponent } from '../../../shared/ui/qr-placeholder.component';
 import { movimentoReduzido } from '../../../shared/movimento/movimento';
 import { prepararGsap } from '../movimento/rolagem.service';
-import { CAMADAS, Camada, centroMontado, JORNADA, PASSO_POR_CAMADA, PEDIDO_EXEMPLO, Pose, STATUS_CARTAO, statusDoPasso } from './camadas';
+import { CAMADAS, Camada, centroMontado, PASSO_POR_CAMADA, Pose } from './camadas';
+import { JornadaComponent } from './jornada/jornada.component';
 import { Vapor } from './vapor';
 
 /** Quando cada camada começa a descer (em "tempo" da timeline de rolagem). */
@@ -37,7 +33,7 @@ const DURACAO_DESCIDA = 1;
  */
 @Component({
   selector: 'app-palco',
-  imports: [RouterLink, QrPlaceholderComponent, ContadorDirective],
+  imports: [RouterLink, JornadaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './palco.component.html',
   styleUrl: './palco.component.scss',
@@ -51,18 +47,12 @@ export class PalcoComponent {
   private readonly camadasEl = viewChildren<ElementRef<HTMLElement>>('camada');
 
   protected readonly camadas = CAMADAS;
-  protected readonly jornada = JORNADA;
-  protected readonly pedido = PEDIDO_EXEMPLO;
-  protected readonly statusCartao = STATUS_CARTAO;
   protected readonly letras = 'Rende'.split('');
-  protected readonly totalPedido = formatarMoeda(PEDIDO_EXEMPLO.totalCentavos);
-  protected readonly liquidoPix = formatarMoeda(calcularLiquido(PEDIDO_EXEMPLO.totalCentavos, 'pix').liquidoCentavos);
 
   /** true quando a versão com rolagem (pin) está ligada. */
   protected readonly vivo = signal(false);
   /** Passo atual da jornada (1 a 5). Sem movimento fica no 5: tudo à mostra. */
   readonly passo = signal(5);
-  protected readonly statusAceso = computed(() => statusDoPasso(this.passo()));
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -219,7 +209,7 @@ export class PalcoComponent {
       tl.fromTo('.palco__fim', { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.5 }, fim + 0.2);
       tl.to({}, { duration: 0.6 }, fim + 0.7); // segura o hambúrguer montado um pouco
       // a frase final sai antes do pin soltar: assim ela nunca sobe por baixo do topo fixo
-      tl.to('.palco__fim', { autoAlpha: 0, y: -24, duration: 0.35 }, fim + 1.3);
+      tl.to(['.palco__fim', '.jornada'], { autoAlpha: 0, y: -24, duration: 0.35 }, fim + 1.3);
 
       // passo atual = quantas camadas já assentaram (lido do tempo da timeline)
       const marcos = CAMADAS.map((_, i) => INICIO_DESCIDA + i * INTERVALO + DURACAO_DESCIDA * 0.92);
