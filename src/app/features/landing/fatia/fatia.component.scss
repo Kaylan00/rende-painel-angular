@@ -21,7 +21,7 @@
   --encolhe: 1;
   --inicio: calc(var(--meio) - var(--ang) / 2);
   position: relative;
-  width: min(100%, 40rem);
+  width: min(100%, 46rem);
   margin: 0 auto;
   aspect-ratio: 1;
   container-type: inline-size;
@@ -38,7 +38,7 @@
 
 .pizza__corpo {
   position: absolute;
-  inset: 16% 18% 2% 0;
+  inset: 15% 17% 0 0;
   scale: var(--escala);
   transition: scale 0.5s var(--curva);
 }
@@ -154,12 +154,15 @@
   top: 0;
   right: 0;
   z-index: 1;
-  width: 34%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  width: 32%;
   transition: opacity 0.6s var(--curva), transform 0.6s var(--curva), filter 0.6s var(--curva);
 
   img {
-    width: 78%;
-    margin-left: auto;
+    width: 70%;
+    margin-right: 6%;
     filter: drop-shadow(0 30px 30px rgb(0 0 0 / 50%));
   }
 }
@@ -167,7 +170,7 @@
 .sacola__rotulo {
   display: flex;
   flex-direction: column;
-  margin: 0.5rem 0 0;
+  margin: 0 0 0.4rem;
   font-size: 0.875rem;
   line-height: 1.3;
   text-align: right;

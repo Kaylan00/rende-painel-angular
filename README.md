@@ -10,7 +10,7 @@ Restaurante de demonstração: **Bocca Burger**. A raiz (`/`) é a **landing pú
 
 | Tela | O que mostra / permite |
 | --- | --- |
-| **Landing** (`/`) | Página pública do produto, imersiva: o nome RENDE gigante com um **hambúrguer explodido** em 6 camadas (parallax com o mouse e vapor em canvas); ao rolar, a seção fica presa (GSAP ScrollTrigger) e as camadas **se empilham**, cada uma acendendo um passo do pedido (QR → painel → cozinha → entrega → Pix). Depois, **“a fatia do app”**: uma pizza em que a comissão sai voando, com sliders ligados a signals/`computed`; **anel 3D** com as 4 lojas de exemplo (HTML real) girando com a rolagem e o arrastar; um plano só, dúvidas e chamada para o WhatsApp. |
+| **Landing** (`/`) | Página pública do produto, imersiva: o nome RENDE gigante com um **hambúrguer explodido** em 6 camadas (parallax com o mouse e vapor em canvas); ao rolar, a seção fica presa (GSAP ScrollTrigger) e as camadas **se empilham**, cada uma acendendo um passo do pedido contado com objetos (celular lendo o QR, pedido chegando no painel, comanda saindo da impressora, rota do motoboy no mapa, Pix caindo na conta) e uma linha do tempo. Depois, **“a fatia do app”**: a pizza se monta vista de cima (massa gira, molho em espiral, manjericão cai), um cortador risca a fatia da comissão e ela vai para a sacola do app; sliders ligados a signals/`computed` mudam a fatia ao vivo. **Anel 3D** com 6 lojas de exemplo (HTML real), fundo com o ambiente da loja da frente e pedidos “ao vivo” subindo; o plano é uma **comanda** presa num trilho de cozinha e as dúvidas são **bilhetes** que você puxa (`details`/`summary`). Chamada final para o WhatsApp. |
 | **Login** (`/entrar`) | Formulário reativo com validação. Guarda o token e libera as rotas protegidas. |
 | **Dashboard** | Vendas do dia, ticket médio, valor a receber, gráfico de vendas (SVG feito à mão) e **receita líquida por forma de pagamento** (Pix, crédito, débito e dinheiro), mostrando a taxa de cada canal e o valor líquido. |
 | **Pedidos** | Tabela com filtros (status, forma de pagamento, período) e paginação. A busca usa RxJS (`debounceTime` + `switchMap`). Cada pedido só pode mudar de status seguindo a **máquina de estados**: `aguardando_pagamento → recebido → preparo → pronto → saiu → entregue` (ou `cancelado`, antes de sair da cozinha). |
@@ -35,7 +35,7 @@ Tudo em português, responsivo (menu inferior no celular, lateral no desktop; no
 - [motion](https://motion.dev) para animação (diretivas `appRevelar`, `appContador`, `appFlutuar`) e View Transitions do router entre telas
 - GSAP 3 + ScrollTrigger e Lenis (rolagem suave) só na landing, encapsulados em serviço/componentes e destruídos ao sair da página
 - Fontes Gambetta (títulos) e General Sans (interface e números tabulares), do Fontshare, servidas localmente
-- Jest 30 + jest-preset-angular (113 testes) e `HttpTestingController`
+- Jest 30 + jest-preset-angular (123 testes) e `HttpTestingController`
 - ESLint com `angular-eslint` (regras de acessibilidade de template incluídas)
 
 ## Como rodar
@@ -52,7 +52,7 @@ Entre com **qualquer e-mail válido e senha com 6 ou mais caracteres** (é uma d
 Outros comandos:
 
 ```bash
-npm test           # Jest (113 testes)
+npm test           # Jest (123 testes)
 npm run lint       # ESLint
 npm run build      # build de produção em dist/
 ```
@@ -118,7 +118,7 @@ src/styles.scss            # tokens do design system
 
 ## Testes
 
-113 testes em 16 arquivos, cobrindo:
+123 testes em 16 arquivos, cobrindo:
 
 - utilitários e pipe de moeda, arredondamento de taxas;
 - máquina de estados do pedido e receita líquida por canal;
@@ -138,7 +138,7 @@ O Angular CLI 22 só oferece Karma e Vitest no `ng new`, então o Jest foi confi
 
 - **Gambetta** e **General Sans**, do [Fontshare](https://www.fontshare.com) (ITF Free Font License), em `public/fonts/`.
 - Fotos reais do [Unsplash](https://unsplash.com) (licença Unsplash), em `src/assets/fotos/`, usadas nos celulares das lojas: amirali mirhashemian (hamburgueria), Aurélien Lemasson-Théobald (pizzaria), Vicky Ng (açaiteria) e Mae Mu (padaria).
-- Camadas do hambúrguer (`src/assets/hamburguer/`) e pizza vista de cima (`pizza-cima.webp`): imagens geradas por IA (Codex), com fundo transparente.
+- Imagens geradas por IA (Codex): camadas do hambúrguer (`src/assets/hamburguer/`), pizza vista de cima, massa, manjericão, cortador e sacola sem marca (`src/assets/pizza/`), ambientes das lojas (`src/assets/ambiente/`) e os pratos da marmitaria e da pastelaria (`src/assets/fotos/`). Sem pessoas.
 - Lojas da landing (Forno da Praça, Açaí do Porto, Padaria Dona Lia), preço (R$ 129/mês) e textos de dúvidas são de demonstração. O link de WhatsApp abre a conversa com a mensagem pronta; para fixar um número, troque `LINK_WHATSAPP` em `features/landing/conteudo.ts`.
 
 ## O que ficou de fora (de propósito)

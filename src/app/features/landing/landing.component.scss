@@ -89,6 +89,7 @@
 
 /* ---------- fatia do app ---------- */
 .secao-fatia {
+  overflow-x: clip;
   padding: clamp(5rem, 11vw, 9rem) 0;
   background: #0b231b;
 }
@@ -105,11 +106,32 @@
 .trilho {
   position: relative;
   z-index: 2;
-  height: 18px;
+  height: 26px;
   margin: 0 clamp(16px, 4vw, 3.5rem);
-  background: linear-gradient(180deg, #f4f4f2 0%, #b9bcbc 45%, #8d9191 55%, #d7d9d8 100%);
-  border-radius: 4px;
-  box-shadow: 0 10px 18px -8px rgb(0 0 0 / 35%);
+  background: linear-gradient(180deg, #fbfbfa 0%, #c9cccc 30%, #9a9e9e 52%, #6f7474 60%, #c3c6c6 82%, #e8e9e8 100%);
+  border-radius: 6px;
+  box-shadow: 0 14px 22px -10px rgb(0 0 0 / 40%), inset 0 -2px 0 rgb(0 0 0 / 12%);
+
+  /* suportes parafusados na parede, nas duas pontas */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    width: 34px;
+    height: 42px;
+    background: radial-gradient(circle at 50% 50%, #5d6262 0 4px, transparent 5px), linear-gradient(180deg, #d9dbdb, #8f9494);
+    border-radius: 6px;
+    box-shadow: 0 8px 14px -6px rgb(0 0 0 / 45%);
+  }
+
+  &::before {
+    left: 18px;
+  }
+
+  &::after {
+    right: 18px;
+  }
 }
 
 .conta {
@@ -119,7 +141,7 @@
 .conta__grade {
   display: grid;
   gap: 3rem;
-  margin-top: -9px; /* a comanda sai de dentro do trilho */
+  margin-top: -13px; /* a comanda sai de dentro do trilho */
 
   @media (min-width: 960px) {
     grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
@@ -250,7 +272,7 @@
 
 /* dúvidas: bilhetes pendurados no trilho; puxar = abrir */
 .duvidas {
-  padding: 0 0 clamp(5rem, 10vw, 8rem);
+  padding: 0 0 clamp(3rem, 6vw, 5rem);
 }
 
 .duvidas__cabeca {
@@ -277,7 +299,7 @@
   grid-auto-columns: minmax(15rem, 1fr);
   gap: 1rem;
   align-items: start;
-  margin-top: -9px;
+  margin-top: -13px;
   padding: 0 clamp(16px, 4vw, 3.5rem) 2rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;

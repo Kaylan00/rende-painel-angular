@@ -79,7 +79,7 @@ export const CAMADAS: Camada[] = [
     balanco: 5,
     pc: { x: 1.12, y: -0.02, giro: 12, escala: 0.86 },
     cel: { x: 0.38, y: 0, giro: 10, escala: 0.82 },
-    espera: { x: 0.36, y: -0.5, giro: 10 },
+    espera: { x: 0.18, y: -0.6, giro: 10 },
     esperaCel: { x: 0.8, y: -0.1, giro: 10 },
   },
   {

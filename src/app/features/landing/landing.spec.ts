@@ -65,13 +65,13 @@ describe('calcularFatia (a fatia do app na pizza)', () => {
     expect(calcularFatia(30_000, 30).graus).toBe(108);
   });
 
-  it('a pizza cresce com o faturamento, de 0,78 a 1, sem passar dos limites', () => {
-    expect(calcularFatia(FATURAMENTO_MIN_REAIS, 27).escala).toBe(0.78);
+  it('a pizza cresce com o faturamento, de 0,86 a 1, sem passar dos limites', () => {
+    expect(calcularFatia(FATURAMENTO_MIN_REAIS, 27).escala).toBe(0.86);
     expect(calcularFatia(FATURAMENTO_MAX_REAIS, 27).escala).toBe(1);
-    expect(calcularFatia(500, 27).escala).toBe(0.78);
+    expect(calcularFatia(500, 27).escala).toBe(0.86);
     expect(calcularFatia(999_999, 27).faturamentoCentavos).toBe(FATURAMENTO_MAX_REAIS * 100);
     const meio = calcularFatia(61_000, 27).escala;
-    expect(meio).toBeGreaterThan(0.78);
+    expect(meio).toBeGreaterThan(0.86);
     expect(meio).toBeLessThan(1);
   });
 

@@ -8,13 +8,13 @@ export const COMISSAO_MAX_PCT = 30;
 export const COMISSAO_PADRAO_PCT = COMISSAO_APP_BPS / 100;
 
 /** Menor e maior tamanho da pizza na tela (1 = tamanho cheio). */
-const ESCALA_MIN = 0.78;
+const ESCALA_MIN = 0.86;
 const ESCALA_MAX = 1;
 
 export interface Fatia extends Comparativo {
   /** Abertura da fatia do app, em graus (27% = 97,2°). */
   graus: number;
-  /** Tamanho da pizza conforme o faturamento (de 0,78 a 1). */
+  /** Tamanho da pizza conforme o faturamento (de 0,86 a 1). */
   escala: number;
   /** true quando a mensalidade sai mais barata que a comissão. */
   rendeCompensa: boolean;
