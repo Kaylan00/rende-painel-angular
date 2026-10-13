@@ -8,6 +8,7 @@ import {
   inject,
   signal,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -28,9 +29,26 @@ export function lojaDeFrente(giro: number, total = MODELOS.length): number {
 }
 
 interface Bolha extends PedidoAoVivo {
-  /** posição horizontal, de -1 (esquerda) a 1 (direita) do centro do anel */
-  dx: number;
   texto: string;
+}
+
+/** Quanto cada celular "devolve" do giro, virando-se para quem olha (0 = nada, 1 = sempre de frente). */
+const CONTRA_GIRO = 0.45;
+
+/** Ângulo de -180 a 180 (0 = de frente para quem olha). */
+export function anguloRelativo(angulo: number): number {
+  const a = (((angulo + 180) % 360) + 360) % 360 - 180;
+  return Math.round(a * 100) / 100;
+}
+
+/**
+ * Opacidade de um celular do anel pela angulação em relação a quem olha:
+ * de frente (0°) até 60° fica inteiro; perto de 90° (de lado, vira uma tira fina) some.
+ */
+export function opacidadeNoAnel(anguloGraus: number): number {
+  const rad = (anguloGraus * Math.PI) / 180;
+  const v = (Math.cos(rad) - 0.12) / 0.38;
+  return Math.round(Math.min(1, Math.max(0, v)) * 100) / 100;
 }
 
 const INTERVALO_PEDIDO_MS = 1150;
@@ -53,6 +71,7 @@ export class LojasComponent {
   private readonly secao = viewChild.required<ElementRef<HTMLElement>>('secao');
   private readonly anel = viewChild.required<ElementRef<HTMLElement>>('anel');
   private readonly cena = viewChild.required<ElementRef<HTMLElement>>('cena');
+  private readonly celulares = viewChildren<ElementRef<HTMLElement>>('celular');
 
   protected readonly modelos = MODELOS;
   protected readonly passoAnel = PASSO_ANEL;
@@ -65,6 +84,8 @@ export class LojasComponent {
   readonly totalHoje = computed(() => this.pedidosHoje().reduce((a, b) => a + b, 0));
   protected readonly totalTexto = computed(() => new Intl.NumberFormat('pt-BR').format(this.totalHoje()));
   protected readonly bolhas = signal<Bolha[]>([]);
+  /** Mais nova primeiro. */
+  protected readonly bolhasRecentes = computed(() => [...this.bolhas()].reverse());
   private contador = 0;
 
   constructor() {
@@ -89,9 +110,8 @@ export class LojasComponent {
   /** Chega um pedido novo: sobe uma bolha e o contador da loja anda. */
   chegarPedido(): void {
     const pedido = pedidoAoVivo(this.contador++);
-    const dx = (((pedido.id * 37) % 100) / 100) * 2 - 1;
     const texto = `${pedido.quantidade}x ${pedido.item} · ${formatarMoeda(pedido.valorCentavos)} · ${pedido.forma}`;
-    this.bolhas.update((lista) => [...lista.slice(-(BOLHAS_NA_TELA - 1)), { ...pedido, dx, texto }]);
+    this.bolhas.update((lista) => [...lista.slice(-(BOLHAS_NA_TELA - 1)), { ...pedido, texto }]);
     this.pedidosHoje.update((lista) => lista.map((v, i) => (i === pedido.loja ? v + 1 : v)));
   }
 
@@ -107,6 +127,11 @@ export class LojasComponent {
     const aplicar = () => {
       const giro = estado.rolagem + estado.arrasto;
       anel.style.setProperty('--giro', giro + 'deg');
+      this.celulares().forEach((ref, i) => {
+        const angulo = anguloRelativo(i * PASSO_ANEL + giro);
+        ref.nativeElement.style.opacity = String(opacidadeNoAnel(angulo));
+        ref.nativeElement.style.setProperty('--contra', -angulo * CONTRA_GIRO + 'deg');
+      });
       const frente = lojaDeFrente(giro);
       if (frente !== this.frente()) this.frente.set(frente);
     };

@@ -12,18 +12,32 @@
         <h2 id="titulo-lojas">Uma rede inteira de cozinhas vendendo agora, cada uma com a sua loja.</h2>
         <p>Cardápio, fotos e cor de cada restaurante. O cliente pede pelo navegador, sem baixar nada.</p>
       </div>
+      <div class="lojas__direita">
       <p class="contador" aria-live="off">
         <strong class="numero">{{ totalTexto() }}</strong>
         <span>pedidos hoje nas lojas de exemplo</span>
         <span class="contador__zero">comissão cobrada: <b class="numero">R$ 0,00</b></span>
       </p>
+        <!-- pedidos ao vivo: faixa própria, embaixo do contador (nunca sobre os celulares) -->
+        <ol class="bolhas" aria-hidden="true">
+          @for (b of bolhasRecentes(); track b.id) {
+            <li class="bolha" [style.--cor]="modelos[b.loja].cor" [style.--cor-texto]="modelos[b.loja].corTexto">
+              <span class="bolha__marca">{{ modelos[b.loja].nome.charAt(0) }}</span>
+              <span class="bolha__texto">
+                <strong>{{ modelos[b.loja].nome }} <span class="numero">#{{ b.numero }}</span></strong>
+                <span>{{ b.texto }}</span>
+              </span>
+            </li>
+          }
+        </ol>
+      </div>
     </div>
 
     <div class="lojas__cena" #cena>
       <div class="anel" #anel>
         @for (m of modelos; track m.nome; let i = $index) {
           <article class="celular" [style.--i]="i" [style.--passo]="passoAnel + 'deg'" [style.--cor]="m.cor" [style.--cor-texto]="m.corTexto"
-            [class.celular--frente]="frente() === i" [attr.aria-label]="'Loja de exemplo: ' + m.nome">
+            [class.celular--frente]="frente() === i" #celular [attr.aria-label]="'Loja de exemplo: ' + m.nome">
             <div class="tela">
               <div class="tela__barra numero" aria-hidden="true"><span>19:42</span><span>{{ endereco(m.nome) }}</span></div>
               <img class="tela__foto" [src]="m.foto" [alt]="m.alt" width="800" height="1000" loading="lazy" decoding="async" />
@@ -53,18 +67,6 @@
         }
       </div>
 
-      <!-- pedidos ao vivo subindo das lojas -->
-      <div class="bolhas" aria-hidden="true">
-        @for (b of bolhas(); track b.id) {
-          <div class="bolha" [style.--dx]="b.dx" [style.--cor]="modelos[b.loja].cor" [style.--cor-texto]="modelos[b.loja].corTexto">
-            <span class="bolha__marca">{{ modelos[b.loja].nome.charAt(0) }}</span>
-            <span class="bolha__texto">
-              <strong>{{ modelos[b.loja].nome }} <span class="numero">#{{ b.numero }}</span></strong>
-              <span>{{ b.texto }}</span>
-            </span>
-          </div>
-        }
-      </div>
     </div>
 
     <p class="lojas__atual" aria-hidden="true">

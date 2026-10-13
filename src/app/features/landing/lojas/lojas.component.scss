@@ -282,31 +282,45 @@
   color: var(--cor) !important;
 }
 
-/* ---------- pedidos ao vivo ---------- */
+/* ---------- pedidos ao vivo: faixa própria embaixo do contador ---------- */
+.lojas__direita {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 960px) {
+    align-items: flex-end;
+    width: 19rem;
+  }
+}
+
 .bolhas {
-  display: none;
+  display: grid;
+  gap: 0.45rem;
+  min-height: 9.6rem; /* reserva o espaço de 3 pedidos: nada pula quando chegam */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (max-width: 959px) {
+    min-height: 3.1rem; /* no celular, só o pedido mais novo */
+  }
 }
 
 .bolha {
-  position: absolute;
-  bottom: var(--base-bolha, 52%);
-  left: calc(50% + var(--dx) * var(--espalho, 30vw));
   display: flex;
   gap: 0.6rem;
   align-items: center;
-  width: max-content;
-  max-width: 19rem;
-  padding: 0.55rem 0.8rem 0.55rem 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
   font-size: 0.8125rem;
   line-height: 1.25;
   color: var(--creme);
-  background: rgb(12 30 23 / 78%);
+  background: rgb(12 30 23 / 72%);
   border-radius: 12px;
-  box-shadow: 0 18px 30px -16px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(242 234 219 / 14%);
+  box-shadow: 0 14px 26px -16px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(242 234 219 / 14%);
   backdrop-filter: blur(10px);
-  translate: -50% 0;
-  animation: subir-bolha 3.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
-  pointer-events: none;
+  animation: chegar-pedido 0.6s cubic-bezier(0.34, 1.3, 0.5, 1) both;
 
   strong {
     display: block;
@@ -316,6 +330,20 @@
   .numero {
     font-weight: 400;
     opacity: 0.7;
+  }
+
+  &:nth-child(2) {
+    opacity: 0.7;
+  }
+
+  &:nth-child(3) {
+    opacity: 0.4;
+  }
+
+  @media (max-width: 959px) {
+    &:nth-child(n + 2) {
+      display: none;
+    }
   }
 }
 
@@ -332,28 +360,22 @@
   border-radius: 8px;
 }
 
-.bolha__texto > span {
-  color: rgb(242 234 219 / 78%);
+.bolha__texto {
+  min-width: 0;
+
+  > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgb(242 234 219 / 78%);
+  }
 }
 
-@keyframes subir-bolha {
-  0% {
+@keyframes chegar-pedido {
+  from {
     opacity: 0;
-    transform: translateY(40px) scale(0.92);
-  }
-
-  12% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  75% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-150px) scale(0.96);
+    transform: translateY(-14px) scale(0.96);
   }
 }
 
@@ -361,43 +383,80 @@
   display: none;
 }
 
-/* =============== versão com movimento: anel 3D preso na tela =============== */
+/* =============== versão com movimento: anel 3D grande, preso na tela =============== */
 .lojas--vivo {
-  --w: 232px;
-  --h: 478px;
-  --r: 420px;
+  --h: min(63svh, 590px);
+  --w: calc(var(--h) * 0.49);
+  --r: calc(var(--w) * 1.18);
   height: 420svh;
 
   @media (max-width: 767px) {
-    --w: 196px;
-    --h: 404px;
-    --r: 270px;
+    --h: min(54svh, 470px);
+    --r: calc(var(--w) * 1.22);
     height: 330svh;
   }
 
   .lojas__palco {
     position: sticky;
     top: 0;
+    display: block;
     height: 100svh;
-    min-height: 640px;
-    grid-template-rows: auto 1fr auto;
-    gap: 0.5rem;
-    padding-top: clamp(4.5rem, 10svh, 6.5rem);
-    padding-bottom: clamp(1rem, 3svh, 2rem);
+    min-height: 620px;
+    padding: 0;
+  }
+
+  /* título pequeno no canto; contador e pedidos ao vivo na direita */
+  .lojas__topo {
+    position: absolute;
+    top: clamp(4.25rem, 9svh, 5.5rem);
+    right: clamp(16px, 4vw, 3.5rem);
+    left: clamp(16px, 4vw, 3.5rem);
+    z-index: 6;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .lojas__texto {
+    h2 {
+      max-width: 15ch;
+      font-size: clamp(1.35rem, 1rem + 1vw, 2rem);
+      line-height: 1.08;
+    }
+
+    p {
+      max-width: 16rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .lojas__direita {
+    width: 17rem;
+    align-items: stretch;
+    text-align: right;
+  }
+
+  .contador strong {
+    font-size: clamp(2.2rem, 1.6rem + 1.6vw, 3.4rem);
   }
 
   .lojas__cena {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
-    height: 100%;
-    perspective: 1700px;
-    perspective-origin: 50% 35%;
+    padding-top: 7svh;
+    perspective: 2200px;
+    perspective-origin: 50% 40%;
     cursor: grab;
     touch-action: pan-y;
     user-select: none;
 
     @media (max-width: 767px) {
-      perspective: 1000px;
+      padding-top: 13svh;
+      perspective: 1300px;
     }
   }
 
@@ -413,52 +472,47 @@
     padding: 0;
     overflow: visible;
     transform-style: preserve-3d;
-    transform: translateZ(calc(var(--r) * -1)) rotateX(-7deg) rotateY(var(--giro, 0deg));
-
-    @media (max-width: 767px) {
-      transform: translateZ(calc(var(--r) * -1)) rotateX(-7deg) rotateY(var(--giro, 0deg)) scale(0.92);
-    }
+    transform: translateZ(calc(var(--r) * -1)) rotateX(-5deg) rotateY(var(--giro, 0deg));
   }
 
+  /* cada celular gira de volta uma parte do ângulo (--contra, calculado no componente):
+     os laterais aparecem com corpo, em vez de virar uma tira fina */
   .celular {
     position: absolute;
     inset: 0;
     backface-visibility: hidden;
-    transform: rotateY(calc(var(--i) * var(--passo))) translateZ(var(--r));
+    transform: rotateY(calc(var(--i) * var(--passo))) translateZ(var(--r)) rotateY(var(--contra, 0deg));
     transition: box-shadow 0.6s var(--curva);
   }
 
   .celular--frente {
-    box-shadow: 0 50px 90px -30px rgb(0 0 0 / 85%), 0 0 0 1px color-mix(in srgb, var(--cor) 60%, transparent),
-      0 0 70px -10px color-mix(in srgb, var(--cor) 55%, transparent);
+    box-shadow: 0 60px 100px -30px rgb(0 0 0 / 85%), 0 0 0 1px color-mix(in srgb, var(--cor) 60%, transparent),
+      0 0 80px -10px color-mix(in srgb, var(--cor) 55%, transparent);
   }
 
-  .bolhas {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    display: block;
-    --espalho: 26vw;
-
-    @media (max-width: 767px) {
-      --espalho: 18vw;
-      --base-bolha: 74%;
-    }
+  .tela__foto {
+    height: 30%;
   }
 
   .lojas__atual {
+    position: absolute;
+    right: 0;
+    bottom: clamp(0.75rem, 2.5svh, 1.75rem);
+    left: 0;
+    z-index: 6;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 0.75rem;
+    gap: 0.15rem 0.75rem;
     align-items: baseline;
     justify-content: center;
     margin: 0;
     font-size: 0.9375rem;
     color: rgb(242 234 219 / 82%);
+    pointer-events: none;
 
     strong {
       font-family: var(--fonte-titulo);
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 500;
       color: var(--creme);
     }
@@ -473,11 +527,23 @@
 
   @media (max-width: 767px) {
     .lojas__topo {
-      gap: 0.6rem;
+      top: 3.75rem;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .lojas__texto h2 {
+      max-width: none;
+      font-size: 1.3rem;
     }
 
     .lojas__texto p {
       display: none;
+    }
+
+    .lojas__direita {
+      width: 100%;
+      text-align: left;
     }
 
     .contador {
@@ -485,9 +551,10 @@
       flex-wrap: wrap;
       gap: 0 0.5rem;
       align-items: baseline;
+      text-align: left;
 
       strong {
-        font-size: 2rem;
+        font-size: 1.6rem;
       }
     }
 
@@ -495,16 +562,12 @@
       width: 100%;
     }
 
-    .bolha {
-      max-width: 15rem;
-      font-size: 0.75rem;
+    .bolhas {
+      min-height: 2.9rem;
     }
-  }
-}
 
-/* no celular, só as duas bolhas mais novas (sem cobrir o celular da frente) */
-@media (max-width: 767px) {
-  .bolha:nth-last-child(n + 3) {
-    display: none;
+    .lojas__atual strong {
+      font-size: 1.25rem;
+    }
   }
 }
