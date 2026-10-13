@@ -1,33 +1,100 @@
 /* ============================================================
-   Mini design system do Rende
-   Tokens (variáveis CSS) + reset + classes utilitárias.
-   Tema claro. Para criar um tema escuro bastaria redefinir
-   estas variáveis dentro de um seletor [data-tema='escuro'].
+   Design system do Rende — direção "verde editorial"
+   Tokens (variáveis CSS) + fontes + reset + utilitários.
+   Verde-escuro profundo como marca, creme de fundo, um único
+   acento quente (terracota) usado com parcimônia.
+   Todos os pares de texto/fundo passam no contraste AA (4,5:1).
    ============================================================ */
+
+/* Fontes servidas localmente (Fontshare, licença ITF Free Font). */
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'General Sans';
+  src: url('/fonts/general-sans-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'General Sans';
+  src: url('/fonts/general-sans-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'General Sans';
+  src: url('/fonts/general-sans-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  /* cores da marca */
-  --cor-primaria: #0b6b4f;
-  --cor-primaria-hover: #085640;
-  --cor-primaria-suave: #e3f4ed;
-  --cor-sobre-primaria: #ffffff;
+  /* paleta */
+  --verde-950: #0b2e23;
+  --verde-900: #0f3d2e;
+  --verde-800: #155039;
+  --verde-700: #1d6248;
+  --verde-200: #c9d8cd;
+  --verde-100: #e6ede6;
+  --creme: #f5f0e6;
+  --creme-escuro: #ebe3d4;
+  --papel: #fcfaf5;
+  --tinta: #16201b;
+  --tinta-suave: #59625c;
+  --linha: #ddd5c6;
+  --linha-forte: #c7bead;
+  --acento: #a84b25; /* terracota: só em detalhes */
+  --acento-claro: #e39a6b; /* versão para fundo verde */
 
-  /* superfícies e texto (contraste mínimo 4.5:1 sobre o fundo) */
-  --cor-fundo: #f4f6f5;
-  --cor-superficie: #ffffff;
-  --cor-borda: #d5dcd9;
-  --cor-texto: #1b2622;
-  --cor-texto-suave: #55625d;
+  /* papéis (os componentes consomem estes) */
+  --cor-primaria: var(--verde-900);
+  --cor-primaria-hover: var(--verde-800);
+  --cor-primaria-suave: var(--verde-100);
+  --cor-sobre-primaria: var(--creme);
 
-  /* semânticas */
-  --cor-sucesso: #166534;
-  --cor-sucesso-fundo: #dcfce7;
+  --cor-fundo: var(--creme);
+  --cor-superficie: var(--papel);
+  --cor-borda: var(--linha);
+  --cor-texto: var(--tinta);
+  --cor-texto-suave: var(--tinta-suave);
+
+  /* semânticas (texto escuro o bastante para AA sobre o creme) */
+  --cor-sucesso: #1f6b3a;
+  --cor-sucesso-fundo: #e1eee3;
   --cor-aviso: #8a4b00;
-  --cor-aviso-fundo: #fef3c7;
-  --cor-perigo: #b42318;
-  --cor-perigo-fundo: #fee4e2;
-  --cor-info: #1d4ed8;
-  --cor-info-fundo: #e0e9ff;
-  --cor-foco: #1d4ed8;
+  --cor-aviso-fundo: #f6e8cf;
+  --cor-perigo: #a3261b;
+  --cor-perigo-fundo: #f7e1dc;
+  --cor-info: #1f5c7a;
+  --cor-info-fundo: #e0ecf1;
+  --cor-foco: #1f5c7a;
 
   /* espaçamento, raio, sombra, tipografia */
   --espaco-1: 0.25rem;
@@ -36,11 +103,16 @@
   --espaco-4: 1rem;
   --espaco-5: 1.5rem;
   --espaco-6: 2rem;
-  --raio: 10px;
-  --raio-pequeno: 6px;
-  --sombra: 0 1px 2px rgb(16 40 30 / 8%), 0 4px 12px rgb(16 40 30 / 6%);
-  --fonte: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --espaco-7: 3rem;
+  --espaco-8: 4.5rem;
+  --raio: 12px;
+  --raio-pequeno: 8px;
+  --sombra: 0 1px 2px rgb(15 61 46 / 6%), 0 8px 24px -12px rgb(15 61 46 / 18%);
+  --sombra-alta: 0 30px 60px -30px rgb(11 46 35 / 45%), 0 12px 24px -16px rgb(11 46 35 / 25%);
+  --fonte: 'General Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fonte-titulo: 'Gambetta', Georgia, 'Times New Roman', serif;
   --altura-controle: 2.75rem; /* 44px: alvo de toque confortável */
+  --curva: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 *,
@@ -49,32 +121,52 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: var(--fonte);
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--cor-texto);
   background: var(--cor-fundo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2,
 h3 {
   margin: 0;
-  line-height: 1.25;
+  font-family: var(--fonte-titulo);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--verde-950);
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
 }
 
 h2 {
+  font-size: 1.375rem;
+}
+
+h3 {
   font-size: 1.125rem;
 }
 
 a {
   color: var(--cor-primaria);
+  text-underline-offset: 0.2em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 /* foco sempre visível para quem navega pelo teclado */
@@ -103,9 +195,14 @@ a {
   padding: 0 var(--espaco-3);
   font: inherit;
   color: var(--cor-texto);
-  background: var(--cor-superficie);
-  border: 1px solid var(--cor-borda);
+  background: var(--papel);
+  border: 1px solid var(--linha-forte);
   border-radius: var(--raio-pequeno);
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--tinta-suave);
+  }
 
   &:focus-visible {
     border-color: var(--cor-foco);
@@ -121,18 +218,27 @@ textarea.controle {
   resize: vertical;
 }
 
+select.controle {
+  padding-right: var(--espaco-6);
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--tinta-suave) 50%),
+    linear-gradient(135deg, var(--tinta-suave) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 52%, calc(100% - 13px) 52%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* estrutura comum das telas do painel */
 .pagina {
   display: flex;
   flex-direction: column;
-  gap: var(--espaco-5);
+  gap: var(--espaco-6);
 }
 
 .pagina__titulo {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--espaco-2);
+  flex-direction: column;
+  gap: var(--espaco-1);
 
   p {
     margin: 0;
@@ -141,11 +247,10 @@ textarea.controle {
 }
 
 .painel {
-  padding: var(--espaco-4);
+  padding: var(--espaco-5);
   background: var(--cor-superficie);
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio);
-  box-shadow: var(--sombra);
 }
 
 .texto-suave {
@@ -157,8 +262,21 @@ textarea.controle {
   font-variant-numeric: tabular-nums;
 }
 
+/* transição entre rotas (View Transitions do router): só um fade curto */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--curva);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  * {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
