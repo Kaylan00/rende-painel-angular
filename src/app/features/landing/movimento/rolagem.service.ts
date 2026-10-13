@@ -42,7 +42,12 @@ export class RolagemService {
   }
 
   /** Rola até uma seção (links do topo). Sem Lenis, usa a rolagem do navegador. */
-  irPara(alvo: HTMLElement): void {
+  irPara(alvo: HTMLElement | number): void {
+    if (typeof alvo === 'number') {
+      if (this.lenis) this.lenis.scrollTo(alvo, { duration: 1.4 });
+      else window.scrollTo({ top: alvo });
+      return;
+    }
     if (this.lenis) this.lenis.scrollTo(alvo, { offset: 0, duration: 1.4 });
     else alvo.scrollIntoView({ behavior: movimentoReduzido() ? 'auto' : 'smooth' });
   }

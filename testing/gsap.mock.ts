@@ -9,6 +9,7 @@ const timeline = () => {
   const tl: Record<string, jest.Mock> = {};
   for (const metodo of ['to', 'from', 'fromTo', 'set', 'add', 'call', 'addLabel', 'eventCallback']) tl[metodo] = jest.fn(() => tl);
   tl['time'] = jest.fn(() => 0);
+  tl['duration'] = jest.fn(() => 8);
   tl['kill'] = jest.fn();
   tl['progress'] = jest.fn(() => 0);
   return tl;

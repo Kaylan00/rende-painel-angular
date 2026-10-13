@@ -217,10 +217,14 @@ export class PalcoComponent {
       const fim = INICIO_DESCIDA + (CAMADAS.length - 1) * INTERVALO + DURACAO_DESCIDA;
       tl.fromTo(secao, { '--solto': 0.25 }, { '--solto': 0, duration: 1 }, fim - 1);
       tl.fromTo('.palco__fim', { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.5 }, fim + 0.2);
-      tl.to({}, { duration: 0.7 }, fim + 0.7); // segura o hambúrguer montado um pouco
+      tl.to({}, { duration: 0.6 }, fim + 0.7); // segura o hambúrguer montado um pouco
+      // a frase final sai antes do pin soltar: assim ela nunca sobe por baixo do topo fixo
+      tl.to('.palco__fim', { autoAlpha: 0, y: -24, duration: 0.35 }, fim + 1.3);
 
       // passo atual = quantas camadas já assentaram (lido do tempo da timeline)
       const marcos = CAMADAS.map((_, i) => INICIO_DESCIDA + i * INTERVALO + DURACAO_DESCIDA * 0.92);
+      // onde o link "Como funciona" deve parar: logo depois que a 1ª camada assenta (fração do pin)
+      secao.dataset['inicioJornada'] = String((marcos[0] + 0.15) / tl.duration());
       tl.eventCallback('onUpdate', () => {
         const t = tl.time();
         let passo = 0;

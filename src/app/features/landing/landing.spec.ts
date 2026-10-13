@@ -7,7 +7,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { compararCustos, COMISSAO_APP_BPS, MENSALIDADE_RENDE_CENTAVOS } from './comparativo';
 import { calcularFatia, FATURAMENTO_MAX_REAIS, FATURAMENTO_MIN_REAIS } from './fatia/fatia';
 import { FatiaComponent } from './fatia/fatia.component';
-import { LandingComponent } from './landing.component';
+import { LandingComponent, posicaoDaJornada } from './landing.component';
 import { lojaDeFrente, LojasComponent } from './lojas/lojas.component';
 import { RolagemService } from './movimento/rolagem.service';
 import { CAMADAS, centroMontado, JORNADA, PASSO_POR_CAMADA, statusDoPasso } from './palco/camadas';
@@ -157,6 +157,21 @@ describe('palco: camadas e jornada', () => {
 
   it('o cartão do painel acende o status certo em cada passo', () => {
     expect([0, 1, 2, 3, 4, 5].map(statusDoPasso)).toEqual([0, 0, 1, 2, 3, 4]);
+  });
+});
+
+describe('posicaoDaJornada (link "Como funciona")', () => {
+  it('sem pin usa a própria seção; com pin para logo depois da 1ª camada', () => {
+    document.body.innerHTML =
+      '<div class="pin-spacer" style="height:5000px"><section class="palco" data-inicio-jornada="0.25"><div id="jornada"></div></section></div>';
+    const espaco = document.querySelector<HTMLElement>('.pin-spacer')!;
+    Object.defineProperty(espaco, 'offsetHeight', { value: 5000 });
+    const alvo = document.getElementById('jornada')!;
+    expect(posicaoDaJornada('fatia', alvo)).toBeNull();
+    expect(posicaoDaJornada('jornada', alvo)).toBe(Math.round((5000 - window.innerHeight) * 0.25));
+    espaco.classList.remove('pin-spacer');
+    expect(posicaoDaJornada('jornada', alvo)).toBeNull();
+    document.body.innerHTML = '';
   });
 });
 

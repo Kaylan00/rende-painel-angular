@@ -25,6 +25,20 @@ export const SECOES: LinkSecao[] = [
 ];
 
 /**
+ * "Como funciona" aponta para a jornada, que vive dentro do palco preso (pin).
+ * Com o pin ligado, o destino é o ponto da rolagem em que a 1ª camada já assentou.
+ */
+export function posicaoDaJornada(id: string, alvo: HTMLElement): number | null {
+  if (id !== 'jornada') return null;
+  const palco = alvo.closest<HTMLElement>('.palco');
+  const espaco = palco?.parentElement;
+  const fracao = Number(palco?.dataset['inicioJornada']);
+  if (!palco || !espaco?.classList.contains('pin-spacer') || !fracao) return null;
+  const inicio = espaco.getBoundingClientRect().top + window.scrollY;
+  return Math.round(inicio + (espaco.offsetHeight - window.innerHeight) * fracao);
+}
+
+/**
  * Página pública do Rende ("/"). O painel continua atrás do login.
  * A rolagem suave (Lenis) e o ScrollTrigger nascem aqui e morrem com a página.
  */
@@ -80,7 +94,7 @@ export class LandingComponent {
     const alvo = document.getElementById(id);
     if (!alvo) return;
     evento.preventDefault();
-    this.rolagem.irPara(alvo);
+    this.rolagem.irPara(posicaoDaJornada(id, alvo) ?? alvo);
     history.replaceState(null, '', '#' + id);
   }
 }
