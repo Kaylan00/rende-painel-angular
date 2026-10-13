@@ -20,6 +20,10 @@ export interface ModeloLoja {
   horario: string;
   foto: string;
   alt: string;
+  /** foto de ambiente da loja (fundo da seção quando ela está de frente) */
+  ambiente: string;
+  /** pedidos do dia no começo da demonstração */
+  pedidosHoje: number;
   /** cor de destaque da loja (cada loja tem a sua) */
   cor: string;
   /** cor do texto sobre a cor da loja */
@@ -32,6 +36,8 @@ export interface ModeloLoja {
 export const MODELOS: ModeloLoja[] = [
   {
     nome: 'Bocca Burger',
+    ambiente: 'assets/ambiente/amb-hamburgueria.jpg',
+    pedidosHoje: 128,
     tipo: 'Hamburgueria',
     cidade: 'Cachoeiro',
     horario: 'aberto até 23h',
@@ -49,6 +55,8 @@ export const MODELOS: ModeloLoja[] = [
   },
   {
     nome: 'Forno da Praça',
+    ambiente: 'assets/ambiente/amb-pizzaria.jpg',
+    pedidosHoje: 96,
     tipo: 'Pizzaria',
     cidade: 'Vila Velha',
     horario: 'aberto até 0h',
@@ -66,6 +74,8 @@ export const MODELOS: ModeloLoja[] = [
   },
   {
     nome: 'Açaí do Porto',
+    ambiente: 'assets/ambiente/amb-acaiteria.jpg',
+    pedidosHoje: 141,
     tipo: 'Açaiteria',
     cidade: 'Guarapari',
     horario: 'aberto até 22h',
@@ -83,6 +93,8 @@ export const MODELOS: ModeloLoja[] = [
   },
   {
     nome: 'Padaria Dona Lia',
+    ambiente: 'assets/ambiente/amb-padaria.jpg',
+    pedidosHoje: 87,
     tipo: 'Padaria e café',
     cidade: 'Colatina',
     horario: 'aberto até 20h',
@@ -97,6 +109,44 @@ export const MODELOS: ModeloLoja[] = [
       { nome: 'Café coado 200 ml', descricao: 'Grão do Caparaó', preco: 'R$ 6,00' },
     ],
     sacola: 'R$ 15,50',
+  },
+  {
+    nome: 'Sabor de Casa',
+    ambiente: 'assets/ambiente/amb-marmitaria.jpg',
+    pedidosHoje: 112,
+    tipo: 'Marmitaria',
+    cidade: 'Linhares',
+    horario: 'almoço até 15h',
+    foto: 'assets/fotos/marmitaria.jpg',
+    alt: 'Prato feito com arroz, feijão preto, frango grelhado, farofa e salada',
+    cor: '#2f6b4f',
+    corTexto: '#f3fbf5',
+    categorias: ['Pratos do dia', 'Marmitas', 'Sucos'],
+    itens: [
+      { nome: 'Prato feito de frango', descricao: 'Arroz, feijão, farofa e salada', preco: 'R$ 24,90' },
+      { nome: 'Marmita fitness', descricao: 'Frango, arroz integral e legumes', preco: 'R$ 27,90' },
+      { nome: 'Suco de laranja 500 ml', descricao: 'Natural, sem açúcar', preco: 'R$ 9,00' },
+    ],
+    sacola: 'R$ 33,90',
+  },
+  {
+    nome: 'Pastel do Mercado',
+    ambiente: 'assets/ambiente/amb-pastelaria.jpg',
+    pedidosHoje: 153,
+    tipo: 'Pastelaria',
+    cidade: 'Vitória',
+    horario: 'aberto até 21h',
+    foto: 'assets/fotos/pastelaria.jpg',
+    alt: 'Três pastéis fritos dourados sobre papel, com molho de pimenta',
+    cor: '#1f4e79',
+    corTexto: '#f1f7fd',
+    categorias: ['Pastéis', 'Caldo de cana', 'Combos'],
+    itens: [
+      { nome: 'Pastel de carne', descricao: 'Carne moída temperada e ovo', preco: 'R$ 12,00' },
+      { nome: 'Pastel de queijo', descricao: 'Muçarela que puxa', preco: 'R$ 11,00' },
+      { nome: 'Caldo de cana 500 ml', descricao: 'Com limão', preco: 'R$ 8,00' },
+    ],
+    sacola: 'R$ 23,00',
   },
 ];
 

@@ -11,9 +11,11 @@ import {
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { formatarMoeda } from '../../../core/utils/moeda';
 import { movimentoReduzido } from '../../../shared/movimento/movimento';
 import { MODELOS } from '../conteudo';
 import { prepararGsap } from '../movimento/rolagem.service';
+import { pedidoAoVivo, PedidoAoVivo } from './ao-vivo';
 
 /** Ângulo entre um celular e o próximo no anel. */
 export const PASSO_ANEL = 360 / MODELOS.length;
@@ -25,10 +27,21 @@ export function lojaDeFrente(giro: number, total = MODELOS.length): number {
   return (indice + total) % total;
 }
 
+interface Bolha extends PedidoAoVivo {
+  /** posição horizontal, de -1 (esquerda) a 1 (direita) do centro do anel */
+  dx: number;
+  texto: string;
+}
+
+const INTERVALO_PEDIDO_MS = 1150;
+/** Quantas bolhas ficam na tela (cada uma vive ~3 intervalos, o tempo da animação de subir). */
+const BOLHAS_NA_TELA = 3;
+
 /**
- * As 4 lojas de exemplo, cada uma num celular, presas num anel 3D (CSS transforms).
- * O anel gira com a rolagem (ScrollTrigger) e com o arrastar (mouse ou dedo).
- * Sem movimento, os celulares ficam lado a lado, parados.
+ * As lojas da rede, cada uma num celular, presas num anel 3D (CSS transforms).
+ * O anel gira com a rolagem (ScrollTrigger) e com o arrastar; o fundo vira o ambiente da loja
+ * da frente; pedidos "ao vivo" sobem das lojas e os contadores do dia andam.
+ * Sem movimento, os celulares ficam lado a lado, parados, com os números do dia.
  */
 @Component({
   selector: 'app-lojas',
@@ -46,6 +59,13 @@ export class LojasComponent {
   protected readonly vivo = signal(false);
   protected readonly frente = signal(0);
   protected readonly lojaAtual = computed(() => this.modelos[this.frente()]);
+
+  /** Pedidos do dia por loja (andam quando chega pedido ao vivo). */
+  readonly pedidosHoje = signal(MODELOS.map((m) => m.pedidosHoje));
+  readonly totalHoje = computed(() => this.pedidosHoje().reduce((a, b) => a + b, 0));
+  protected readonly totalTexto = computed(() => new Intl.NumberFormat('pt-BR').format(this.totalHoje()));
+  protected readonly bolhas = signal<Bolha[]>([]);
+  private contador = 0;
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -66,6 +86,15 @@ export class LojasComponent {
     );
   }
 
+  /** Chega um pedido novo: sobe uma bolha e o contador da loja anda. */
+  chegarPedido(): void {
+    const pedido = pedidoAoVivo(this.contador++);
+    const dx = (((pedido.id * 37) % 100) / 100) * 2 - 1;
+    const texto = `${pedido.quantidade}x ${pedido.item} · ${formatarMoeda(pedido.valorCentavos)} · ${pedido.forma}`;
+    this.bolhas.update((lista) => [...lista.slice(-(BOLHAS_NA_TELA - 1)), { ...pedido, dx, texto }]);
+    this.pedidosHoje.update((lista) => lista.map((v, i) => (i === pedido.loja ? v + 1 : v)));
+  }
+
   private ligar(): () => void {
     prepararGsap();
     this.vivo.set(true);
@@ -73,6 +102,7 @@ export class LojasComponent {
     const anel = this.anel().nativeElement;
     const cena = this.cena().nativeElement;
     const estado = { rolagem: 0, arrasto: 0 };
+    let relogio: ReturnType<typeof setInterval> | null = null;
 
     const aplicar = () => {
       const giro = estado.rolagem + estado.arrasto;
@@ -81,7 +111,16 @@ export class LojasComponent {
       if (frente !== this.frente()) this.frente.set(frente);
     };
 
-    // rolagem: 3/4 de volta enquanto a seção passa (mostra as 4 lojas)
+    const ligarPedidos = (ligado: boolean) => {
+      if (ligado && !relogio) {
+        relogio = setInterval(() => this.chegarPedido(), INTERVALO_PEDIDO_MS);
+      } else if (!ligado && relogio) {
+        clearInterval(relogio);
+        relogio = null;
+      }
+    };
+
+    // rolagem: o anel dá a volta pelas lojas enquanto a seção passa; pedidos só correm com ela na tela
     const gatilho = ScrollTrigger.create({
       trigger: this.secao().nativeElement,
       start: 'top top',
@@ -91,6 +130,12 @@ export class LojasComponent {
         estado.rolagem = -st.progress * PASSO_ANEL * (MODELOS.length - 1);
         aplicar();
       },
+    });
+    const visivel = ScrollTrigger.create({
+      trigger: this.secao().nativeElement,
+      start: 'top 80%',
+      end: 'bottom 20%',
+      onToggle: (st) => ligarPedidos(st.isActive),
     });
 
     // arrastar: gira junto com o dedo/mouse e, ao soltar, encaixa no celular mais próximo
@@ -114,7 +159,7 @@ export class LojasComponent {
     };
     const aoMover = (e: PointerEvent) => {
       if (!arrastando) return;
-      estado.arrasto = base + (e.clientX - inicioX) * 0.35;
+      estado.arrasto = base + (e.clientX - inicioX) * 0.3;
       aplicar();
     };
     cena.addEventListener('pointerdown', aoApertar);
@@ -125,6 +170,8 @@ export class LojasComponent {
 
     return () => {
       gatilho.kill();
+      visivel.kill();
+      ligarPedidos(false);
       gsap.killTweensOf(estado);
       cena.removeEventListener('pointerdown', aoApertar);
       window.removeEventListener('pointermove', aoMover);

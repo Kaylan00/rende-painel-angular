@@ -1,21 +1,36 @@
 <section id="lojas" class="lojas" [class.lojas--vivo]="vivo()" [style.--cor-ativa]="lojaAtual().cor" aria-labelledby="titulo-lojas" #secao>
   <div class="lojas__palco">
-    <div class="lojas__texto">
-      <h2 id="titulo-lojas">Cada restaurante com a sua loja, a sua cor e o seu cardápio.</h2>
-      <p>O cliente pede pelo navegador, sem baixar nada. Quatro exemplos de lojas montadas no Rende.</p>
+    <!-- fundo: o ambiente da loja que está de frente -->
+    <div class="ambiente" aria-hidden="true">
+      @for (m of modelos; track m.nome; let i = $index) {
+        <img [src]="m.ambiente" alt="" width="1600" height="900" loading="lazy" decoding="async" [class.ativo]="frente() === i" />
+      }
+    </div>
+
+    <div class="lojas__topo">
+      <div class="lojas__texto">
+        <h2 id="titulo-lojas">Uma rede inteira de cozinhas vendendo agora, cada uma com a sua loja.</h2>
+        <p>Cardápio, fotos e cor de cada restaurante. O cliente pede pelo navegador, sem baixar nada.</p>
+      </div>
+      <p class="contador" aria-live="off">
+        <strong class="numero">{{ totalTexto() }}</strong>
+        <span>pedidos hoje nas lojas de exemplo</span>
+        <span class="contador__zero">comissão cobrada: <b class="numero">R$ 0,00</b></span>
+      </p>
     </div>
 
     <div class="lojas__cena" #cena>
       <div class="anel" #anel>
         @for (m of modelos; track m.nome; let i = $index) {
           <article class="celular" [style.--i]="i" [style.--passo]="passoAnel + 'deg'" [style.--cor]="m.cor" [style.--cor-texto]="m.corTexto"
-            [attr.aria-label]="'Loja de exemplo: ' + m.nome">
+            [class.celular--frente]="frente() === i" [attr.aria-label]="'Loja de exemplo: ' + m.nome">
             <div class="tela">
               <div class="tela__barra numero" aria-hidden="true"><span>19:42</span><span>{{ endereco(m.nome) }}</span></div>
               <img class="tela__foto" [src]="m.foto" [alt]="m.alt" width="800" height="1000" loading="lazy" decoding="async" />
               <div class="tela__loja">
                 <h3>{{ m.nome }}</h3>
                 <p>{{ m.tipo }} · {{ m.cidade }} · {{ m.horario }}</p>
+                <p class="tela__hoje"><span class="numero">{{ pedidosHoje()[i] }}</span> pedidos hoje</p>
               </div>
               <ul class="tela__categorias" aria-hidden="true">
                 @for (c of m.categorias; track c; let primeira = $first) {
@@ -37,10 +52,24 @@
           </article>
         }
       </div>
+
+      <!-- pedidos ao vivo subindo das lojas -->
+      <div class="bolhas" aria-hidden="true">
+        @for (b of bolhas(); track b.id) {
+          <div class="bolha" [style.--dx]="b.dx" [style.--cor]="modelos[b.loja].cor" [style.--cor-texto]="modelos[b.loja].corTexto">
+            <span class="bolha__marca">{{ modelos[b.loja].nome.charAt(0) }}</span>
+            <span class="bolha__texto">
+              <strong>{{ modelos[b.loja].nome }} <span class="numero">#{{ b.numero }}</span></strong>
+              <span>{{ b.texto }}</span>
+            </span>
+          </div>
+        }
+      </div>
     </div>
 
     <p class="lojas__atual" aria-hidden="true">
-      <strong>{{ lojaAtual().nome }}</strong> {{ lojaAtual().tipo }}, {{ lojaAtual().cidade }}
+      <strong>{{ lojaAtual().nome }}</strong>
+      <span>{{ lojaAtual().tipo }}, {{ lojaAtual().cidade }} · <span class="numero">{{ pedidosHoje()[frente()] }}</span> pedidos hoje</span>
       <span class="lojas__dica">arraste para girar</span>
     </p>
   </div>
