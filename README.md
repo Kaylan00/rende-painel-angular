@@ -10,7 +10,7 @@ Restaurante de demonstração: **Bocca Burger**. A raiz (`/`) é a **landing pú
 
 | Tela | O que mostra / permite |
 | --- | --- |
-| **Landing** (`/`) | Página pública do produto: foto real com cartões do painel flutuando, como funciona, **calculadora “comissão do app x mensalidade fixa”** (signals + `computed`), modelos de loja, receita líquida por forma de pagamento, um plano só, dúvidas e chamada para o WhatsApp. |
+| **Landing** (`/`) | Página pública do produto, imersiva: o nome RENDE gigante com um **hambúrguer explodido** em 6 camadas (parallax com o mouse e vapor em canvas); ao rolar, a seção fica presa (GSAP ScrollTrigger) e as camadas **se empilham**, cada uma acendendo um passo do pedido (QR → painel → cozinha → entrega → Pix). Depois, **“a fatia do app”**: uma pizza em que a comissão sai voando, com sliders ligados a signals/`computed`; **anel 3D** com as 4 lojas de exemplo (HTML real) girando com a rolagem e o arrastar; um plano só, dúvidas e chamada para o WhatsApp. |
 | **Login** (`/entrar`) | Formulário reativo com validação. Guarda o token e libera as rotas protegidas. |
 | **Dashboard** | Vendas do dia, ticket médio, valor a receber, gráfico de vendas (SVG feito à mão) e **receita líquida por forma de pagamento** (Pix, crédito, débito e dinheiro), mostrando a taxa de cada canal e o valor líquido. |
 | **Pedidos** | Tabela com filtros (status, forma de pagamento, período) e paginação. A busca usa RxJS (`debounceTime` + `switchMap`). Cada pedido só pode mudar de status seguindo a **máquina de estados**: `aguardando_pagamento → recebido → preparo → pronto → saiu → entregue` (ou `cancelado`, antes de sair da cozinha). |
@@ -33,8 +33,9 @@ Tudo em português, responsivo (menu inferior no celular, lateral no desktop; no
 - RxJS 7 (`switchMap`, `debounceTime`, `combineLatest`, `BehaviorSubject`, `catchError`, `toSignal`, `takeUntilDestroyed`, `async` pipe)
 - SCSS com tokens CSS (mini design system próprio, sem biblioteca de UI)
 - [motion](https://motion.dev) para animação (diretivas `appRevelar`, `appContador`, `appFlutuar`) e View Transitions do router entre telas
+- GSAP 3 + ScrollTrigger e Lenis (rolagem suave) só na landing, encapsulados em serviço/componentes e destruídos ao sair da página
 - Fontes Gambetta (títulos) e General Sans (interface e números tabulares), do Fontshare, servidas localmente
-- Jest 30 + jest-preset-angular (100 testes) e `HttpTestingController`
+- Jest 30 + jest-preset-angular (113 testes) e `HttpTestingController`
 - ESLint com `angular-eslint` (regras de acessibilidade de template incluídas)
 
 ## Como rodar
@@ -51,7 +52,7 @@ Entre com **qualquer e-mail válido e senha com 6 ou mais caracteres** (é uma d
 Outros comandos:
 
 ```bash
-npm test           # Jest (100 testes)
+npm test           # Jest (113 testes)
 npm run lint       # ESLint
 npm run build      # build de produção em dist/
 ```
@@ -109,13 +110,15 @@ src/styles.scss            # tokens do design system
 
 **Animação com propósito (motion).** Três diretivas pequenas em `shared/movimento/`: `appRevelar` (o bloco entra ao chegar na tela, com `inView`; `appRevelar="filhos"` faz os filhos entrarem em sequência com `stagger`), `appContador` (o número conta até o valor final; o texto final é escrito na hora e a animação vai por cima, então leitor de tela e teste sempre veem o valor certo) e `appFlutuar` (os cartões do topo da landing sobem e descem devagar). O gráfico de barras cresce da base. Entre rotas, `withViewTransitions()` faz um fade curto. Com `prefers-reduced-motion`, nada disso roda. No Jest, `motion` é trocado por um mock (`testing/motion.mock.ts` via `moduleNameMapper`).
 
-**Calculadora da landing com signals.** O slider escreve em dois `signal` (faturamento e comissão) e o resultado é um `computed` que chama a função pura `compararCustos()` (centavos inteiros, testada à parte). A tabela “quanto cai de verdade” da landing usa as mesmas taxas (`TAXA_BPS`) e a mesma função (`calcularLiquido`) do painel.
+**A fatia do app com signals.** Os sliders escrevem em dois `signal` (faturamento e comissão); `computed` chama a função pura `calcularFatia()` (que usa `compararCustos()`, em centavos inteiros) e devolve o ângulo da fatia (27% = 97,2°), o tamanho da pizza e os valores. O ângulo vira a variável CSS `--ang`, usada numa máscara `conic-gradient`: a fatia muda de tamanho ao vivo, sem canvas. O botão “Com o Rende” é outro `signal` que devolve a fatia para a pizza e conta quanto sobra por mês e por ano.
+
+**Landing com GSAP sem vazamento.** `RolagemService` (Lenis ligado ao `gsap.ticker`) fica nos `providers` da `LandingComponent`: nasce e morre com a página. Cada seção cria seus gatilhos dentro de `afterNextRender` (só no navegador) e num `gsap.context`, desfeito no `DestroyRef.onDestroy`. A montagem do hambúrguer é uma timeline com `scrub` e `pin`; o passo atual da jornada é um `signal` atualizado pelo tempo da timeline, e o resto (cartão do painel, Pix contando) reage por CSS e `appContador`. Sem JavaScript ou com `prefers-reduced-motion`, nada é preso nem escondido: o hambúrguer fica explodido no topo e a jornada aparece inteira logo abaixo. No Jest, `gsap`, `gsap/ScrollTrigger` e `lenis` são mocks (`testing/`).
 
 **Não é over-engineering de propósito.** Sem NgRx, sem biblioteca de UI, sem camadas extras: serviços, componentes e funções pequenas, fáceis de ler.
 
 ## Testes
 
-100 testes em 16 arquivos, cobrindo:
+113 testes em 16 arquivos, cobrindo:
 
 - utilitários e pipe de moeda, arredondamento de taxas;
 - máquina de estados do pedido e receita líquida por canal;
@@ -123,7 +126,7 @@ src/styles.scss            # tokens do design system
 - `AuthService`, `authGuard`, `visitanteGuard`, `authInterceptor`, `erroInterceptor`;
 - `PedidosService` (parâmetros HTTP) e o back-end mock (401, 409, paginação, filtros);
 - rotas (landing pública, painel protegido, `/login` → `/entrar`);
-- landing: calculadora (`computed` recalculando ao mexer no slider), comparação de custos, tabela de taxas, links de WhatsApp e texto alternativo das fotos;
+- landing: fatia do app (`calcularFatia`: ângulo, tamanho da pizza, valores; sliders e botão “Com o Rende”), comparação de custos, camadas e passos da montagem, loja de frente no anel 3D, versão sem movimento (nada preso), pin e limpeza do GSAP/Lenis ao destruir, links de WhatsApp e texto alternativo das fotos;
 - diretivas de animação (com e sem `prefers-reduced-motion`);
 - componentes: login, dashboard, pedidos (debounce e cancelamento por `switchMap` provados com timers falsos), recebíveis, nova cobrança (máscara, validação, modal, envio) e os componentes do design system.
 
@@ -134,7 +137,8 @@ O Angular CLI 22 só oferece Karma e Vitest no `ng new`, então o Jest foi confi
 ## Fontes e fotos
 
 - **Gambetta** e **General Sans**, do [Fontshare](https://www.fontshare.com) (ITF Free Font License), em `public/fonts/`.
-- Fotos reais do [Unsplash](https://unsplash.com) (licença Unsplash), em `src/assets/fotos/`: Jonathan Borba (hambúrguer do topo), Pinar Kucuk (pizza na mesa), Jason Leung (salão), Nick Hillier (restaurante cheio), amirali mirhashemian (hamburgueria), Aurélien Lemasson-Théobald (pizzaria), Vicky Ng (açaiteria) e Mae Mu (padaria). Os créditos também estão no rodapé da landing.
+- Fotos reais do [Unsplash](https://unsplash.com) (licença Unsplash), em `src/assets/fotos/`, usadas nos celulares das lojas: amirali mirhashemian (hamburgueria), Aurélien Lemasson-Théobald (pizzaria), Vicky Ng (açaiteria) e Mae Mu (padaria).
+- Camadas do hambúrguer (`src/assets/hamburguer/`) e pizza vista de cima (`pizza-cima.webp`): imagens geradas por IA (Codex), com fundo transparente.
 - Lojas da landing (Forno da Praça, Açaí do Porto, Padaria Dona Lia), preço (R$ 129/mês) e textos de dúvidas são de demonstração. O link de WhatsApp abre a conversa com a mensagem pronta; para fixar um número, troque `LINK_WHATSAPP` em `features/landing/conteudo.ts`.
 
 ## O que ficou de fora (de propósito)

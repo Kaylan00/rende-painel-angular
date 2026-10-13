@@ -137,9 +137,17 @@ Nenhum `subscribe` sem dono:
 - Acessibilidade: `movimentoReduzido()` em `shared/movimento/movimento.ts` lê `prefers-reduced-motion`; com ele ligado, nada anima.
 - Mock de biblioteca no Jest com `moduleNameMapper`: `jest.config.js` + `testing/motion.mock.ts`.
 
-### 15. Signals numa tela interativa (calculadora da landing)
+### 15. Signals numa tela interativa (a fatia do app, na landing)
 
-- `features/landing/calculadora/calculadora.component.ts`: dois `signal` (faturamento, comissão) e um `computed` com o resultado. O template lê `resultado()` e tudo recalcula ao mexer no slider, sem `subscribe`.
+- `features/landing/fatia/fatia.component.ts`: dois `signal` (faturamento, comissão), um `signal` para o botão “Com o Rende” e um `computed` (`fatia`) com ângulo, tamanho da pizza e valores. O template liga o ângulo a uma variável CSS (`[style.--ang]`) e tudo recalcula ao mexer no slider, sem `subscribe`.
+- A conta em si é `calcularFatia()` em `features/landing/fatia/fatia.ts` (função pura, testada em `landing.spec.ts`).
+
+### 16. Biblioteca de animação externa sem vazamento (GSAP + Lenis)
+
+- `features/landing/movimento/rolagem.service.ts`: serviço nos `providers` do componente (não `root`), então vive só enquanto a landing existe.
+- `features/landing/palco/palco.component.ts`: `afterNextRender` (só no navegador), `gsap.context(...)` e `ctx.revert()` no `DestroyRef.onDestroy`; timeline com `scrollTrigger: { pin, scrub }`; `signal` do passo atual atualizado pela timeline.
+- `features/landing/lojas/lojas.component.ts`: anel 3D em CSS (`preserve-3d`), giro escrito direto no estilo (sem detecção de mudança a cada quadro) e listeners de arrastar removidos ao destruir.
+- Testes com mocks por `moduleNameMapper` (`testing/gsap.mock.ts`, `testing/lenis.mock.ts`).
 - A conta em si é uma função pura (`features/landing/comparativo.ts`), testada separada da tela (`landing.spec.ts`).
 
 ---
